@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Providers;
+
+use App\Models\Equipo;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public function boot(): void
+    {
+        Gate::define('lider-equipo', function (User $user, Equipo $equipo) {
+            return $equipo->miembros()->where('id_estudiante', $user->id_usuario)->where('es_lider', true)->exists();
+        });
+
+        // Registrar Observers
+        \App\Models\Equipo::observe(\App\Observers\EquipoObserver::class);
+        \App\Models\MiembroEquipo::observe(\App\Observers\MiembroEquipoObserver::class);
+    }
+}
