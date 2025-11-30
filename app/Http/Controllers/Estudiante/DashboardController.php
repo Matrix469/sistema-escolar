@@ -38,6 +38,7 @@ class DashboardController extends Controller
                                        ->get();
         }
                          
-        return view('estudiante.dashboard', compact('miInscripcion', 'eventosDisponibles'));
+        //return view('estudiante.dashboard', compact('miInscripcion', 'eventosDisponibles'));
+        return view('estudiante.dashboard-prueba', compact('miInscripcion', 'eventosDisponibles'));
     }
 }
