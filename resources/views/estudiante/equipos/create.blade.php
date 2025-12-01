@@ -1,15 +1,319 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-        <div class="flex items-center">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Fondo degradado */
+    .equipo-form-page {
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
+        min-height: 100vh;
+        font-family: 'Poppins', sans-serif;
+        padding: 3rem 0;
+    }
+    
+    /* Header container */
+    .header-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Textos */
+    .equipo-form-page h2 {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 0;
+        margin-left: 0.5rem;
+    }
+    
+    .equipo-form-page p,
+    .equipo-form-page label {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Back button */
+    .back-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #2c2c2c;
+        transition: all 0.2s ease;
+        width: 2.5rem;
+        height: 2.5rem;
+        background: rgba(255, 253, 244, 0.9);
+        border-radius: 10px;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+    }
+    
+    .back-button:hover {
+        color: #e89a3c;
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    /* Main card */
+    .main-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        padding: 2rem;
+    }
+    
+    /* Alert error */
+    .alert-error {
+        background: linear-gradient(135deg, rgba(254, 226, 226, 0.9), rgba(252, 211, 211, 0.9));
+        border-left: 4px solid #ef4444;
+        border-radius: 12px;
+        color: #991b1b;
+        padding: 1rem 1.25rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        backdrop-filter: blur(10px);
+    }
+    
+    .alert-error p {
+        font-family: 'Poppins', sans-serif;
+        color: #991b1b;
+        margin: 0;
+    }
+    
+    .alert-error .font-bold {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .alert-error ul {
+        list-style: disc;
+        margin-left: 1.5rem;
+        margin-top: 0.5rem;
+        margin-bottom: 0;
+    }
+    
+    .alert-error li {
+        font-family: 'Poppins', sans-serif;
+        color: #991b1b;
+        margin: 0.25rem 0;
+    }
+    
+    /* Form sections */
+    .form-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Labels */
+    .form-label {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Inputs y textareas */
+    .neuro-input,
+    .neuro-textarea {
+        font-family: 'Poppins', sans-serif;
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
+        box-shadow: inset 4px 4px 8px #e6d5c9, inset -4px -4px 8px #ffffff;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(10px);
+        color: #2c2c2c;
+        width: 100%;
+        padding: 0.625rem 0.875rem;
+        border-radius: 10px;
+        font-size: 0.875rem;
+    }
+    
+    .neuro-input::placeholder,
+    .neuro-textarea::placeholder {
+        color: #9ca3af;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .neuro-input:focus,
+    .neuro-textarea:focus {
+        outline: none;
+        box-shadow: inset 6px 6px 12px #e6d5c9, inset -6px -6px 12px #ffffff;
+    }
+    
+    .neuro-textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    
+    /* Helper text */
+    .help-text {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.75rem;
+        color: #9ca3af;
+        margin-top: 0.375rem;
+        display: block;
+    }
+    
+    /* Current image section */
+    .current-image-section {
+        margin: 1rem 0 1.5rem 0;
+    }
+    
+    .current-image-label {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: #6b6b6b;
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+    
+    .current-image-wrapper {
+        display: inline-block;
+        border: 3px solid #e89a3c;
+        border-radius: 12px;
+        padding: 0.5rem;
+        background: #FFEEE2;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+    }
+    
+    .current-image {
+        height: 8rem;
+        width: 8rem;
+        object-fit: cover;
+        border-radius: 8px;
+        display: block;
+    }
+    
+    /* File input wrapper */
+    .file-input-wrapper {
+        position: relative;
+        margin-top: 0.5rem;
+    }
+    
+    .file-input-label {
+        font-family: 'Poppins', sans-serif;
+        display: inline-block;
+        padding: 0.625rem 1.25rem;
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: white;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        box-shadow: 4px 4px 8px rgba(99, 102, 241, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .file-input-label:hover {
+        box-shadow: 6px 6px 12px rgba(99, 102, 241, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    .file-input-label svg {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+        vertical-align: middle;
+    }
+    
+    .neuro-file {
+        position: absolute;
+        opacity: 0;
+        width: 0.1px;
+        height: 0.1px;
+        pointer-events: none;
+    }
+    
+    .file-name-display {
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.75rem;
+        color: #6b6b6b;
+        margin-top: 0.5rem;
+        padding: 0.5rem;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
+        display: none;
+    }
+    
+    .file-name-display.show {
+        display: block;
+    }
+    
+    /* Submit button */
+    .btn-submit {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+        color: #ffffff;
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        border-radius: 12px;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-size: 0.9375rem;
+    }
+    
+    .btn-submit:hover {
+        box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .btn-submit:active {
+        transform: translateY(0);
+        box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Button container */
+    .button-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid rgba(232, 154, 60, 0.2);
+    }
+    
+    /* Responsive */
+    @media (max-width: 640px) {
+        .equipo-form-page {
+            padding: 1.5rem 0;
+        }
+        
+        .main-card {
+            padding: 1.5rem;
+        }
+        
+        .equipo-form-page h2 {
+            font-size: 1.125rem;
+        }
+        
+        .btn-submit {
+            width: 100%;
+        }
+        
+        .button-container {
+            justify-content: stretch;
+        }
+    }
+</style>
+
+<div class="equipo-form-page">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="header-container">
             @isset($evento)
-            <a href="{{ route('estudiante.eventos.show', $evento) }}" class="text-gray-800 hover:text-gray-900">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+            <a href="{{ route('estudiante.eventos.show', $evento) }}" class="back-button">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
             </a>
             @endisset
-            <h2 class="font-semibold text-xl text-gray-800 mb-6">
+            <h2>
                 @isset($equipo)
                     Editar Equipo
                 @else
@@ -17,81 +321,103 @@
                 @endisset
             </h2>
         </div>
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    
-                    @if (session('error'))
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md shadow-sm" role="alert">
-                            <p class="font-bold">Error</p>
-                            <p>{{ session('error') }}</p>
-                        </div>
-                    @endif
-
-                    @if ($errors->any())
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md shadow-sm" role="alert">
-                            <p class="font-bold">¡Ups! Hubo algunos problemas.</p>
-                            <ul class="mt-2 list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <form action="{{ isset($equipo) ? route('estudiante.equipo.update') : route('estudiante.eventos.equipos.store', $evento) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @isset($equipo)
-                            @method('PUT')
-                        @endisset
-
-                        <!-- Nombre del Equipo -->
-                        <div>
-                            <label for="nombre" class="block font-medium text-sm text-gray-700">Nombre del Equipo</label>
-                            <input type="text" name="nombre" id="nombre" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" value="{{ old('nombre', $equipo->nombre ?? '') }}" required autofocus>
-                        </div>
-
-                        <!-- Descripción del Equipo -->
-                        <div class="mt-4">
-                            <label for="descripcion" class="block font-medium text-sm text-gray-700">Descripción del Equipo (Opcional)</label>
-                            <textarea name="descripcion" id="descripcion" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Describe tu equipo, proyecto o lo que buscan lograr...">{{ old('descripcion', $equipo->descripcion ?? '') }}</textarea>
-                            <p class="text-xs text-gray-500 mt-1">Máximo 1000 caracteres. Esta descripción ayudará a otros estudiantes a conocer tu equipo.</p>
-                        </div>
-
-                        <!-- Imagen del Equipo -->
-                        <div class="mt-6">
-                            <label for="ruta_imagen" class="block font-medium text-sm text-gray-700">
-                                @isset($equipo)
-                                    Cambiar Imagen del Equipo (Opcional)
-                                @else
-                                    Imagen del Equipo (Opcional)
-                                @endisset
-                            </label>
-                            
-                            @isset($equipo)
-                                @if ($equipo->ruta_imagen)
-                                    <div class="my-4">
-                                        <p class="font-medium text-sm text-gray-500 mb-2">Imagen Actual:</p>
-                                        <img src="{{ asset('storage/' . $equipo->ruta_imagen) }}" alt="Imagen actual del equipo" class="h-32 w-32 object-cover rounded-md">
-                                    </div>
-                                @endif
-                            @endisset
-
-                            <input type="file" name="ruta_imagen" id="ruta_imagen" class="mt-1 block w-full">
-                        </div>
-
-                        <!-- Botón de Envío -->
-                        <div class="flex items-center justify-end mt-8">
-                            <button type="submit" class="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 font-semibold">
-                                @isset($equipo)
-                                    Actualizar Equipo
-                                @else
-                                    Crear e Inscribir Equipo
-                                @endisset
-                            </button>
-                        </div>
-                    </form>
+        
+        <div class="main-card">
+            @if (session('error'))
+                <div class="alert-error" role="alert">
+                    <p class="font-bold">Error</p>
+                    <p>{{ session('error') }}</p>
                 </div>
-            </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert-error" role="alert">
+                    <p class="font-bold">¡Ups! Hubo algunos problemas.</p>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ isset($equipo) ? route('estudiante.equipo.update') : route('estudiante.eventos.equipos.store', $evento) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @isset($equipo)
+                    @method('PUT')
+                @endisset
+
+                <!-- Nombre del Equipo -->
+                <div class="form-section">
+                    <label for="nombre" class="form-label">Nombre del Equipo</label>
+                    <input type="text" name="nombre" id="nombre" class="neuro-input" value="{{ old('nombre', $equipo->nombre ?? '') }}" required autofocus>
+                </div>
+
+                <!-- Descripción del Equipo -->
+                <div class="form-section">
+                    <label for="descripcion" class="form-label">Descripción del Equipo (Opcional)</label>
+                    <textarea name="descripcion" id="descripcion" rows="4" class="neuro-textarea" placeholder="Describe tu equipo, proyecto o lo que buscan lograr...">{{ old('descripcion', $equipo->descripcion ?? '') }}</textarea>
+                    <span class="help-text">Máximo 1000 caracteres. Esta descripción ayudará a otros estudiantes a conocer tu equipo.</span>
+                </div>
+
+                <!-- Imagen del Equipo -->
+                <div class="form-section">
+                    <label for="ruta_imagen" class="form-label">
+                        @isset($equipo)
+                            Cambiar Imagen del Equipo (Opcional)
+                        @else
+                            Imagen del Equipo (Opcional)
+                        @endisset
+                    </label>
+                    
+                    @isset($equipo)
+                        @if ($equipo->ruta_imagen)
+                            <div class="current-image-section">
+                                <span class="current-image-label">Imagen Actual:</span>
+                                <div class="current-image-wrapper">
+                                    <img src="{{ asset('storage/' . $equipo->ruta_imagen) }}" alt="Imagen actual del equipo" class="current-image">
+                                </div>
+                            </div>
+                        @endif
+                    @endisset
+
+                    <div class="file-input-wrapper">
+                        <label for="ruta_imagen" class="file-input-label">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            Seleccionar Imagen
+                        </label>
+                        <input type="file" name="ruta_imagen" id="ruta_imagen" class="neuro-file" accept="image/*" onchange="displayFileName(this)">
+                        <div id="file-name-display" class="file-name-display"></div>
+                    </div>
+                </div>
+
+                <!-- Botón de Envío -->
+                <div class="button-container">
+                    <button type="submit" class="btn-submit">
+                        @isset($equipo)
+                            Actualizar Equipo
+                        @else
+                            Crear e Inscribir Equipo
+                        @endisset
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
+<script>
+    function displayFileName(input) {
+        const fileDisplay = document.getElementById('file-name-display');
+        if (input.files && input.files[0]) {
+            fileDisplay.textContent = '📁 ' + input.files[0].name;
+            fileDisplay.classList.add('show');
+        } else {
+            fileDisplay.textContent = '';
+            fileDisplay.classList.remove('show');
+        }
+    }
+</script>
 @endsection
