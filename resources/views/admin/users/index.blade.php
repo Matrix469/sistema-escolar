@@ -1,99 +1,327 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <h2 class="font-semibold text-xl text-gray-800 mb-6">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Fondo degradado */
+    .users-page {
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
+        min-height: 100vh;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Textos */
+    .users-page h2,
+    .users-page h3 {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+    }
+    
+    .users-page p,
+    .users-page td,
+    .users-page th {
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Counter cards */
+    .counter-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        transition: all 0.3s ease;
+    }
+    
+    .counter-card:hover {
+        box-shadow: 10px 10px 20px #e6d5c9, -10px -10px 20px #ffffff;
+        transform: translateY(-3px);
+    }
+    
+    .counter-card h3 {
+        font-family: 'Poppins', sans-serif;
+        color: #6b6b6b;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .counter-card p {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+        font-size: 1.875rem;
+        font-weight: 600;
+        margin-top: 0.25rem;
+    }
+    
+    /* Filter card */
+    .filter-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+    }
+    
+    /* Inputs y selects */
+    .neuro-input,
+    .neuro-select {
+        font-family: 'Poppins', sans-serif;
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
+        box-shadow: inset 4px 4px 8px #e6d5c9, inset -4px -4px 8px #ffffff;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(10px);
+        color: #2c2c2c;
+    }
+    
+    .neuro-input::placeholder {
+        color: #9ca3af;
+    }
+    
+    .neuro-input:focus,
+    .neuro-select:focus {
+        outline: none;
+        box-shadow: inset 6px 6px 12px #e6d5c9, inset -6px -6px 12px #ffffff;
+    }
+    
+    /* Buttons */
+    .neuro-button-primary {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .neuro-button-primary:hover {
+        box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .neuro-button-secondary {
+        font-family: 'Poppins', sans-serif;
+        background: rgba(255, 255, 255, 0.5);
+        color: #2c2c2c;
+        font-weight: 500;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        transition: all 0.3s ease;
+        border: none;
+        backdrop-filter: blur(10px);
+    }
+    
+    .neuro-button-secondary:hover {
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    /* Table container */
+    .table-container {
+        background: #FFEEE2;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+    }
+    
+    /* Table */
+    .neuro-table {
+        width: 100%;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    .neuro-table thead {
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(5px);
+    }
+    
+    .neuro-table thead th {
+        padding: 0.75rem 1.5rem;
+        text-align: left;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #2c2c2c;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .neuro-table tbody {
+        background: transparent;
+    }
+    
+    .neuro-table tbody tr {
+        border-bottom: 1px solid rgba(107, 107, 107, 0.1);
+        transition: all 0.2s ease;
+    }
+    
+    .neuro-table tbody tr:hover {
+        background: rgba(232, 154, 60, 0.05);
+    }
+    
+    .neuro-table tbody tr:last-child {
+        border-bottom: none;
+    }
+    
+    .neuro-table tbody td {
+        padding: 1rem 1.5rem;
+        color: #2c2c2c;
+        font-size: 0.875rem;
+    }
+    
+    .user-name {
+        font-weight: 600;
+        color: #2c2c2c;
+    }
+    
+    .user-email {
+        color: #6b6b6b;
+    }
+    
+    /* Role badges */
+    .role-badge {
+        font-family: 'Poppins', sans-serif;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .role-admin {
+        background: rgba(254, 202, 202, 0.8);
+        color: #991b1b;
+    }
+    
+    .role-jurado {
+        background: rgba(254, 240, 138, 0.8);
+        color: #854d0e;
+    }
+    
+    .role-estudiante {
+        background: rgba(191, 219, 254, 0.8);
+        color: #1e40af;
+    }
+    
+    /* Edit link */
+    .edit-link {
+        font-family: 'Poppins', sans-serif;
+        color: #e89a3c;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+    
+    .edit-link:hover {
+        color: #d98a2c;
+    }
+    
+    /* Empty state */
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: #6b6b6b;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Pagination container */
+    .pagination-container {
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(5px);
+    }
+</style>
+
+<div class="users-page py-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <h2 class="font-semibold text-xl mb-6">
             {{ __('Gestión de Usuarios') }}
         </h2>
 
-            <!-- Contadores -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-sm">
-                    <h3 class="text-sm font-medium text-gray-500">Administradores</h3>
-                    <p class="mt-1 text-3xl font-semibold text-gray-900">{{ $totalAdmins }}</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm">
-                    <h3 class="text-sm font-medium text-gray-500">Jurados</h3>
-                    <p class="mt-1 text-3xl font-semibold text-gray-900">{{ $totalJurados }}</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm">
-                    <h3 class="text-sm font-medium text-gray-500">Estudiantes</h3>
-                    <p class="mt-1 text-3xl font-semibold text-gray-900">{{ $totalEstudiantes }}</p>
-                </div>
+        <!-- Contadores -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="counter-card">
+                <h3>Administradores</h3>
+                <p>{{ $totalAdmins }}</p>
             </div>
-
-            <!-- Filtros y Búsqueda -->
-            <div class="bg-white p-4 rounded-lg shadow-sm mb-8">
-                <form action="{{ route('admin.users.index') }}" method="GET">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div class="md:col-span-2">
-                            <input type="text" name="search" placeholder="Buscar por nombre, apellido o email..." value="{{ request('search') }}" class="block w-full rounded-md border-gray-300 shadow-sm">
-                        </div>
-                        <div>
-                            <select name="rol" class="block w-full rounded-md border-gray-300 shadow-sm">
-                                <option value="">Todos los roles</option>
-                                @foreach($roles as $rol)
-                                    <option value="{{ $rol->id_rol_sistema }}" {{ request('rol') == $rol->id_rol_sistema ? 'selected' : '' }}>
-                                        {{ ucfirst($rol->nombre) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <button type="submit" class="w-full justify-center px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-black">Filtrar</button>
-                            <a href="{{ route('admin.users.index') }}" class="w-full text-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Limpiar</a>
-                        </div>
-                    </div>
-                </form>
+            <div class="counter-card">
+                <h3>Jurados</h3>
+                <p>{{ $totalJurados }}</p>
             </div>
-
-            <!-- Tabla de Usuarios -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
-                                <th scope="col" class="relative px-6 py-3"><span class="sr-only">Editar</span></th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse ($usuarios as $usuario)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">{{ $usuario->nombre }} {{ $usuario->app_paterno }}</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $usuario->email }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                            @if($usuario->rolSistema->nombre == 'admin') bg-red-200 text-red-800
-                                            @elseif($usuario->rolSistema->nombre == 'jurado') bg-yellow-200 text-yellow-800
-                                            @else bg-blue-200 text-blue-800 @endif">
-                                            {{ ucfirst($usuario->rolSistema->nombre) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('admin.users.edit', $usuario) }}" class="text-indigo-600 hover:text-indigo-900">Editar</a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
-                                        No se encontraron usuarios con los criterios seleccionados.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                <div class="p-4">
-                    {{ $usuarios->appends(request()->query())->links() }}
-                </div>
+            <div class="counter-card">
+                <h3>Estudiantes</h3>
+                <p>{{ $totalEstudiantes }}</p>
             </div>
-
         </div>
+
+        <!-- Filtros y Búsqueda -->
+        <div class="filter-card mb-8">
+            <form action="{{ route('admin.users.index') }}" method="GET">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-2">
+                        <input type="text" name="search" placeholder="Buscar por nombre, apellido o email..." value="{{ request('search') }}" class="neuro-input block w-full rounded-md">
+                    </div>
+                    <div>
+                        <select name="rol" class="neuro-select block w-full rounded-md">
+                            <option value="">Todos los roles</option>
+                            @foreach($roles as $rol)
+                                <option value="{{ $rol->id_rol_sistema }}" {{ request('rol') == $rol->id_rol_sistema ? 'selected' : '' }}>
+                                    {{ ucfirst($rol->nombre) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button type="submit" class="neuro-button-primary w-full justify-center px-4 py-2 rounded-md">Filtrar</button>
+                        <a href="{{ route('admin.users.index') }}" class="neuro-button-secondary w-full text-center px-4 py-2 rounded-md">Limpiar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Tabla de Usuarios -->
+        <div class="table-container">
+            <div class="overflow-x-auto">
+                <table class="neuro-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Rol</th>
+                            <th scope="col"><span class="sr-only">Editar</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($usuarios as $usuario)
+                            <tr>
+                                <td>
+                                    <div class="user-name">{{ $usuario->nombre }} {{ $usuario->app_paterno }}</div>
+                                </td>
+                                <td class="user-email">{{ $usuario->email }}</td>
+                                <td>
+                                    <span class="role-badge 
+                                        @if($usuario->rolSistema->nombre == 'admin') role-admin
+                                        @elseif($usuario->rolSistema->nombre == 'jurado') role-jurado
+                                        @else role-estudiante @endif">
+                                        {{ ucfirst($usuario->rolSistema->nombre) }}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    <a href="{{ route('admin.users.edit', $usuario) }}" class="edit-link">Editar</a>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="empty-state">
+                                    No se encontraron usuarios con los criterios seleccionados.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination-container">
+                {{ $usuarios->appends(request()->query())->links() }}
+            </div>
+        </div>
+
     </div>
+</div>
 @endsection

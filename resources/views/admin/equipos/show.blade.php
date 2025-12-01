@@ -1,95 +1,321 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="flex items-center">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Fondo degradado */
+    .equipo-show-page {
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
+        min-height: 100vh;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Textos */
+    .equipo-show-page h1,
+    .equipo-show-page h2,
+    .equipo-show-page h3 {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+    }
+    
+    .equipo-show-page p {
+        font-family: 'Poppins', sans-serif;
+        color: #6b6b6b;
+    }
+    
+    /* Back button */
+    .back-button {
+        color: #2c2c2c;
+        transition: all 0.2s ease;
+    }
+    
+    .back-button:hover {
+        color: #e89a3c;
+    }
+    
+    /* Main card */
+    .main-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        padding: 2rem;
+    }
+    
+    /* Team header */
+    .team-header {
+        border-bottom: 1px solid rgba(232, 154, 60, 0.2);
+        padding-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+    }
+    
+    .team-image {
+        height: 8rem;
+        width: 8rem;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+    }
+    
+    .team-placeholder {
+        height: 8rem;
+        width: 8rem;
+        background: rgba(229, 231, 235, 0.5);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
+    }
+    
+    .team-name {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+        font-weight: 700;
+        font-size: 1.875rem;
+    }
+    
+    .team-evento-link {
+        font-family: 'Poppins', sans-serif;
+        color: #e89a3c;
+        transition: all 0.2s ease;
+    }
+    
+    .team-evento-link:hover {
+        color: #d98a2c;
+        text-decoration: underline;
+    }
+    
+    /* Members section */
+    .members-section {
+        margin-top: 2rem;
+    }
+    
+    .members-section h3 {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+        font-size: 1.125rem;
+        font-weight: 500;
+    }
+    
+    /* Member list */
+    .member-list {
+        margin-top: 1rem;
+    }
+    
+    .member-item {
+        padding: 1rem 0;
+        border-bottom: 1px solid rgba(232, 154, 60, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .member-item:last-child {
+        border-bottom: none;
+    }
+    
+    .member-name {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+        font-weight: 600;
+    }
+    
+    .member-carrera {
+        font-family: 'Poppins', sans-serif;
+        color: #9ca3af;
+        font-size: 0.875rem;
+    }
+    
+    /* Badges */
+    .badge {
+        font-family: 'Poppins', sans-serif;
+        padding: 0.125rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .badge-rol {
+        background: rgba(107, 114, 128, 0.8);
+        color: #ffffff;
+    }
+    
+    .badge-lider {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        color: #78350f;
+        text-transform: uppercase;
+        font-weight: 700;
+    }
+    
+    /* Remove button */
+    .btn-remove {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: #ffffff;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        box-shadow: 2px 2px 4px rgba(239, 68, 68, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .btn-remove:hover {
+        box-shadow: 4px 4px 8px rgba(239, 68, 68, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    /* Empty state */
+    .empty-state {
+        padding: 1rem 0;
+        color: #9ca3af;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Actions section */
+    .actions-section {
+        margin-top: 2rem;
+        border-top: 1px solid rgba(232, 154, 60, 0.2);
+        padding-top: 1.5rem;
+    }
+    
+    .actions-section h3 {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+        font-size: 1.125rem;
+        font-weight: 500;
+    }
+    
+    /* Action buttons */
+    .btn-edit {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+        color: #ffffff;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .btn-edit:hover {
+        box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .btn-delete-team {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #b91c1c, #991b1b);
+        color: #ffffff;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        box-shadow: 4px 4px 8px rgba(185, 28, 28, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .btn-delete-team:hover {
+        box-shadow: 6px 6px 12px rgba(185, 28, 28, 0.4);
+        transform: translateY(-2px);
+    }
+</style>
+
+<div class="equipo-show-page py-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="flex items-center mb-6">
             @if($equipo->inscripciones->first() && $equipo->inscripciones->first()->evento)
-                <a href="{{ route('admin.eventos.show', $equipo->inscripciones->first()->evento) }}" class="text-gray-500 hover:text-gray-700">
+                <a href="{{ route('admin.eventos.show', $equipo->inscripciones->first()->evento) }}" class="back-button">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </a>
             @endif
-            <h2 class="font-semibold text-xl text-gray-800 mb-6">
+            <h2 class="font-semibold text-xl ml-2">
                 Gestión de Equipo: {{ $equipo->nombre }}
             </h2>
         </div>
-            <div class="bg-white overflow-hidden shadow-xl rounded-lg p-6 sm:p-8">
-                
-                <!-- Detalles del Equipo -->
-                <div class="border-b pb-6 flex items-center space-x-6">
-                    @if ($equipo->ruta_imagen)
-                        <img class="h-32 w-32 object-cover rounded-lg" src="{{ asset('storage/' . $equipo->ruta_imagen) }}" alt="Imagen del equipo">
-                    @else
-                        <div class="h-32 w-32 bg-gray-200 rounded-lg flex items-center justify-center">
-                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                        </div>
+        
+        <div class="main-card">
+            <!-- Detalles del Equipo -->
+            <div class="team-header">
+                @if ($equipo->ruta_imagen)
+                    <img class="team-image" src="{{ asset('storage/' . $equipo->ruta_imagen) }}" alt="Imagen del equipo">
+                @else
+                    <div class="team-placeholder">
+                        <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                @endif
+                <div>
+                    <h1 class="team-name">{{ $equipo->nombre }}</h1>
+                    @if($inscripcion = $equipo->inscripciones->first())
+                        <p class="text-sm mt-2" style="color: #6b6b6b;">
+                            Inscrito en: 
+                            <a href="{{ route('admin.eventos.show', $inscripcion->evento) }}" class="team-evento-link">
+                                {{ $inscripcion->evento->nombre }}
+                            </a>
+                        </p>
                     @endif
-                    <div>
-                        <h1 class="font-bold text-3xl text-gray-800">{{ $equipo->nombre }}</h1>
-                        @if($inscripcion = $equipo->inscripciones->first())
-                            <p class="text-gray-600 text-sm mt-2">
-                                Inscrito en: 
-                                <a href="{{ route('admin.eventos.show', $inscripcion->evento) }}" class="text-indigo-600 hover:underline">
-                                    {{ $inscripcion->evento->nombre }}
-                                </a>
-                            </p>
-                        @endif
-                    </div>
                 </div>
-
-                <!-- Lista de Miembros -->
-                <div class="mt-8">
-                    <h3 class="text-lg font-medium text-gray-900">
-                        Miembros del Equipo ({{ $equipo->miembros->count() }})
-                    </h3>
-                    <div class="mt-4">
-                        <ul class="divide-y divide-gray-200">
-                            @forelse($equipo->miembros as $miembro)
-                                <li class="py-4 flex items-center justify-between">
-                                    <div class="flex items-center space-x-4">
-                                        <div>
-                                            <p class="text-gray-800 font-semibold">{{ $miembro->user->nombre_completo }}</p>
-                                            <p class="text-sm text-gray-500">{{ optional($miembro->user->estudiante)->carrera->nombre ?? 'N/A' }}</p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-4">
-                                        <span class="text-xs text-white bg-gray-500 px-2 py-0.5 rounded-full">{{ $miembro->rol->nombre ?? 'Rol no asignado' }}</span>
-                                        @if($miembro->es_lider)
-                                            <span class="text-xs font-bold uppercase px-2 py-1 bg-yellow-400 text-yellow-900 rounded-full">Líder</span>
-                                        @endif
-                                        <!-- Botón para Eliminar Miembro -->
-                                        <form action="{{ route('admin.miembros.destroy', $miembro) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este miembro del equipo?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="px-2 py-1 bg-red-600 text-white rounded-md hover:bg-red-700 text-xs">Quitar</button>
-                                        </form>
-                                    </div>
-                                </li>
-                            @empty
-                                <li class="py-4 text-gray-500">Este equipo no tiene miembros.</li>
-                            @endforelse
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Acciones de Administrador -->
-                <div class="mt-8 border-t border-gray-200 pt-6">
-                    <h3 class="text-lg font-medium text-gray-900">Acciones de Administrador</h3>
-                    <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="{{ route('admin.equipos.edit', $equipo) }}" class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 font-semibold">
-                            Editar Equipo
-                        </a>
-                        <form action="{{ route('admin.equipos.destroy', $equipo) }}" method="POST" onsubmit="return confirm('¡Acción irreversible! ¿Estás seguro de que quieres eliminar este equipo por completo? Se eliminará la inscripción y todos sus miembros quedarán libres.');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="px-4 py-2 bg-red-700 text-white rounded-md hover:bg-red-800 font-semibold">
-                                Eliminar Equipo
-                            </button>
-                        </form>
-                    </div>
-                </div>
-
             </div>
+
+            <!-- Lista de Miembros -->
+            <div class="members-section">
+                <h3>
+                    Miembros del Equipo ({{ $equipo->miembros->count() }})
+                </h3>
+                <div class="member-list">
+                    <ul>
+                        @forelse($equipo->miembros as $miembro)
+                            <li class="member-item">
+                                <div class="flex items-center space-x-4">
+                                    <div>
+                                        <p class="member-name">{{ $miembro->user->nombre_completo }}</p>
+                                        <p class="member-carrera">{{ optional($miembro->user->estudiante)->carrera->nombre ?? 'N/A' }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <span class="badge badge-rol">{{ $miembro->rol->nombre ?? 'Rol no asignado' }}</span>
+                                    @if($miembro->es_lider)
+                                        <span class="badge badge-lider">Líder</span>
+                                    @endif
+                                    <!-- Botón para Eliminar Miembro -->
+                                    <form action="{{ route('admin.miembros.destroy', $miembro) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este miembro del equipo?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-remove">Quitar</button>
+                                    </form>
+                                </div>
+                            </li>
+                        @empty
+                            <li class="empty-state">Este equipo no tiene miembros.</li>
+                        @endforelse
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Acciones de Administrador -->
+            <div class="actions-section">
+                <h3>Acciones de Administrador</h3>
+                <div class="mt-4 flex flex-wrap gap-3">
+                    <a href="{{ route('admin.equipos.edit', $equipo) }}" class="btn-edit">
+                        Editar Equipo
+                    </a>
+                    <form action="{{ route('admin.equipos.destroy', $equipo) }}" method="POST" onsubmit="return confirm('¡Acción irreversible! ¿Estás seguro de que quieres eliminar este equipo por completo? Se eliminará la inscripción y todos sus miembros quedarán libres.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn-delete-team">
+                            Eliminar Equipo
+                        </button>
+                    </form>
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
 @endsection
