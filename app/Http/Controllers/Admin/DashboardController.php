@@ -30,7 +30,8 @@ class DashboardController extends Controller
         $eventosDashboard = Evento::whereIn('estado', ['Activo', 'Próximo'])
                                     ->orderBy('fecha_inicio')
                                     ->get();
-
+        //Equipos registrados
+        $equiposRegistrados = Equipo::all();
         // Sección "Eventos que Requieren Atención"
         $eventosPorIniciar = Evento::where('estado', 'Próximo')
                                    ->where('fecha_inicio', '>=', now())
@@ -57,6 +58,7 @@ class DashboardController extends Controller
             'equiposRegistradosCount', 
             'juradosAsignadosCount',
             'eventosDashboard',
+            'equiposRegistrados',
             'eventosPorIniciar',
             'eventosSinJurados',
             'eventosConEquiposIncompletos'
