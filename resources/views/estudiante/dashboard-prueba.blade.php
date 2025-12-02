@@ -278,6 +278,7 @@
                     </div>
                 @endif
             @else
+            <a href="{{ route('estudiante.constancias.index') }}">
                 <div class="small-card neu-card">
                     <div class="card-icon-box icon-const"><i class="fas fa-certificate"></i></div>
                     <div class="card-content-box">
@@ -285,6 +286,7 @@
                         <p>Genera tus constancias</p>
                     </div>
                 </div>
+            </a>
             @endif
 
             @if($miInscripcion && $miInscripcion->proyecto)

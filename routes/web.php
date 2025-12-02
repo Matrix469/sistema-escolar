@@ -176,10 +176,7 @@ Route::middleware(['auth', 'role:estudiante'])->prefix('estudiante')->name('estu
 
     Route::get('constancias', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'index'])->name('constancias.index');
     //Ruta para ver constancias
-    Route::get('constancias/ver', function(){
-        $pdf = PDF::loadView('pdf.constancia-alumno');
-        return $pdf->stream();
-    });
+    Route::get('constancias/ver/{evento}', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'generarPdf'])->name('constancias.ver');
     //? Rutas para proyectos del evento
 Route::post('eventos/{evento}/configurar-tipo-proyecto', [App\Http\Controllers\Admin\ProyectoEventoController::class, 'configurarTipo'])->name('eventos.configurar-proyectos');
 Route::get('eventos/{evento}/proyecto/create', [App\Http\Controllers\Admin\ProyectoEventoController::class, 'create'])->name('proyectos-evento.create');
