@@ -265,7 +265,7 @@
                         <div class="event-body">
                             <p class="mb-4">{{ Str::limit($eventoActual->descripcion, 100) }}</p>
                             <p class="mb-4">{{ $eventoActual->fecha_inicio->format('d de F, Y') }}</p>
-                            <p>Participantes: {{ $eventoActual->inscripciones->count() }}</p>
+                            <p>Equipos Participantes: {{ $eventoActual->inscripciones_count }}</p>
                         </div>
                     @else
                         <div class="event-header">Sin Eventos</div>

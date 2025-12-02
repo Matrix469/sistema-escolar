@@ -156,7 +156,7 @@
                     <p class="event-desc">{{ Str::limit($miInscripcion->evento->descripcion ?? 'Sin descripción disponible', 100) }}</p>
                     <p class="event-date">{{ $miInscripcion->evento->fecha_inicio->format('d \d\e F, Y') }}</p>
                     <p class="event-participants">
-                        Participantes: {{ $miInscripcion->evento->inscripciones->count() }}
+                        Equipos que Participan: {{ $miInscripcion->evento->inscripciones->count() }}
                     </p>
                     <div class="mt-4">
                         <a href="{{ route('estudiante.eventos.show', $miInscripcion->evento) }}">
