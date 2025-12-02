@@ -46,15 +46,24 @@ class EventosController extends Controller
             'inscripciones' => function($query) {
                 $query->orderBy('fecha_inscripcion', 'desc');
             },
-            'inscripciones.equipo' => function($query) {
-                $query->orderBy('nombre', 'asc');
-            },
+            'inscripciones.equipo',
             'inscripciones.miembros' => function($query) {
-                $query->orderBy('es_lider', 'desc')->orderBy('id_rol_equipo', 'asc');
+                $query->orderBy('es_lider', 'desc');
             },
             'inscripciones.miembros.user',
-            'inscripciones.miembros.rol'
         ]);
+
+        // Procesar cada inscripción para obtener el líder y el número de miembros
+        foreach ($evento->inscripciones as $inscripcion) {
+            if ($inscripcion->equipo) {
+                // Obtener el líder del equipo
+                $lider = $inscripcion->miembros->where('es_lider', true)->first();
+                $inscripcion->equipo->lider_nombre = $lider ? $lider->user->nombre : 'Sin líder';
+                
+                // Obtener el número de miembros
+                $inscripcion->equipo->num_miembros = $inscripcion->miembros->count();
+            }
+        }
 
         // Contar equipos inscritos
         $totalEquipos = $evento->inscripciones->count();
