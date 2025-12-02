@@ -87,6 +87,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:jurado'])->prefix('jurado')->name('jurado.')->group(function () {
     Route::get('/dashboard', JuradoDashboardController::class)->name('dashboard');
     Route::get('/equipos/{equipo}', [App\Http\Controllers\Jurado\EquipoController::class, 'show'])->name('equipos.show');
+    Route::get('/equipos', [App\Http\Controllers\Jurado\EquipoController::class, 'index'])->name('equipos.index');
     
     // Evaluaciones
     Route::get('/evaluaciones/{inscripcion}/create', [App\Http\Controllers\Jurado\EvaluacionController::class, 'create'])->name('evaluaciones.create');
