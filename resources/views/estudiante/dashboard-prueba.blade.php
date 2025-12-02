@@ -252,11 +252,13 @@
             </a>
 
             <div class="small-card neu-card">
-                <div class="card-icon-box icon-const"><i class="fas fa-certificate"></i></div>
-                <div class="card-content-box">
-                    <h4>CONSTANCIAS</h4>
-                    <p>Genera tus constancias</p>
-                </div>
+                <a href="{{ route('estudiante.constancias.index') }}">  
+                    <div class="card-icon-box icon-const"><i class="fas fa-certificate"></i></div>
+                    <div class="card-content-box">
+                        <h4>CONSTANCIAS</h4>
+                        <p>Genera tus constancias</p>
+                    </div>
+                </a>
             </div>
 
             @if($miInscripcion && $miInscripcion->proyecto)

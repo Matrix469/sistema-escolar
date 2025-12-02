@@ -24,6 +24,7 @@ use App\Http\Controllers\Estudiante\ActividadController;
 use App\Http\Controllers\Estudiante\StatsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Jurado\AcusesController;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 Route::get('/', function () {
     return view('welcome');
@@ -170,6 +171,12 @@ Route::middleware(['auth', 'role:estudiante'])->prefix('estudiante')->name('estu
     Route::post('equipo/proyecto/avances', [App\Http\Controllers\Estudiante\AvanceController::class, 'store'])->name('avances.store');
     Route::get('equipo/proyecto/avances/{avance}', [App\Http\Controllers\Estudiante\AvanceController::class, 'show'])->name('avances.show');
 
+    Route::get('constancias', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'index'])->name('constancias.index');
+    //Ruta para ver constancias
+    Route::get('constancias/ver', function(){
+        $pdf = PDF::loadView('pdf.constancia-alumno');
+        return $pdf->stream();
+    });
     //? Rutas para proyectos del evento
 Route::post('eventos/{evento}/configurar-tipo-proyecto', [App\Http\Controllers\Admin\ProyectoEventoController::class, 'configurarTipo'])->name('eventos.configurar-proyectos');
 Route::get('eventos/{evento}/proyecto/create', [App\Http\Controllers\Admin\ProyectoEventoController::class, 'create'])->name('proyectos-evento.create');
