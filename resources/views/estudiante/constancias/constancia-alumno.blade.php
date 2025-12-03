@@ -53,8 +53,19 @@
         <h6>Instituto Tecnológico de Oaxaca</h6>
     </div>
     <div class="content">
-        <h1>Constancia</h1>
-        <p>El estudiante {{$user->nombre}} {{ $user->app_paterno}} {{ $user->app_materno}} con número de control {{ $estudiante->numero_control}} ha participado en el evento "{{ $evento->nombre}}" con fecha de inicio {{ ($evento->fecha_inicio)->format('d/m/Y')}} y concluido el {{ ($evento->fecha_fin)->format('d/m/Y')}}.</p>
+        @if($puesto == 1)
+            <h1>Constancia</h1>
+            <p>El estudiante {{$user->nombre}} {{ $user->app_paterno}} {{ $user->app_materno}} con número de control {{ $estudiante->numero_control}} ha participado en el evento "{{ $evento->nombre}}" y finalizado en <b>PRIMER LUGAR</b> con fecha de inicio {{ ($evento->fecha_inicio)->format('d/m/Y')}} y concluido el {{ ($evento->fecha_fin)->format('d/m/Y')}}.</p>
+        @elseif($puesto == 2)
+            <h1>Constancia</h1>
+            <p>El estudiante {{$user->nombre}} {{ $user->app_paterno}} {{ $user->app_materno}} con número de control {{ $estudiante->numero_control}} ha participado en el evento "{{ $evento->nombre}}" y finalizado en <b>SEGUNDO LUGAR</b> con fecha de inicio {{ ($evento->fecha_inicio)->format('d/m/Y')}} y concluido el {{ ($evento->fecha_fin)->format('d/m/Y')}}.</p>
+        @elseif($puesto == 3)
+            <h1>Constancia</h1>
+            <p>El estudiante {{$user->nombre}} {{ $user->app_paterno}} {{ $user->app_materno}} con número de control {{ $estudiante->numero_control}} ha participado en el evento "{{ $evento->nombre}}" y finalizado en <b>TERCER LUGAR</b> con fecha de inicio {{ ($evento->fecha_inicio)->format('d/m/Y')}} y concluido el {{ ($evento->fecha_fin)->format('d/m/Y')}}.</p>
+        @else
+            <h1>Constancia</h1>
+            <p>El estudiante {{$user->nombre}} {{ $user->app_paterno}} {{ $user->app_materno}} con número de control {{ $estudiante->numero_control}} ha participado en el evento "{{ $evento->nombre}}" con fecha de inicio {{ ($evento->fecha_inicio)->format('d/m/Y')}} y concluido el {{ ($evento->fecha_fin)->format('d/m/Y')}}.</p>
+        @endif
     </div>
     <div class="footer">
         <p>Servicios Escolares</p>

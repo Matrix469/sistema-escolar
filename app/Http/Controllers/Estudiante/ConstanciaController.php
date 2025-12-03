@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Estudiante;
 use App\Models\Evento;
+use App\Models\InscripcionEvento;
+use App\Models\MiembroEquipo;
 use Illuminate\Support\Facades\Auth;
 use PDF;
 class ConstanciaController extends Controller
@@ -35,6 +37,17 @@ class ConstanciaController extends Controller
         $user = Auth::user();
         $estudiante = Estudiante::where('id_usuario', $user->id_usuario)->first();
 
+        $miInscripcion = MiembroEquipo::where('id_estudiante', $user->id_usuario)
+            ->whereHas('inscripcion', function ($query) use ($evento) {
+                $query->where('id_evento', $evento->id_evento);
+            })
+            ->with('inscripcion:id_inscripcion,id_equipo')
+            ->first();
+
+        $puesto = InscripcionEvento::where('id_evento', $evento->id_evento)
+            ->where('id_equipo', $miInscripcion->inscripcion->id_equipo)
+            ->value('puesto_ganador');
+
         // Construye una consulta que busca el evento POR SU ID y que cumpla la condición de inscripción
         $esUsuarioInscrito = Evento::where('id_evento', $evento->id_evento)
             ->whereHas('inscripciones.miembros', function ($query) use ($user) {
@@ -48,7 +61,7 @@ class ConstanciaController extends Controller
             abort(403, 'No tienes permiso para generar la constancia de este evento o el evento no ha finalizado.');
         }
 
-        $pdf = PDF::loadView('estudiante.constancias.constancia-alumno', compact('estudiante', 'user', 'evento'));
+        $pdf = PDF::loadView('estudiante.constancias.constancia-alumno', compact('estudiante', 'user', 'evento', 'puesto'));
         return $pdf->stream();
     }
 }
