@@ -88,6 +88,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 Route::middleware(['auth', 'role:jurado'])->prefix('jurado')->name('jurado.')->group(function () {
     Route::get('/dashboard', JuradoDashboardController::class)->name('dashboard');
     Route::get('/equipos/{equipo}', [App\Http\Controllers\Jurado\EquipoController::class, 'show'])->name('equipos.show');
+    Route::get('/equipos', [App\Http\Controllers\Jurado\EquipoController::class, 'index'])->name('equipos.index');
     
     // Evaluaciones
     Route::get('/evaluaciones/{inscripcion}/create', [App\Http\Controllers\Jurado\EvaluacionController::class, 'create'])->name('evaluaciones.create');
@@ -181,6 +182,9 @@ Route::middleware(['auth', 'role:estudiante'])->prefix('estudiante')->name('estu
     Route::post('equipo/proyecto/avances', [App\Http\Controllers\Estudiante\AvanceController::class, 'store'])->name('avances.store');
     Route::get('equipo/proyecto/avances/{avance}', [App\Http\Controllers\Estudiante\AvanceController::class, 'show'])->name('avances.show');
 
+    Route::get('constancias', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'index'])->name('constancias.index');
+    //Ruta para ver constancias
+    Route::get('constancias/ver/{evento}', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'generarPdf'])->name('constancias.ver');
     //? Rutas para proyectos del evento
 Route::post('eventos/{evento}/configurar-tipo-proyecto', [App\Http\Controllers\Admin\ProyectoEventoController::class, 'configurarTipo'])->name('eventos.configurar-proyectos');
 Route::get('eventos/{evento}/proyecto/create', [App\Http\Controllers\Admin\ProyectoEventoController::class, 'create'])->name('proyectos-evento.create');
@@ -206,6 +210,10 @@ Route::middleware(['auth', 'role:jurado'])->prefix('jurado')->name('jurado.')->g
     Route::get('/proyectos', [App\Http\Controllers\Jurado\ProyectoController::class, 'index'])->name('proyectos.index');
     Route::get('/proyectos/{proyectoEvento}', [App\Http\Controllers\Jurado\ProyectoController::class, 'show'])->name('proyectos.show');
     Route::get('/eventos/{evento}/proyectos', [App\Http\Controllers\Jurado\ProyectoController::class, 'evento'])->name('proyectos.evento');
+
+    // Rutas para constancias
+    Route::get('/constancias', [App\Http\Controllers\Jurado\ConstanciaController::class, 'index'])->name('constancias.index');
+    Route::get('/constancias/{evento}', [App\Http\Controllers\Jurado\ConstanciaController::class, 'generarPdf'])->name('constancias.ver');
 });
 
 

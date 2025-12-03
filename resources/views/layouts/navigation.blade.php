@@ -268,6 +268,8 @@
                         EQUIPOS
                     @elseif(request()->routeIs('profile.*'))
                         PERFIL
+                    @elseif(request()->routeIs('estudiante.constancias.*'))
+                        CONSTANCIAS
                     @else
                         @yield('page-title', 'DASHBOARD')
                     @endif
