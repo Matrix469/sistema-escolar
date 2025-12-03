@@ -51,7 +51,34 @@ class ProyectoController extends Controller
         $esLider = $this->esLider($inscripcion);
         $proyecto = $inscripcion->proyecto;
 
-        return view('estudiante.proyecto.show', compact('inscripcion', 'proyecto', 'esLider'));
+        // Cargar evaluaciones finales de los jurados
+        $evaluacionesFinales = $inscripcion->evaluaciones()
+            ->with('jurado.user')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Contar evaluaciones finalizadas vs totales
+        $totalEvaluaciones = $evaluacionesFinales->count();
+        $evaluacionesFinalizadas = $evaluacionesFinales->where('estado', 'Finalizada')->count();
+        
+        // Calcular promedio general si hay evaluaciones finalizadas
+        $promedioGeneral = null;
+        if ($evaluacionesFinalizadas > 0) {
+            $promedioGeneral = round(
+                $evaluacionesFinales->where('estado', 'Finalizada')->avg('calificacion_final'), 
+                2
+            );
+        }
+
+        return view('estudiante.proyecto.show', compact(
+            'inscripcion', 
+            'proyecto', 
+            'esLider',
+            'evaluacionesFinales',
+            'totalEvaluaciones',
+            'evaluacionesFinalizadas',
+            'promedioGeneral'
+        ));
     }
 
     /**

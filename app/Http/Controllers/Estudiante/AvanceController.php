@@ -34,7 +34,10 @@ class AvanceController extends Controller
         }
 
         $proyecto = $inscripcion->proyecto;
-        $avances = $proyecto->avances()->with('usuarioRegistro')->orderBy('created_at', 'desc')->get();
+        $avances = $proyecto->avances()
+            ->with(['usuarioRegistro', 'evaluaciones.jurado.user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('estudiante.proyecto.avances.index', compact('inscripcion', 'proyecto', 'avances'));
     }

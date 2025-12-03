@@ -7,6 +7,7 @@ use App\Models\Equipo;
 use App\Models\Evento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Avance;
 
 class EventosController extends Controller
 {
@@ -76,10 +77,13 @@ class EventosController extends Controller
 
     public function equipo_evento(Evento $evento, Equipo $equipo)
     {
+        $user = Auth::user();
+        $jurado = $user->jurado;
+
         // Obtener la inscripción del equipo en este evento específico
         $inscripcion = $equipo->inscripciones()
             ->where('id_evento', $evento->id_evento)
-            ->with(['proyecto.avances.usuarioRegistro', 'proyecto.tareas'])
+            ->with(['proyecto.avances.usuarioRegistro', 'proyecto.avances.evaluaciones', 'proyecto.tareas'])
             ->first();
 
         // Cargar los miembros del equipo con sus relaciones
@@ -103,8 +107,40 @@ class EventosController extends Controller
         $tareasCompletadas = $proyecto ? $proyecto->tareas->where('completada', true)->count() : 0;
         $progreso = $totalTareas > 0 ? round(($tareasCompletadas / $totalTareas) * 100) : 0;
 
+        // Contar avances calificados por este jurado y crear lista de IDs calificados
+        $avancesCalificados = 0;
+        $avancesCalificadosIds = [];
+        if ($proyecto && $jurado) {
+            foreach ($proyecto->avances as $avance) {
+                $tieneEvaluacion = $avance->evaluaciones->where('id_jurado', $jurado->id_usuario)->count() > 0;
+                if ($tieneEvaluacion) {
+                    $avancesCalificados++;
+                    $avancesCalificadosIds[] = $avance->id_avance;
+                }
+            }
+        }
+
+        // Verificar si todos los avances están calificados
+        $todosCalificados = ($totalAvances > 0 && $avancesCalificados >= $totalAvances);
+
         // Obtener los avances para el selector
         $avances = $proyecto ? $proyecto->avances()->orderBy('created_at', 'desc')->get() : collect();
+
+        // Verificar si este jurado ya realizó la evaluación final
+        $evaluacionFinalExistente = null;
+        $evaluacionEnBorrador = false;
+        if ($inscripcion && $jurado) {
+            $evaluacionFinalExistente = \App\Models\Evaluacion::where('id_inscripcion', $inscripcion->id_inscripcion)
+                ->where('id_jurado', $jurado->id_usuario)
+                ->first();
+            
+            // Verificar si está en borrador o finalizada
+            if ($evaluacionFinalExistente && $evaluacionFinalExistente->estado === 'Borrador') {
+                $evaluacionEnBorrador = true;
+            }
+        }
+        // Solo considerar como "ya evaluado" si la evaluación está FINALIZADA
+        $yaEvaluoProyecto = $evaluacionFinalExistente !== null && $evaluacionFinalExistente->estado === 'Finalizada';
 
         return view('jurado.eventos.equipo', compact(
             'evento', 
@@ -115,7 +151,64 @@ class EventosController extends Controller
             'totalAvances',
             'totalTareas',
             'progreso',
-            'avances'
+            'avances',
+            'avancesCalificados',
+            'avancesCalificadosIds',
+            'todosCalificados',
+            'yaEvaluoProyecto',
+            'evaluacionEnBorrador',
+            'evaluacionFinalExistente'
         ));
     }
+
+public function calificar_avance(Evento $evento, Equipo $equipo, Avance $avance)
+    {
+        $user = Auth::user();
+        $jurado = $user->jurado;
+
+        // Cargar las relaciones del avance
+        $avance->load('usuarioRegistro', 'proyecto');
+
+        // Verificar si ya existe una evaluación de este jurado para este avance
+        $evaluacionExistente = \App\Models\EvaluacionAvance::where('id_avance', $avance->id_avance)
+            ->where('id_jurado', $jurado->id_usuario)
+            ->first();
+        
+        return view('jurado.eventos.avance', compact('evento', 'equipo', 'avance', 'evaluacionExistente'));
+    }
+
+    /**
+     * Guardar la calificación del avance
+     */
+    public function guardar_calificacion(Request $request, Evento $evento, Equipo $equipo, Avance $avance)
+    {
+        $request->validate([
+            'calificacion' => 'required|integer|min:0|max:100',
+            'comentarios' => 'nullable|string|max:1000',
+        ]);
+
+        $user = Auth::user();
+        $jurado = $user->jurado;
+
+        // Usar updateOrCreate para evitar duplicados
+        $evaluacion = \App\Models\EvaluacionAvance::updateOrCreate(
+            [
+                'id_avance' => $avance->id_avance,
+                'id_jurado' => $jurado->id_usuario,
+            ],
+            [
+                'calificacion' => $request->calificacion,
+                'comentarios' => $request->comentarios,
+                'fecha_evaluacion' => now(),
+            ]
+        );
+
+        $mensaje = $evaluacion->wasRecentlyCreated 
+            ? 'Avance calificado exitosamente.' 
+            : 'Calificación actualizada exitosamente.';
+
+        return redirect()->route('jurado.eventos.equipo_evento', [$evento, $equipo])
+            ->with('success', $mensaje);
+    }
+
 }

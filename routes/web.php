@@ -99,6 +99,8 @@ Route::middleware(['auth', 'role:jurado'])->prefix('jurado')->name('jurado.')->g
     Route::get('/eventos', [EventosController::class, 'index'])->name('eventos.index');
     Route::get('/eventos/{evento}', [EventosController::class, 'show'])->name('eventos.show');
     Route::get('/eventos/{evento}/equipos/{equipo}', [EventosController::class, 'equipo_evento'])->name('eventos.equipo_evento');
+    Route::get('/eventos/{evento}/equipos/{equipo}/avance/{avance}', [EventosController::class, 'calificar_avance'])->name('eventos.calificar_avance');
+    Route::post('/eventos/{evento}/equipos/{equipo}/avance/{avance}/guardar', [EventosController::class, 'guardar_calificacion'])->name('eventos.guardar_calificacion');
 
     // Acuses
     Route::get('/acuses', [AcusesController::class, 'index'])->name('acuses.index');

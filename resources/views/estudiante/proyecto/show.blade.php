@@ -146,6 +146,120 @@
         box-shadow: 6px 6px 12px rgba(245, 158, 11, 0.4);
         transform: translateY(-2px);
     }
+
+    /* Badge de evaluación */
+    .eval-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .eval-badge.finalizada {
+        background: rgba(16, 185, 129, 0.15);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .eval-badge.finalizada:hover {
+        background: rgba(16, 185, 129, 0.25);
+    }
+    
+    .eval-badge.en-proceso {
+        background: rgba(245, 158, 11, 0.15);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    
+    .eval-badge.en-proceso:hover {
+        background: rgba(245, 158, 11, 0.25);
+    }
+    
+    .eval-badge.sin-evaluar {
+        background: rgba(107, 114, 128, 0.15);
+        color: #6b7280;
+        border: 1px solid rgba(107, 114, 128, 0.3);
+    }
+
+    /* Modal de evaluaciones */
+    .eval-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .eval-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .eval-modal {
+        background: #FFFDF4;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        max-width: 32rem;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+    }
+    
+    .eval-modal-overlay.active .eval-modal {
+        transform: scale(1);
+    }
+    
+    .eval-detail-card {
+        background: rgba(255, 238, 226, 0.8);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid rgba(232, 154, 60, 0.2);
+    }
+    
+    .eval-detail-card:last-child {
+        margin-bottom: 0;
+    }
+    
+    .eval-score-big {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #e89a3c;
+    }
+    
+    .eval-criteria {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        margin-top: 0.75rem;
+        padding-top: 0.75rem;
+        border-top: 1px dashed rgba(107, 107, 107, 0.2);
+    }
+    
+    .eval-criteria-item {
+        font-size: 0.75rem;
+    }
+    
+    .eval-criteria-item span {
+        color: #6b6b6b;
+    }
+    
+    .eval-criteria-item strong {
+        color: #2c2c2c;
+    }
 </style>
 
 <div class="proyecto-page py-12">
@@ -168,7 +282,42 @@
         @if($proyecto)
             {{-- Información del Proyecto --}}
             <div class="neuro-card rounded-lg p-6 mb-6">
-                <h3 class="text-xl font-bold mb-4">{{ $proyecto->nombre }}</h3>
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold">{{ $proyecto->nombre }}</h3>
+                    
+                    {{-- Badge de Estado de Evaluación --}}
+                    @if($totalEvaluaciones > 0)
+                        @if($evaluacionesFinalizadas > 0 && $evaluacionesFinalizadas == $totalEvaluaciones)
+                            <button type="button" class="eval-badge finalizada" onclick="mostrarEvaluaciones()">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                Evaluado ({{ $promedioGeneral }}/100)
+                            </button>
+                        @elseif($evaluacionesFinalizadas > 0)
+                            <button type="button" class="eval-badge en-proceso" onclick="mostrarEvaluaciones()">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                En Evaluación ({{ $evaluacionesFinalizadas }}/{{ $totalEvaluaciones }})
+                            </button>
+                        @else
+                            <button type="button" class="eval-badge en-proceso" onclick="mostrarEvaluaciones()">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                Evaluación en Borrador
+                            </button>
+                        @endif
+                    @else
+                        <span class="eval-badge sin-evaluar">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            Sin Evaluar
+                        </span>
+                    @endif
+                </div>
                 
                 @if($proyecto->descripcion_tecnica)
                     <div class="mb-4">
@@ -257,4 +406,113 @@
         @endif
     </div>
 </div>
+
+{{-- Modal de Evaluaciones Finales --}}
+@if(isset($proyecto) && $proyecto && $totalEvaluaciones > 0)
+<div id="eval-modal-overlay" class="eval-modal-overlay" onclick="cerrarModal(event)">
+    <div class="eval-modal" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-semibold text-lg" style="color: #2c2c2c;">Evaluaciones del Proyecto</h3>
+            <button onclick="cerrarModalDirecto()" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+
+        {{-- Promedio General --}}
+        @if($promedioGeneral)
+        <div class="text-center p-4 rounded-xl mb-4" style="background: linear-gradient(135deg, #e89a3c, #f5a847);">
+            <div style="font-size: 0.875rem; color: rgba(255,255,255,0.9);">Calificación Final Promedio</div>
+            <div style="font-size: 2.5rem; font-weight: 700; color: white;">{{ $promedioGeneral }}/100</div>
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.8);">{{ $evaluacionesFinalizadas }} de {{ $totalEvaluaciones }} jurados</div>
+        </div>
+        @endif
+
+        {{-- Lista de Evaluaciones --}}
+        <div class="space-y-3">
+            @foreach($evaluacionesFinales as $eval)
+            <div class="eval-detail-card">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-semibold" style="color: #2c2c2c;">
+                            {{ $eval->jurado->user->nombre ?? 'Jurado' }} {{ $eval->jurado->user->app_paterno ?? '' }}
+                        </div>
+                        <div class="text-xs" style="color: #9ca3af;">
+                            {{ $eval->estado }}
+                            @if($eval->updated_at)
+                                · {{ $eval->updated_at->format('d/m/Y H:i') }}
+                            @endif
+                        </div>
+                    </div>
+                    @if($eval->estado == 'Finalizada' && $eval->calificacion_final)
+                        <div class="eval-score-big">{{ number_format($eval->calificacion_final, 1) }}</div>
+                    @else
+                        <span class="text-sm px-2 py-1 rounded-full" style="background: rgba(245, 158, 11, 0.2); color: #d97706;">
+                            Pendiente
+                        </span>
+                    @endif
+                </div>
+
+                @if($eval->estado == 'Finalizada')
+                <div class="eval-criteria">
+                    <div class="eval-criteria-item">
+                        <span>Innovación:</span> <strong>{{ $eval->calificacion_innovacion ?? '-' }}</strong>
+                    </div>
+                    <div class="eval-criteria-item">
+                        <span>Funcionalidad:</span> <strong>{{ $eval->calificacion_funcionalidad ?? '-' }}</strong>
+                    </div>
+                    <div class="eval-criteria-item">
+                        <span>Presentación:</span> <strong>{{ $eval->calificacion_presentacion ?? '-' }}</strong>
+                    </div>
+                    <div class="eval-criteria-item">
+                        <span>Impacto:</span> <strong>{{ $eval->calificacion_impacto ?? '-' }}</strong>
+                    </div>
+                </div>
+
+                @if($eval->comentarios_fortalezas || $eval->comentarios_areas_mejora)
+                <div class="mt-3 pt-3" style="border-top: 1px dashed rgba(107, 107, 107, 0.2);">
+                    @if($eval->comentarios_fortalezas)
+                    <div class="text-xs mb-2">
+                        <span style="color: #059669; font-weight: 600;">Fortalezas:</span>
+                        <span style="color: #2c2c2c;">{{ Str::limit($eval->comentarios_fortalezas, 100) }}</span>
+                    </div>
+                    @endif
+                    @if($eval->comentarios_areas_mejora)
+                    <div class="text-xs">
+                        <span style="color: #d97706; font-weight: 600;">Áreas de mejora:</span>
+                        <span style="color: #2c2c2c;">{{ Str::limit($eval->comentarios_areas_mejora, 100) }}</span>
+                    </div>
+                    @endif
+                </div>
+                @endif
+                @endif
+            </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+<script>
+    function mostrarEvaluaciones() {
+        document.getElementById('eval-modal-overlay').classList.add('active');
+    }
+
+    function cerrarModal(event) {
+        if (event.target.id === 'eval-modal-overlay') {
+            document.getElementById('eval-modal-overlay').classList.remove('active');
+        }
+    }
+
+    function cerrarModalDirecto() {
+        document.getElementById('eval-modal-overlay').classList.remove('active');
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            cerrarModalDirecto();
+        }
+    });
+</script>
+@endif
 @endsection

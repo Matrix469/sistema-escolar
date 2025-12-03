@@ -180,6 +180,117 @@
     .info-alert .title {
         font-weight: 600;
     }
+
+    /* Badge de estado de calificación */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .status-badge.calificado {
+        background: rgba(16, 185, 129, 0.15);
+        color: #059669;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    
+    .status-badge.calificado:hover {
+        background: rgba(16, 185, 129, 0.25);
+    }
+    
+    .status-badge.pendiente {
+        background: rgba(245, 158, 11, 0.15);
+        color: #d97706;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Modal de evaluaciones */
+    .eval-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 50;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .eval-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .eval-modal {
+        background: #FFFDF4;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        max-width: 28rem;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+    }
+    
+    .eval-modal-overlay.active .eval-modal {
+        transform: scale(1);
+    }
+    
+    .eval-card {
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 0.75rem;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        border: 1px solid rgba(232, 154, 60, 0.2);
+    }
+    
+    .eval-card:last-child {
+        margin-bottom: 0;
+    }
+    
+    .eval-score {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #e89a3c;
+    }
+    
+    .eval-jurado {
+        font-size: 0.875rem;
+        color: #6b6b6b;
+    }
+    
+    .eval-fecha {
+        font-size: 0.75rem;
+        color: #9ca3af;
+    }
+    
+    .eval-comentarios {
+        font-size: 0.875rem;
+        color: #2c2c2c;
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px dashed rgba(107, 107, 107, 0.2);
+    }
+    
+    .promedio-badge {
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
 </style>
 
 <div class="avances-page py-12">
@@ -218,7 +329,7 @@
                     <div class="avance-item">
                         {{-- Header --}}
                         <div class="flex justify-between items-start mb-3">
-                            <div>
+                            <div class="flex-1">
                                 @if($avance->titulo)
                                     <h4>{{ $avance->titulo }}</h4>
                                 @endif
@@ -227,6 +338,26 @@
                                     · {{ $avance->created_at->format('d/m/Y H:i') }}
                                    <span style="color: #9ca3af; font-size: 0.75rem;">({{ $avance->created_at->diffForHumans() }})</span>
                                 </p>
+                            </div>
+                            {{-- Badge de estado de calificación --}}
+                            <div class="ml-3">
+                                @if($avance->evaluaciones->count() > 0)
+                                    <button type="button" 
+                                            class="status-badge calificado"
+                                            onclick="mostrarEvaluaciones({{ $avance->id_avance }})">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Calificado ({{ $avance->evaluaciones->count() }})
+                                    </button>
+                                @else
+                                    <span class="status-badge pendiente">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        En espera
+                                    </span>
+                                @endif
                             </div>
                         </div>
 
@@ -280,4 +411,97 @@
         @endif
     </div>
 </div>
+
+{{-- Modal de Evaluaciones --}}
+<div id="eval-modal-overlay" class="eval-modal-overlay" onclick="cerrarModal(event)">
+    <div class="eval-modal" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="font-semibold text-lg" style="color: #2c2c2c;">Evaluaciones del Avance</h3>
+            <button onclick="cerrarModalDirecto()" class="text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        
+        {{-- Contenido dinámico --}}
+        <div id="modal-content">
+            <!-- Se llenará con JavaScript -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Datos de evaluaciones por avance
+    const evaluacionesPorAvance = {
+        @foreach($avances as $avance)
+            @if($avance->evaluaciones->count() > 0)
+            {{ $avance->id_avance }}: {
+                titulo: "{{ $avance->titulo ?? 'Avance #' . $loop->iteration }}",
+                promedio: {{ round($avance->evaluaciones->avg('calificacion'), 1) }},
+                evaluaciones: [
+                    @foreach($avance->evaluaciones as $eval)
+                    {
+                        jurado: "{{ $eval->jurado->user->nombre ?? 'Jurado' }} {{ $eval->jurado->user->app_paterno ?? '' }}",
+                        calificacion: {{ $eval->calificacion }},
+                        fecha: "{{ $eval->fecha_evaluacion->format('d/m/Y H:i') }}",
+                        comentarios: `{{ $eval->comentarios ?? '' }}`
+                    },
+                    @endforeach
+                ]
+            },
+            @endif
+        @endforeach
+    };
+
+    function mostrarEvaluaciones(avanceId) {
+        const data = evaluacionesPorAvance[avanceId];
+        if (!data) return;
+
+        let html = `
+            <div class="promedio-badge">
+                <div style="font-size: 0.75rem; opacity: 0.9;">Promedio General</div>
+                <div style="font-size: 1.25rem;">${data.promedio}/100</div>
+            </div>
+            <p style="font-size: 0.75rem; color: #6b6b6b; margin-bottom: 0.75rem;">
+                ${data.evaluaciones.length} evaluación(es) de jurados
+            </p>
+        `;
+
+        data.evaluaciones.forEach(eval => {
+            html += `
+                <div class="eval-card">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="eval-jurado">${eval.jurado}</div>
+                            <div class="eval-fecha">${eval.fecha}</div>
+                        </div>
+                        <div class="eval-score">${eval.calificacion}</div>
+                    </div>
+                    ${eval.comentarios ? `<div class="eval-comentarios">"${eval.comentarios}"</div>` : ''}
+                </div>
+            `;
+        });
+
+        document.getElementById('modal-content').innerHTML = html;
+        document.getElementById('eval-modal-overlay').classList.add('active');
+    }
+
+    function cerrarModal(event) {
+        if (event.target.id === 'eval-modal-overlay') {
+            document.getElementById('eval-modal-overlay').classList.remove('active');
+        }
+    }
+
+    function cerrarModalDirecto() {
+        document.getElementById('eval-modal-overlay').classList.remove('active');
+    }
+
+    // Cerrar con tecla Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            cerrarModalDirecto();
+        }
+    });
+</script>
 @endsection
