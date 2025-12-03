@@ -25,6 +25,7 @@ use App\Http\Controllers\Estudiante\StatsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Jurado\AcusesController;
 use App\Http\Controllers\Jurado\EventosController;
+use App\Http\Controllers\PasswordController;
 
 Route::get('/', function () {
     return view('welcome');
