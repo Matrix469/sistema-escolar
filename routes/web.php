@@ -208,6 +208,10 @@ Route::middleware(['auth', 'role:jurado'])->prefix('jurado')->name('jurado.')->g
     Route::get('/proyectos', [App\Http\Controllers\Jurado\ProyectoController::class, 'index'])->name('proyectos.index');
     Route::get('/proyectos/{proyectoEvento}', [App\Http\Controllers\Jurado\ProyectoController::class, 'show'])->name('proyectos.show');
     Route::get('/eventos/{evento}/proyectos', [App\Http\Controllers\Jurado\ProyectoController::class, 'evento'])->name('proyectos.evento');
+
+    // Rutas para constancias
+    Route::get('/constancias', [App\Http\Controllers\Jurado\ConstanciaController::class, 'index'])->name('constancias.index');
+    Route::get('/constancias/{evento}', [App\Http\Controllers\Jurado\ConstanciaController::class, 'generarPdf'])->name('constancias.ver');
 });
 
 

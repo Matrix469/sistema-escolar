@@ -335,6 +335,7 @@
                 </div>
 
                 <!-- Card 2 -->
+                <a href="{{ route('jurado.constancias.index') }}">
                 <div class="info-card">
                     <div class="card-img purple-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10">
@@ -346,6 +347,7 @@
                         <p>{{ $acusesCount }} acuses generados</p>
                     </div>
                 </div>
+                </a>
 
                 <!-- Card 3 -->
                 <a href="{{ route('jurado.proyectos.index') }}" class="info-card" style="text-decoration: none;">
