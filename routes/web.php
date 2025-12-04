@@ -23,6 +23,7 @@ use App\Http\Controllers\Estudiante\RecursoController;
 use App\Http\Controllers\Estudiante\TecnologiaController;
 use App\Http\Controllers\Estudiante\ActividadController;
 use App\Http\Controllers\Estudiante\StatsController;
+use App\Http\Controllers\Estudiante\MisProyectosController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Jurado\AcusesController;
 use App\Http\Controllers\Jurado\EventosController;
@@ -161,6 +162,9 @@ Route::middleware(['auth', 'role:estudiante'])->prefix('estudiante')->name('estu
     Route::get('eventos/{evento}/actividades', [ActividadController::class, 'feedEvento'])->name('actividades.evento');
     Route::get('equipos/{equipo}/actividades', [ActividadController::class, 'feedEquipo'])->name('actividades.equipo');
     
+    //! Rutas para Mis Proyectos (índice general)
+    Route::get('mis-proyectos', [MisProyectosController::class, 'index'])->name('proyectos.index');
+
     //! Rutas para Proyecto del Equipo
     Route::get('equipo/proyecto', [App\Http\Controllers\Estudiante\ProyectoController::class, 'show'])->name('proyecto.show');
     Route::get('equipo/proyecto/create', [App\Http\Controllers\Estudiante\ProyectoController::class, 'create'])->name('proyecto.create');
