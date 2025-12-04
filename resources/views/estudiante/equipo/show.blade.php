@@ -5,7 +5,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
     .equipo-detail-page {
-        background: linear-gradient(135deg, #FFFDF4 0%, #FFF8F0 50%, #FFEEE2 100%);
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
         min-height: 100vh;
         font-family: 'Poppins', sans-serif;
     }
@@ -14,7 +14,7 @@
         font-family: 'Poppins', sans-serif;
     }
 
-    /* Back Link */
+    /* Back Link Neuromórfico */
     .back-link {
         display: inline-flex;
         align-items: center;
@@ -25,11 +25,16 @@
         text-decoration: none;
         margin-bottom: 1.5rem;
         transition: all 0.2s ease;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 253, 244, 0.9);
+        border-radius: 10px;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
     }
 
     .back-link:hover {
         color: #d98a2c;
         transform: translateX(-3px);
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
     }
 
     .back-link svg {
@@ -37,7 +42,7 @@
         height: 18px;
     }
 
-    /* Hero Section */
+    /* Hero Section - MANTENER INTACTO */
     .hero-card {
         background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #3d3d3d 100%);
         border-radius: 24px;
@@ -75,7 +80,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
         color: white;
         padding: 0.4rem 1rem;
         border-radius: 20px;
@@ -156,7 +161,7 @@
         transform: translateY(-2px);
     }
 
-    /* Stats Grid */
+    /* Stats Grid Neuromórficas */
     .stats-grid {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -171,18 +176,18 @@
     }
 
     .stat-card {
-        background: #ffffff;
+        background: #FFEEE2;
         border-radius: 16px;
         padding: 1.5rem;
         text-align: center;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        border: none;
         transition: all 0.3s ease;
     }
 
     .stat-card:hover {
         transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        box-shadow: 12px 12px 24px #e6d5c9, -12px -12px 24px #ffffff;
     }
 
     .stat-icon {
@@ -193,6 +198,7 @@
         align-items: center;
         justify-content: center;
         margin: 0 auto 1rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
     }
 
     .stat-icon svg {
@@ -201,24 +207,24 @@
     }
 
     .stat-icon-orange {
-        background: linear-gradient(135deg, rgba(232, 154, 60, 0.15), rgba(232, 154, 60, 0.08));
+        background: linear-gradient(135deg, rgba(232, 154, 60, 0.2), rgba(232, 154, 60, 0.1));
         color: #e89a3c;
     }
 
     .stat-icon-dark {
-        background: linear-gradient(135deg, rgba(26, 26, 26, 0.1), rgba(26, 26, 26, 0.05));
-        color: #1a1a1a;
+        background: linear-gradient(135deg, rgba(44, 44, 44, 0.15), rgba(44, 44, 44, 0.08));
+        color: #2c2c2c;
     }
 
     .stat-icon-gray {
-        background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.05));
+        background: linear-gradient(135deg, rgba(107, 114, 128, 0.15), rgba(107, 114, 128, 0.08));
         color: #6b7280;
     }
 
     .stat-value {
         font-size: 1.75rem;
         font-weight: 800;
-        color: #1a1a1a;
+        color: #2c2c2c;
         margin-bottom: 0.25rem;
     }
 
@@ -242,12 +248,12 @@
         }
     }
 
-    /* Content Cards */
+    /* Content Cards Neuromórficas */
     .content-card {
-        background: #ffffff;
+        background: #FFEEE2;
         border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-        border: 1px solid rgba(0, 0, 0, 0.04);
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        border: none;
         overflow: hidden;
         margin-bottom: 1.5rem;
     }
@@ -257,13 +263,13 @@
         align-items: center;
         justify-content: space-between;
         padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 1px solid rgba(232, 154, 60, 0.1);
     }
 
     .card-title {
         font-size: 1rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: #2c2c2c;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -277,16 +283,18 @@
     }
 
     .card-badge {
-        background: #f3f4f6;
+        background: rgba(255, 255, 255, 0.5);
         color: #6b7280;
         padding: 0.35rem 0.85rem;
         border-radius: 20px;
         font-size: 0.75rem;
         font-weight: 600;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
     }
 
     .card-body {
         padding: 1.5rem;
+        background: #FFEEE2;
     }
 
     /* Members List */
@@ -301,13 +309,14 @@
         align-items: center;
         justify-content: space-between;
         padding: 1rem 1.25rem;
-        background: #f9fafb;
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 14px;
         transition: all 0.3s ease;
+        box-shadow: inset 3px 3px 6px #e6d5c9, inset -3px -3px 6px #ffffff;
     }
 
     .member-item:hover {
-        background: #f3f4f6;
+        background: rgba(255, 255, 255, 0.6);
     }
 
     .member-info {
@@ -320,26 +329,26 @@
         width: 48px;
         height: 48px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         font-weight: 700;
         font-size: 1rem;
-        border: 3px solid #ffffff;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border: 3px solid #FFEEE2;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
     }
 
     .member-avatar-leader {
-        background: linear-gradient(135deg, #1a1a1a, #3d3d3d);
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
         border-color: #e89a3c;
     }
 
     .member-details h4 {
         font-size: 0.95rem;
         font-weight: 600;
-        color: #1a1a1a;
+        color: #2c2c2c;
         margin: 0 0 0.25rem 0;
         display: flex;
         align-items: center;
@@ -353,30 +362,33 @@
     }
 
     .badge-leader {
-        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        background: linear-gradient(135deg, rgba(254, 243, 199, 0.9), rgba(253, 230, 138, 0.9));
         color: #92400e;
         padding: 0.15rem 0.5rem;
         border-radius: 20px;
         font-size: 0.65rem;
         font-weight: 700;
         text-transform: uppercase;
+        box-shadow: inset 2px 2px 4px rgba(245, 158, 11, 0.2);
     }
 
     .badge-role {
         display: inline-flex;
         align-items: center;
         gap: 0.25rem;
-        background: linear-gradient(135deg, rgba(232, 154, 60, 0.1), rgba(232, 154, 60, 0.05));
+        background: rgba(255, 255, 255, 0.5);
         color: #b37a2e;
         padding: 0.25rem 0.6rem;
         border-radius: 6px;
         font-size: 0.7rem;
         font-weight: 500;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
     }
 
     .badge-role svg {
         width: 12px;
         height: 12px;
+        color: #e89a3c;
     }
 
     .member-controls {
@@ -386,13 +398,14 @@
     }
 
     .member-controls select {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
         padding: 0.4rem 0.6rem;
         border-radius: 8px;
         font-size: 0.75rem;
         color: #374151;
         cursor: pointer;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
     }
 
     .btn-sm {
@@ -414,32 +427,38 @@
     }
 
     .btn-primary {
-        background: #1a1a1a;
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
         color: #ffffff;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .btn-primary:hover {
-        background: #e89a3c;
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
+        box-shadow: 6px 6px 12px rgba(232, 154, 60, 0.3);
     }
 
     .btn-danger {
-        background: #fee2e2;
+        background: linear-gradient(135deg, rgba(254, 226, 226, 0.9), rgba(252, 211, 211, 0.9));
         color: #dc2626;
+        box-shadow: 4px 4px 8px rgba(239, 68, 68, 0.2);
     }
 
     .btn-danger:hover {
-        background: #dc2626;
+        background: linear-gradient(135deg, #dc2626, #b91c1c);
         color: #ffffff;
+        box-shadow: 6px 6px 12px rgba(220, 38, 38, 0.3);
     }
 
     .btn-success {
-        background: #d1fae5;
+        background: linear-gradient(135deg, rgba(209, 250, 229, 0.9), rgba(167, 243, 208, 0.9));
         color: #059669;
+        box-shadow: 4px 4px 8px rgba(16, 185, 129, 0.2);
     }
 
     .btn-success:hover {
-        background: #059669;
+        background: linear-gradient(135deg, #059669, #047857);
         color: #ffffff;
+        box-shadow: 6px 6px 12px rgba(5, 150, 105, 0.3);
     }
 
     /* Requests Section */
@@ -448,16 +467,17 @@
         align-items: center;
         justify-content: space-between;
         padding: 1rem 1.25rem;
-        background: #f9fafb;
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 14px;
         border-left: 4px solid #e89a3c;
         margin-bottom: 0.75rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
     }
 
     .request-info h4 {
         font-size: 0.9rem;
         font-weight: 600;
-        color: #1a1a1a;
+        color: #2c2c2c;
         margin: 0 0 0.25rem 0;
     }
 
@@ -474,11 +494,12 @@
     }
 
     .request-actions select {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
         padding: 0.4rem 0.6rem;
         border-radius: 8px;
         font-size: 0.75rem;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
     }
 
     /* Event Link Card */
@@ -487,14 +508,15 @@
         align-items: center;
         gap: 1rem;
         padding: 1.25rem;
-        background: #f9fafb;
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 14px;
         text-decoration: none;
         transition: all 0.3s ease;
+        box-shadow: inset 3px 3px 6px #e6d5c9, inset -3px -3px 6px #ffffff;
     }
 
     .event-link-card:hover {
-        background: #f3f4f6;
+        background: rgba(255, 255, 255, 0.6);
         transform: translateX(4px);
     }
 
@@ -502,11 +524,12 @@
         width: 52px;
         height: 52px;
         border-radius: 14px;
-        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
         display: flex;
         align-items: center;
         justify-content: center;
         color: #ffffff;
+        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
     }
 
     .event-link-icon svg {
@@ -517,7 +540,7 @@
     .event-link-info h4 {
         font-size: 0.95rem;
         font-weight: 600;
-        color: #1a1a1a;
+        color: #2c2c2c;
         margin: 0 0 0.25rem 0;
     }
 
@@ -539,8 +562,9 @@
         justify-content: space-between;
         align-items: center;
         padding: 0.85rem 1rem;
-        background: #f9fafb;
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 10px;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
     }
 
     .status-label {
@@ -551,7 +575,7 @@
     .status-value {
         font-size: 0.85rem;
         font-weight: 600;
-        color: #1a1a1a;
+        color: #2c2c2c;
     }
 
     .status-value-success {
@@ -563,21 +587,25 @@
     }
 
     .status-value-code {
-        font-family: monospace;
-        background: #1a1a1a;
-        color: #e89a3c;
+        font-family: 'Courier New', monospace;
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+        color: #f2b987ff;
         padding: 0.25rem 0.6rem;
         border-radius: 6px;
         font-size: 0.8rem;
+        font-weight: bold;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .status-winner {
-        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        background: linear-gradient(135deg, rgba(254, 243, 199, 0.9), rgba(253, 230, 138, 0.9));
         border: 2px solid #f59e0b;
+        box-shadow: 4px 4px 8px rgba(245, 158, 11, 0.3);
     }
 
     .status-winner .status-label {
         color: #92400e;
+        font-weight: 600;
     }
 
     .status-winner .status-value {
@@ -602,10 +630,12 @@
         text-decoration: none;
         transition: all 0.3s ease;
         text-align: center;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
     }
 
     .quick-link:hover {
         transform: translateY(-4px);
+        box-shadow: 12px 12px 24px #e6d5c9, -12px -12px 24px #ffffff;
     }
 
     .quick-link svg {
@@ -626,12 +656,12 @@
     }
 
     .quick-link-blue {
-        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        background: linear-gradient(135deg, rgba(191, 219, 254, 0.8), rgba(147, 197, 253, 0.8));
         color: #1e40af;
     }
 
     .quick-link-green {
-        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        background: linear-gradient(135deg, rgba(209, 250, 229, 0.8), rgba(167, 243, 208, 0.8));
         color: #065f46;
     }
 
@@ -646,6 +676,7 @@
         height: 48px;
         color: #d1d5db;
         margin-bottom: 0.75rem;
+        opacity: 0.5;
     }
 
     .empty-state p {
@@ -656,9 +687,10 @@
 
     /* Description Box */
     .description-box {
-        background: #f9fafb;
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 12px;
         padding: 1.25rem;
+        box-shadow: inset 3px 3px 6px #e6d5c9, inset -3px -3px 6px #ffffff;
     }
 
     .description-box p {
@@ -697,7 +729,7 @@
             Volver a Mis Equipos
         </a>
 
-        <!-- Hero Card -->
+        <!-- Hero Card - INTACTO -->
         <div class="hero-card">
             <div class="hero-content">
                 <div class="hero-info">
