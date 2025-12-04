@@ -22,11 +22,21 @@ class SolicitudController extends Controller
 
         // 1. Asegurarse de que el usuario es un estudiante
         if (!$user->esEstudiante() || !$user->estudiante) {
-            return back()->with('error', 'Acción no permitida.');
+            return back()->with('error', 'Acción no permitida. Debes ser estudiante.');
         }
         
         $estudiante = $user->estudiante;
-        $evento = $equipo->inscripciones->first()->evento; // Obtener el evento a través del equipo
+        
+        // Verificar que el equipo tiene inscripción con evento
+        $inscripcion = $equipo->inscripciones->first();
+        if (!$inscripcion) {
+            return back()->with('error', 'Este equipo no tiene inscripciones activas.');
+        }
+        
+        $evento = $inscripcion->evento;
+        if (!$evento) {
+            return back()->with('error', 'El equipo no está asociado a ningún evento.');
+        }
 
         // Validar conflicto de fechas
         $conflicto = \App\Helpers\EventoHelper::verificarConflictoFechas($user->id_usuario, $evento->id_evento);
@@ -35,38 +45,40 @@ class SolicitudController extends Controller
             return back()->with('error', $conflicto['mensaje']);
         }
 
-        // 2. Validar que el estudiante no esté ya en un equipo para CUALQUIER evento activo.
-        $inscripcionActiva = InscripcionEvento::whereHas('miembros', function ($query) use ($user) {
+        // 2. Validar que el estudiante no esté ya en un equipo para ESTE evento específico
+        $yaEnEquipoDeEsteEvento = InscripcionEvento::whereHas('miembros', function ($query) use ($user) {
             $query->where('id_estudiante', $user->id_usuario);
-        })->whereHas('evento', function ($query) {
-            $query->where('estado', 'Activo');
-        })->exists();
+        })->where('id_evento', $evento->id_evento)->exists();
 
-        if ($inscripcionActiva) {
-            return back()->with('error', 'Ya estás participando en un evento activo. No puedes unirte a un nuevo equipo hasta que termine.');
+        if ($yaEnEquipoDeEsteEvento) {
+            return back()->with('error', 'Ya eres miembro de un equipo en este evento.');
         }
 
-        // 3. Validar que el estudiante no tenga ya una solicitud para este equipo (se mantiene la lógica)
+        // 3. Validar que el estudiante no tenga ya una solicitud PENDIENTE para este equipo
         $solicitudExistente = SolicitudUnion::where('estudiante_id', $estudiante->id_usuario)
             ->where('equipo_id', $equipo->id_equipo)
             ->first();
             
-        if ($solicitudExistente && $solicitudExistente->status != 'rechazada') {
-            return back()->with('error', 'Ya has enviado una solicitud a este equipo.');
+        if ($solicitudExistente && $solicitudExistente->status === 'pendiente') {
+            return back()->with('error', 'Ya tienes una solicitud pendiente para este equipo.');
         }
 
-        // Usar updateOrCreate para permitir volver a solicitar si fue rechazado
-        SolicitudUnion::updateOrCreate(
-            [
-                'estudiante_id' => $estudiante->id_usuario,
-                'equipo_id' => $equipo->id_equipo,
-            ],
-            [
-                'status' => 'pendiente',
-            ]
-        );
+        try {
+            // Usar updateOrCreate para permitir volver a solicitar si fue rechazado
+            SolicitudUnion::updateOrCreate(
+                [
+                    'estudiante_id' => $estudiante->id_usuario,
+                    'equipo_id' => $equipo->id_equipo,
+                ],
+                [
+                    'status' => 'pendiente',
+                ]
+            );
 
-        return back()->with('success', '¡Solicitud para unirte al equipo "' . $equipo->nombre . '" enviada exitosamente!');
+            return back()->with('success', '¡Solicitud para unirte al equipo "' . $equipo->nombre . '" enviada exitosamente!');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error al enviar la solicitud: ' . $e->getMessage());
+        }
     }
 
     /**

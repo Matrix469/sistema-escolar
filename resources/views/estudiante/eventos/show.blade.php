@@ -76,22 +76,22 @@
     }
     
     .status-activo {
-        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
-        color: #ffffff;
+        background: linear-gradient(135deg, #00ff7f, #00cc66);
+        color: #000000ff !important;
     }
     
     .status-en-progreso {
-        background: linear-gradient(135deg, #6366f1, #4f46e5); /* Indigo gradient */
-        color: #ffffff;
+        background: linear-gradient(135deg, #4800ffff, #1b00ccff); /* Indigo gradient */
+        color: #ffffff !important;
     }
 
     .status-proximo {
-        background: rgba(191, 219, 254, 0.8);
+        background: rgba(191, 206, 254, 0.8);
         color: #1e40af;
     }
     
     .status-finalizado {
-        background: rgba(229, 231, 235, 0.8);
+        background: rgba(235, 229, 229, 0.8);
         color: #374151;
     }
     

@@ -197,8 +197,8 @@
     }
     
     .status-activo {
-        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
-        color: #ffffff;
+        background: linear-gradient(135deg, #00ff7f, #00cc66);
+        color: #000000ff !important;
     }
     
     .status-proximo {

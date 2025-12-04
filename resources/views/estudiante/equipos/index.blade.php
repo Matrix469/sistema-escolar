@@ -363,7 +363,12 @@
 
                     <!-- Botón de Solicitud de Unión -->
                     <div class="action-section">
-                        @if ($evento->estado === 'Activo' && $inscripcion->status_registro !== 'Completo')
+                        @php
+                            $cantidadMiembros = $inscripcion->equipo->miembros->count();
+                            $equipoLleno = $cantidadMiembros >= 5;
+                        @endphp
+                        
+                        @if ($evento->estado === 'Activo' && !$equipoLleno)
                         
                             @if ($miInscripcionDeEquipoId)
                                 {{-- El usuario YA es miembro de un equipo en este evento --}}
@@ -403,8 +408,8 @@
                                 @endif
                             @endif
 
-                        @elseif ($inscripcion->status_registro === 'Completo')
-                            <span class="status-full">Equipo completo.</span>
+                        @elseif ($equipoLleno)
+                            <span class="status-full">Equipo completo ({{ $cantidadMiembros }}/5 miembros).</span>
                         @else
                             <span class="status-not-available">Inscripciones no disponibles aún.</span>
                         @endif

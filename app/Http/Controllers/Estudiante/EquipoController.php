@@ -41,9 +41,11 @@ class EquipoController extends Controller
         }
         if ($request->filled('status')) {
             if ($request->input('status') == 'Completo') {
-                $query->whereRaw('(SELECT COUNT(*) FROM miembros_equipo me JOIN inscripciones_evento ie ON me.id_inscripcion = ie.id_inscripcion WHERE ie.id_equipo = inscripciones_evento.id_equipo) >= ?', [$evento->cupo_max_equipos]);
+                // Equipos con 5 o más miembros (llenos)
+                $query->whereRaw('(SELECT COUNT(*) FROM miembros_equipo me WHERE me.id_inscripcion = inscripciones_evento.id_inscripcion) >= 5');
             } else {
-                $query->whereRaw('(SELECT COUNT(*) FROM miembros_equipo me JOIN inscripciones_evento ie ON me.id_inscripcion = ie.id_inscripcion WHERE ie.id_equipo = inscripciones_evento.id_equipo) < ?', [$evento->cupo_max_equipos]);
+                // Equipos con menos de 5 miembros (con lugares disponibles)
+                $query->whereRaw('(SELECT COUNT(*) FROM miembros_equipo me WHERE me.id_inscripcion = inscripciones_evento.id_inscripcion) < 5');
             }
         }
         $inscripciones = $query->paginate(12);
