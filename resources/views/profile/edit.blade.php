@@ -10,12 +10,31 @@
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-4xl mx-auto">
-        <a href="{{ route('estudiante.dashboard') }}" class="back-link">
+        @if($user->jurado)
+        <a href="{{ route('dashboard') }}" class="back-link">
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
             Volver al Dashboard
         </a>
+        @endif
+        @if($user->estudiante)
+        <a href="{{ route('dashboard') }}" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Volver al Dashboard
+        </a>
+        @endif
+        @if($user->id_rol_sistema === 1)
+        <a href="{{ route('dashboard') }}" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Volver al Dashboard
+        </a>
+        @endif
+        
         <!-- Encabezado -->
         <div class="mb-12 text-center">
             
