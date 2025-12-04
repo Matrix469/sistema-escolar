@@ -4,375 +4,664 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
-    /* Fondo degradado */
-    .mis-equipos-page {
-        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
+    .equipos-page {
+        background: linear-gradient(135deg, #FFFDF4 0%, #FFF8F0 50%, #FFEEE2 100%);
         min-height: 100vh;
         font-family: 'Poppins', sans-serif;
     }
     
-    /* Textos */
-    .mis-equipos-page h2,
-    .mis-equipos-page h3 {
+    .equipos-page * {
         font-family: 'Poppins', sans-serif;
-        color: #2c2c2c;
     }
-    
-    .mis-equipos-page p {
-        font-family: 'Poppins', sans-serif;
-        color: #6b6b6b;
-    }
-    
-    /* Team card */
-    .team-card {
-        background: #FFEEE2;
-        border-radius: 20px;
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #3d3d3d 100%);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        position: relative;
         overflow: hidden;
-        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
-        transition: all 0.3s ease;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     }
-    
-    .team-card:hover {
-        box-shadow: 12px 12px 24px #e6d5c9, -12px -12px 24px #ffffff;
-        transform: translateY(-5px);
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, rgba(232, 154, 60, 0.15) 0%, transparent 70%);
+        pointer-events: none;
     }
-    
-    .team-card img {
-        height: 12rem;
-        width: 100%;
-        object-fit: cover;
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        left: -80px;
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(232, 154, 60, 0.1) 0%, transparent 70%);
+        pointer-events: none;
     }
-    
-    /* Team header */
-    .team-header {
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-    }
-    
-    .team-name {
-        font-family: 'Poppins', sans-serif;
-        color: #2c2c2c;
-        font-weight: 700;
-        font-size: 1.25rem;
-    }
-    
-    /* Badges */
-    .badge-lider {
-        font-family: 'Poppins', sans-serif;
-        display: inline-flex;
         align-items: center;
-        padding: 0.25rem 0.5rem;
-        background: linear-gradient(135deg, #fef3c7, #fde68a);
-        color: #92400e;
-        font-size: 0.75rem;
-        font-weight: 700;
-        border-radius: 20px;
-        margin-top: 0.25rem;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
-    .badge-status {
-        font-family: 'Poppins', sans-serif;
-        padding: 0.25rem 0.75rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        border-radius: 20px;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+
+    .hero-text h1 {
+        color: #ffffff;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
     }
-    
-    .badge-status-complete {
-        background: rgba(209, 250, 229, 0.8);
-        color: #065f46;
-    }
-    
-    .badge-status-incomplete {
-        background: rgba(254, 240, 138, 0.8);
-        color: #854d0e;
-    }
-    
-    /* Event box */
-    .event-box {
-        margin-bottom: 1rem;
-        padding: 0.75rem;
-        border-radius: 15px;
-        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
-    }
-    
-    .event-box-active {
-        background: linear-gradient(135deg, rgba(224, 231, 255, 0.5), rgba(199, 210, 254, 0.5));
-    }
-    
-    .event-box-inactive {
-        background: rgba(249, 250, 251, 0.5);
-    }
-    
-    .event-box p {
-        font-size: 0.875rem;
-        margin-bottom: 0.25rem;
-    }
-    
-    .event-box strong {
-        color: #2c2c2c;
-    }
-    
-    .event-box-active p {
-        color: #1e3a8a;
-    }
-    
-    .event-box-inactive p {
-        color: #6b6b6b;
-    }
-    
-    .event-link {
-        font-size: 0.75rem;
+
+    .hero-text h1 span {
         color: #e89a3c;
-        font-weight: 600;
-        margin-top: 0.5rem;
-        display: inline-block;
-        transition: all 0.2s ease;
     }
-    
-    .event-link:hover {
-        color: #d98a2c;
+
+    .hero-text p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+        max-width: 500px;
     }
-    
-    /* Event status badge */
-    .event-status-badge {
-        font-family: 'Poppins', sans-serif;
-        display: inline-block;
-        margin-top: 0.5rem;
-        padding: 0.25rem 0.5rem;
-        font-size: 0.75rem;
-        border-radius: 20px;
-        font-weight: 600;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+
+    .hero-stats {
+        display: flex;
+        gap: 1.5rem;
     }
-    
-    .event-status-activo {
-        background: rgba(209, 250, 229, 0.8);
-        color: #065f46;
-    }
-    
-    .event-status-cerrado {
-        background: rgba(254, 240, 138, 0.8);
-        color: #854d0e;
-    }
-    
-    .event-status-proximo {
-        background: rgba(191, 219, 254, 0.8);
-        color: #1e40af;
-    }
-    
-    /* Description */
-    .team-description {
-        font-size: 0.875rem;
-        color: #6b6b6b;
-        margin-bottom: 1rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    
-    /* Members info */
-    .members-info {
-        margin-bottom: 1rem;
-    }
-    
-    .members-info p {
-        font-size: 0.875rem;
-        color: #2c2c2c;
-    }
-    
-    .members-info strong {
-        font-weight: 600;
-    }
-    
-    /* Pending requests */
-    .pending-requests {
-        margin-bottom: 1rem;
-        padding: 0.5rem;
-        background: linear-gradient(135deg, rgba(219, 234, 254, 0.5), rgba(191, 219, 254, 0.5));
-        border-left: 4px solid #3b82f6;
-        border-radius: 0 15px 15px 0;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .pending-requests p {
-        font-size: 0.75rem;
-        color: #1e40af;
-        font-weight: 600;
-    }
-    
-    /* View details button */
-    .btn-view-details {
-        font-family: 'Poppins', sans-serif;
-        display: block;
-        width: 100%;
+
+    .hero-stat {
         text-align: center;
-        padding: 0.5rem 1rem;
-        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    .hero-stat-number {
+        color: #e89a3c;
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .hero-stat-label {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 0.25rem;
+    }
+
+    /* Teams Grid */
+    .teams-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+        .teams-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Team Card */
+    .team-card {
+        background: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+    }
+
+    .team-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .team-card-leader {
+        border: 2px solid #e89a3c;
+    }
+
+    .team-card-leader::before {
+        content: '👑 Eres el Líder';
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        z-index: 10;
+        box-shadow: 0 4px 12px rgba(232, 154, 60, 0.3);
+    }
+
+    .team-card-header {
+        background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+        padding: 1.5rem;
+        position: relative;
+    }
+
+    .team-card-header::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #e89a3c, #f5b76c, #e89a3c);
+    }
+
+    .team-name {
         color: #ffffff;
-        border-radius: 0.75rem;
-        font-weight: 600;
-        box-shadow: 4px 4px 8px rgba(99, 102, 241, 0.3);
-        transition: all 0.3s ease;
-        text-decoration: none;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        padding-right: 100px;
     }
-    
-    .btn-view-details:hover {
-        box-shadow: 6px 6px 12px rgba(99, 102, 241, 0.4);
-        transform: translateY(-2px);
-    }
-    
-    /* Create team button */
-    .btn-create-team {
-        font-family: 'Poppins', sans-serif;
+
+    .team-event {
         display: inline-flex;
         align-items: center;
-        padding: 0.75rem 1.5rem;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: #ffffff;
-        border-radius: 0.75rem;
+        gap: 0.5rem;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.85rem;
+    }
+
+    .team-event svg {
+        width: 16px;
+        height: 16px;
+        color: #e89a3c;
+    }
+
+    .team-card-body {
+        padding: 1.5rem;
+    }
+
+    /* Team Stats Row */
+    .team-stats-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .team-stat-item {
+        text-align: center;
+        padding: 0.75rem;
+        background: linear-gradient(135deg, rgba(232, 154, 60, 0.08), rgba(232, 154, 60, 0.03));
+        border-radius: 12px;
+    }
+
+    .team-stat-value {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #1a1a1a;
+    }
+
+    .team-stat-label {
+        font-size: 0.7rem;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Members Preview */
+    .members-preview {
+        margin-bottom: 1.5rem;
+    }
+
+    .members-preview-title {
+        font-size: 0.75rem;
         font-weight: 600;
-        box-shadow: 4px 4px 8px rgba(16, 185, 129, 0.3);
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+    }
+
+    .members-avatars {
+        display: flex;
+        align-items: center;
+    }
+
+    .member-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 0.875rem;
+        border: 3px solid #ffffff;
+        margin-left: -10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .member-avatar:first-child {
+        margin-left: 0;
+    }
+
+    .member-avatar:hover {
+        transform: scale(1.1) translateY(-4px);
+        z-index: 10;
+    }
+
+    .member-avatar-leader {
+        background: linear-gradient(135deg, #1a1a1a, #3d3d3d);
+        border-color: #e89a3c;
+    }
+
+    .member-avatar-more {
+        background: #f3f4f6;
+        color: #6b7280;
+        font-size: 0.75rem;
+    }
+
+    /* My Role Badge */
+    .my-role-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, rgba(232, 154, 60, 0.1), rgba(232, 154, 60, 0.05));
+        color: #b37a2e;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 1.25rem;
+    }
+
+    .my-role-badge svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Team Actions */
+    .team-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .team-action-btn {
+        flex: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.85rem 1rem;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
         text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
     }
-    
-    .btn-create-team:hover {
-        box-shadow: 6px 6px 12px rgba(16, 185, 129, 0.4);
+
+    .team-action-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .team-action-primary {
+        background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+        color: #ffffff;
+    }
+
+    .team-action-primary:hover {
+        background: linear-gradient(135deg, #e89a3c, #f5b76c);
         transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(232, 154, 60, 0.3);
+        color: #ffffff;
     }
-    
-    .btn-create-team svg {
-        margin-right: 0.5rem;
+
+    .team-action-secondary {
+        background: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .team-action-secondary:hover {
+        background: #e5e7eb;
+        color: #1f2937;
+    }
+
+    /* Pending Requests Indicator */
+    .pending-requests {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: #ef4444;
+        color: white;
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.35rem 0.75rem;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        animation: pulse 2s infinite;
+        z-index: 10;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+
+    .pending-requests svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* Event Status Badge */
+    .event-status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+    }
+
+    .status-en-progreso {
+        background: rgba(16, 185, 129, 0.1);
+        color: #059669;
+    }
+
+    .status-activo {
+        background: rgba(59, 130, 246, 0.1);
+        color: #2563eb;
+    }
+
+    .status-pendiente {
+        background: rgba(245, 158, 11, 0.1);
+        color: #d97706;
+    }
+
+    .status-finalizado {
+        background: rgba(107, 114, 128, 0.1);
+        color: #6b7280;
+    }
+
+    /* Empty State */
+    .empty-state {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 4rem 2rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .empty-state-icon {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, rgba(232, 154, 60, 0.1), rgba(232, 154, 60, 0.05));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+
+    .empty-state-icon svg {
+        width: 50px;
+        height: 50px;
+        color: #e89a3c;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.75rem;
+    }
+
+    .empty-state p {
+        color: #6b7280;
+        font-size: 1rem;
+        max-width: 400px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+    }
+
+    .empty-state-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .empty-state-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1.75rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .empty-state-btn-primary {
+        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        color: #ffffff;
+        box-shadow: 0 4px 16px rgba(232, 154, 60, 0.3);
+    }
+
+    .empty-state-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(232, 154, 60, 0.4);
+        color: #ffffff;
+    }
+
+    .empty-state-btn-secondary {
+        background: #f3f4f6;
+        color: #4b5563;
+    }
+
+    .empty-state-btn-secondary:hover {
+        background: #e5e7eb;
+        color: #1f2937;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .hero-text h1 {
+            font-size: 1.5rem;
+        }
+
+        .hero-stats {
+            justify-content: center;
+        }
+
+        .team-stats-row {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
 
-<div class="mis-equipos-page py-12">
+<div class="equipos-page py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <h2 class="font-semibold text-2xl mb-6">
-            Mis Equipos
-        </h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            @foreach($equipos as $equipoData)
-                @php
-                    $inscripcion = $equipoData['inscripcion'];
-                    $esLider = $equipoData['esLider'];
-                    $solicitudes = $equipoData['solicitudes'];
-                    $roles = $equipoData['roles'];
-                @endphp
-
-                <div class="team-card">
-                    @if ($inscripcion->equipo->ruta_imagen)
-                        <img src="{{ asset('storage/' . $inscripcion->equipo->ruta_imagen) }}" alt="Imagen del equipo">
-                    @endif
-                    
-                    <div class="p-6">
-                        {{-- Header del Equipo --}}
-                        <div class="team-header">
-                            <div>
-                                <h3 class="team-name">{{ $inscripcion->equipo->nombre }}</h3>
-                                @if($esLider)
-                                    <span class="badge-lider">
-                                        ⭐ Líder
-                                    </span>
-                                @endif
-                            </div>
-                            <span class="badge-status
-                                @if($inscripcion->status_registro === 'Completo') badge-status-complete
-                                @else badge-status-incomplete @endif">
-                                {{ $inscripcion->status_registro }}
-                            </span>
-                        </div>
-
-                        {{-- Evento --}}
-                        <div class="event-box {{ $inscripcion->evento ? 'event-box-active' : 'event-box-inactive' }}">
-                            @if($inscripcion->evento)
-                                @if($inscripcion->evento->trashed())
-                                    {{-- Evento Eliminado --}}
-                                    <p>
-                                        <strong>Evento:</strong> {{ $inscripcion->evento->nombre }} <span style="color: #dc2626; font-weight: 600;">(Eliminado)</span>
-                                    </p>
-                                    <p style="font-size: 0.75rem; margin-top: 0.25rem; color: #6b6b6b;">
-                                        Este evento fue eliminado. Tu equipo y sus datos se conservan.
-                                    </p>
-                                @else
-                                    {{-- Evento Normal --}}
-                                    <p>
-                                        <strong>Evento:</strong> {{ $inscripcion->evento->nombre }}
-                                    </p>
-                                    <p style="font-size: 0.75rem; margin-top: 0.25rem;">
-                                        {{ $inscripcion->evento->fecha_inicio->format('d/m/Y') }} - {{ $inscripcion->evento->fecha_fin->format('d/m/Y') }}
-                                    </p>
-                                    <span class="event-status-badge
-                                        @if($inscripcion->evento->estado === 'Activo') event-status-activo
-                                        @elseif($inscripcion->evento->estado === 'En Progreso') event-status-activo
-                                        @elseif($inscripcion->evento->estado === 'Cerrado') event-status-cerrado
-                                        @else event-status-proximo @endif">
-                                        {{ $inscripcion->evento->estado }}
-                                    </span>
-                                @endif
-                            @else
-                                <p>
-                                    <strong>Estado:</strong> Equipo sin evento
-                                </p>
-                                <p style="font-size: 0.75rem; margin-top: 0.25rem;">
-                                    Este equipo aún no está registrado en ningún evento
-                                </p>
-                                <a href="{{ route('estudiante.eventos.index') }}" class="event-link">
-                                    Registrar a un evento →
-                                </a>
-                            @endif
-                        </div>
-
-                        {{-- Descripción --}}
-                        @if($inscripcion->equipo->descripcion)
-                            <p class="team-description">
-                                {{ $inscripcion->equipo->descripcion }}
-                            </p>
-                        @endif
-
-                        {{-- Miembros --}}
-                        <div class="members-info">
-                            <p>
-                                <strong>Miembros:</strong> {{ $inscripcion->miembros->count() }}
-                            </p>
-                        </div>
-
-                        {{-- Solicitudes Pendientes (solo para líderes) --}}
-                        @if($esLider && $solicitudes->isNotEmpty())
-                            <div class="pending-requests">
-                                <p>
-                                    {{ $solicitudes->count() }} solicitud(es) pendiente(s)
-                                </p>
-                            </div>
-                        @endif
-
-                        {{-- Botón Ver Detalles --}}
-                        <a href="{{ route('estudiante.equipo.show-detalle', $inscripcion) }}" 
-                           class="btn-view-details">
-                            Ver Detalles →
-                        </a>
+        
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Mis <span>Equipos</span></h1>
+                    <p>Gestiona tus equipos, revisa solicitudes pendientes y colabora con tus compañeros en los proyectos.</p>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">{{ $equipos->count() }}</div>
+                        <div class="hero-stat-label">Equipos</div>
+                    </div>
+                    <div class="hero-stat">
+                        <div class="hero-stat-number">{{ $equipos->where('esLider', true)->count() }}</div>
+                        <div class="hero-stat-label">Como Líder</div>
                     </div>
                 </div>
-            @endforeach
+            </div>
         </div>
 
-        {{-- Botón para crear equipo --}}
-        <div class="mt-8 text-center">
-            <a href="{{ route('estudiante.equipos.create-sin-evento') }}" 
-               class="btn-create-team">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                </svg>
-                Crear Nuevo Equipo
-            </a>
-        </div>
+        @if($equipos->count() > 0)
+            <!-- Teams Grid -->
+            <div class="teams-grid">
+                @foreach($equipos as $equipoData)
+                    @php
+                        $inscripcion = $equipoData['inscripcion'];
+                        $esLider = $equipoData['esLider'];
+                        $solicitudes = $equipoData['solicitudes'];
+                        $equipo = $inscripcion->equipo;
+                        $miembros = $inscripcion->miembros;
+                        $evento = $inscripcion->evento;
+                        $miRol = $miembros->firstWhere('id_estudiante', Auth::user()->id_usuario)?->rol?->nombre ?? 'Miembro';
+                    @endphp
+                    
+                    <div class="team-card {{ $esLider ? 'team-card-leader' : '' }}">
+                        @if($esLider && $solicitudes->count() > 0)
+                            <div class="pending-requests">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                                </svg>
+                                {{ $solicitudes->count() }} solicitud{{ $solicitudes->count() > 1 ? 'es' : '' }}
+                            </div>
+                        @endif
+
+                        <div class="team-card-header">
+                            <h3 class="team-name">{{ $equipo->nombre }}</h3>
+                            <div class="team-event">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                                {{ $evento->nombre ?? 'Sin evento' }}
+                                @if($evento)
+                                    <span class="event-status-badge status-{{ strtolower(str_replace(' ', '-', $evento->estado)) }}">
+                                        {{ $evento->estado }}
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="team-card-body">
+                            <!-- Team Stats -->
+                            <div class="team-stats-row">
+                                <div class="team-stat-item">
+                                    <div class="team-stat-value">{{ $miembros->count() }}</div>
+                                    <div class="team-stat-label">Miembros</div>
+                                </div>
+                                <div class="team-stat-item">
+                                    <div class="team-stat-value">{{ $esLider ? $solicitudes->count() : '-' }}</div>
+                                    <div class="team-stat-label">Solicitudes</div>
+                                </div>
+                                <div class="team-stat-item">
+                                    <div class="team-stat-value">0%</div>
+                                    <div class="team-stat-label">Avance</div>
+                                </div>
+                            </div>
+
+                            <!-- Members Preview -->
+                            <div class="members-preview">
+                                <div class="members-preview-title">Miembros del equipo</div>
+                                <div class="members-avatars">
+                                    @foreach($miembros->take(5) as $miembro)
+                                        <div class="member-avatar {{ $miembro->es_lider ? 'member-avatar-leader' : '' }}" 
+                                             title="{{ $miembro->user->name }} {{ $miembro->es_lider ? '(Líder)' : '' }}">
+                                            {{ strtoupper(substr($miembro->user->name, 0, 2)) }}
+                                        </div>
+                                    @endforeach
+                                    @if($miembros->count() > 5)
+                                        <div class="member-avatar member-avatar-more">
+                                            +{{ $miembros->count() - 5 }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <!-- My Role -->
+                            <div class="my-role-badge">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                Mi rol: {{ $miRol }}
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="team-actions">
+                                <a href="{{ route('estudiante.equipo.show-detalle', $inscripcion) }}" class="team-action-btn team-action-primary">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                    </svg>
+                                    Ver Equipo
+                                </a>
+                                @if($esLider && $solicitudes->count() > 0)
+                                    <a href="{{ route('estudiante.equipo.show-detalle', $inscripcion) }}#solicitudes" class="team-action-btn team-action-secondary">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                                        </svg>
+                                        Solicitudes
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+                <h3>Aún no tienes equipos</h3>
+                <p>Únete a un equipo existente o crea uno nuevo para participar en los eventos y colaborar con otros estudiantes.</p>
+                <div class="empty-state-actions">
+                    <a href="{{ route('estudiante.eventos.index') }}" class="empty-state-btn empty-state-btn-primary">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Explorar Eventos
+                    </a>
+                    <a href="{{ route('estudiante.dashboard') }}" class="empty-state-btn empty-state-btn-secondary">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 20px; height: 20px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        Volver al Inicio
+                    </a>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 @endsection

@@ -227,8 +227,6 @@ class ProyectoEventoController extends Controller
         ]);
 
         $data = $request->except(['archivo_bases', 'archivo_recursos']);
-        $data['id_evento'] = $evento->id_evento;
-        $data['id_inscripcion'] = $inscripcion->id_inscripcion;
 
         // Manejo de archivos
         if ($request->hasFile('archivo_bases')) {
@@ -241,7 +239,14 @@ class ProyectoEventoController extends Controller
                 ->store('proyectos-evento/recursos', 'public');
         }
 
-        ProyectoEvento::create($data);
+        // Usar updateOrCreate para evitar error de llave duplicada
+        ProyectoEvento::updateOrCreate(
+            [
+                'id_evento' => $evento->id_evento,
+                'id_inscripcion' => $inscripcion->id_inscripcion
+            ],
+            $data
+        );
 
         return redirect()->route('admin.proyectos-evento.asignar', $evento)
             ->with('success', 'Proyecto asignado exitosamente.');

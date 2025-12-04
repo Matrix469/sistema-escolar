@@ -4,484 +4,843 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
-    /* Fondo degradado */
-    .equipo-detalle-page {
-        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
+    .equipo-detail-page {
+        background: linear-gradient(135deg, #FFFDF4 0%, #FFF8F0 50%, #FFEEE2 100%);
         min-height: 100vh;
         font-family: 'Poppins', sans-serif;
     }
     
-    /* Textos */
-    .equipo-detalle-page h1,
-    .equipo-detalle-page h2,
-    .equipo-detalle-page h3 {
+    .equipo-detail-page * {
         font-family: 'Poppins', sans-serif;
-        color: #2c2c2c;
     }
-    
-    .equipo-detalle-page p {
-        font-family: 'Poppins', sans-serif;
-        color: #6b6b6b;
+
+    /* Back Link */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #e89a3c;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        margin-bottom: 1.5rem;
+        transition: all 0.2s ease;
     }
-    
-    /* Main card */
-    .main-card {
-        background: #FFEEE2;
+
+    .back-link:hover {
+        color: #d98a2c;
+        transform: translateX(-3px);
+    }
+
+    .back-link svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Hero Section */
+    .hero-card {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #3d3d3d 100%);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .hero-card::before {
+        content: '';
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, rgba(232, 154, 60, 0.15) 0%, transparent 70%);
+        pointer-events: none;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .hero-info {
+        flex: 1;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        color: white;
+        padding: 0.4rem 1rem;
         border-radius: 20px;
-        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .hero-badge svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .hero-title {
+        color: #ffffff;
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .hero-event {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+    }
+
+    .hero-event a {
+        color: #e89a3c;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .hero-event a:hover {
+        text-decoration: underline;
+    }
+
+    .hero-actions {
+        display: flex;
+        gap: 0.75rem;
+    }
+
+    .hero-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .hero-btn svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .hero-btn-edit {
+        background: #ffffff;
+        color: #1a1a1a;
+    }
+
+    .hero-btn-edit:hover {
+        background: #e89a3c;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .hero-btn-leave {
+        background: rgba(239, 68, 68, 0.9);
+        color: #ffffff;
+    }
+
+    .hero-btn-leave:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .stat-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .stat-icon svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .stat-icon-orange {
+        background: linear-gradient(135deg, rgba(232, 154, 60, 0.15), rgba(232, 154, 60, 0.08));
+        color: #e89a3c;
+    }
+
+    .stat-icon-dark {
+        background: linear-gradient(135deg, rgba(26, 26, 26, 0.1), rgba(26, 26, 26, 0.05));
+        color: #1a1a1a;
+    }
+
+    .stat-icon-gray {
+        background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.05));
+        color: #6b7280;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Main Content Grid */
+    .content-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Content Cards */
+    .content-card {
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        border: 1px solid rgba(0, 0, 0, 0.04);
         overflow: hidden;
         margin-bottom: 1.5rem;
     }
-    
-    .main-card img {
-        height: 16rem;
-        width: 100%;
-        object-fit: cover;
-    }
-    
-    /* Team header */
-    .team-header {
-        border-bottom: 1px solid rgba(232, 154, 60, 0.2);
-        padding-bottom: 1.5rem;
-    }
-    
-    .team-title {
-        font-family: 'Poppins', sans-serif;
-        color: #2c2c2c;
-        font-weight: 700;
-        font-size: 1.875rem;
-    }
-    
-    .event-link {
-        color: #e89a3c;
-        transition: all 0.2s ease;
-    }
-    
-    .event-link:hover {
-        color: #d98a2c;
-        text-decoration: underline;
-    }
-    
-    /* Buttons */
-    .btn-edit {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
-        color: #ffffff;
-        font-weight: 600;
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
-        transition: all 0.3s ease;
-        border: none;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-    }
-    
-    .btn-edit:hover {
-        box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
-        transform: translateY(-2px);
-    }
-    
-    .btn-leave {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #dc2626, #b91c1c);
-        color: #ffffff;
-        font-weight: 600;
-        padding: 0.5rem 1rem;
-        border-radius: 0.375rem;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        box-shadow: 4px 4px 8px rgba(220, 38, 38, 0.3);
-        transition: all 0.3s ease;
-        border: none;
-        display: inline-flex;
-        align-items: center;
-    }
-    
-    .btn-leave:hover {
-        box-shadow: 6px 6px 12px rgba(220, 38, 38, 0.4);
-        transform: translateY(-2px);
-    }
-    
-    .btn-leave svg {
-        margin-right: 0.5rem;
-    }
-    
-    /* Description box */
-    .description-box {
-        margin-top: 1rem;
-        padding: 1rem;
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 15px;
-        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
-    }
-    
-    .description-box h3 {
-        font-weight: 600;
-        color: #2c2c2c;
-        margin-bottom: 0.5rem;
-    }
-    
-    /* Members section */
-    .members-section {
-        margin-top: 2rem;
-    }
-    
-    .members-section h3 {
-        font-size: 1.125rem;
-        font-weight: 500;
-    }
-    
-    /* Member item */
-    .member-item {
-        padding: 1rem 0;
-        border-bottom: 1px solid rgba(232, 154, 60, 0.1);
+
+    .card-header {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #f3f4f6;
     }
-    
-    .member-item:last-child {
-        border-bottom: none;
-    }
-    
-    .member-photo {
-        width: 3rem;
-        height: 3rem;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #e89a3c;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    
-    .member-name {
-        font-weight: 600;
-        color: #2c2c2c;
-    }
-    
-    .member-career {
-        font-size: 0.875rem;
-        color: #9ca3af;
-    }
-    
-    /* Badges */
-    .badge-lider {
-        font-family: 'Poppins', sans-serif;
-        font-size: 0.75rem;
+
+    .card-title {
+        font-size: 1rem;
         font-weight: 700;
-        text-transform: uppercase;
-        padding: 0.25rem 0.5rem;
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+    }
+
+    .card-title svg {
+        width: 20px;
+        height: 20px;
+        color: #e89a3c;
+    }
+
+    .card-badge {
+        background: #f3f4f6;
+        color: #6b7280;
+        padding: 0.35rem 0.85rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Members List */
+    .members-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .member-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        background: #f9fafb;
+        border-radius: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .member-item:hover {
+        background: #f3f4f6;
+    }
+
+    .member-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .member-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 1rem;
+        border: 3px solid #ffffff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .member-avatar-leader {
+        background: linear-gradient(135deg, #1a1a1a, #3d3d3d);
+        border-color: #e89a3c;
+    }
+
+    .member-details h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 0.25rem 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .member-details p {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin: 0 0 0.35rem 0;
+    }
+
+    .badge-leader {
         background: linear-gradient(135deg, #fef3c7, #fde68a);
         color: #92400e;
+        padding: 0.15rem 0.5rem;
         border-radius: 20px;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 0.65rem;
+        font-weight: 700;
+        text-transform: uppercase;
     }
-    
-    .badge-rol {
-        font-family: 'Poppins', sans-serif;
+
+    .badge-role {
         display: inline-flex;
         align-items: center;
-        padding: 0.125rem 0.5rem;
-        border-radius: 20px;
-        background: rgba(224, 231, 255, 0.8);
-        color: #3730a3;
-        font-size: 0.75rem;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        gap: 0.25rem;
+        background: linear-gradient(135deg, rgba(232, 154, 60, 0.1), rgba(232, 154, 60, 0.05));
+        color: #b37a2e;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+        font-weight: 500;
     }
-    
-    /* Member controls */
+
+    .badge-role svg {
+        width: 12px;
+        height: 12px;
+    }
+
     .member-controls {
         display: flex;
         align-items: center;
         gap: 0.5rem;
     }
-    
+
     .member-controls select {
-        font-family: 'Poppins', sans-serif;
-        background: rgba(255, 255, 255, 0.5);
-        border: none;
-        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        padding: 0.4rem 0.6rem;
+        border-radius: 8px;
         font-size: 0.75rem;
-        color: #2c2c2c;
+        color: #374151;
+        cursor: pointer;
     }
-    
-    .member-controls select:focus {
-        outline: none;
-        box-shadow: inset 4px 4px 8px #e6d5c9, inset -4px -4px 8px #ffffff;
-    }
-    
-    .btn-update {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #3b82f6, #2563eb);
-        color: #ffffff;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
-        font-size: 0.75rem;
+
+    .btn-sm {
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.7rem;
         font-weight: 600;
-        box-shadow: 2px 2px 4px rgba(59, 130, 246, 0.3);
-        transition: all 0.3s ease;
         border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
     }
-    
-    .btn-update:hover {
-        box-shadow: 4px 4px 8px rgba(59, 130, 246, 0.4);
-        transform: translateY(-2px);
+
+    .btn-sm svg {
+        width: 14px;
+        height: 14px;
     }
-    
-    .btn-remove {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #dc2626, #b91c1c);
+
+    .btn-primary {
+        background: #1a1a1a;
         color: #ffffff;
-        padding: 0.25rem 0.5rem;
-        border-radius: 0.375rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        box-shadow: 2px 2px 4px rgba(220, 38, 38, 0.3);
-        transition: all 0.3s ease;
-        border: none;
     }
-    
-    .btn-remove:hover {
-        box-shadow: 4px 4px 8px rgba(220, 38, 38, 0.4);
-        transform: translateY(-2px);
+
+    .btn-primary:hover {
+        background: #e89a3c;
     }
-    
-    /* Requests section */
-    .requests-section {
-        margin-top: 2rem;
-        border-top: 1px solid rgba(232, 154, 60, 0.2);
-        padding-top: 1.5rem;
+
+    .btn-danger {
+        background: #fee2e2;
+        color: #dc2626;
     }
-    
-    .requests-section h3 {
-        font-size: 1.125rem;
-        font-weight: 500;
+
+    .btn-danger:hover {
+        background: #dc2626;
+        color: #ffffff;
     }
-    
+
+    .btn-success {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .btn-success:hover {
+        background: #059669;
+        color: #ffffff;
+    }
+
+    /* Requests Section */
     .request-item {
-        padding: 1rem;
-        background: rgba(249, 250, 251, 0.5);
-        border-radius: 15px;
-        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        padding: 1rem 1.25rem;
+        background: #f9fafb;
+        border-radius: 14px;
+        border-left: 4px solid #e89a3c;
+        margin-bottom: 0.75rem;
+    }
+
+    .request-info h4 {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .request-info p {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    .request-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .request-actions select {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        padding: 0.4rem 0.6rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+    }
+
+    /* Event Link Card */
+    .event-link-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.25rem;
+        background: #f9fafb;
+        border-radius: 14px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .event-link-card:hover {
+        background: #f3f4f6;
+        transform: translateX(4px);
+    }
+
+    .event-link-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+    }
+
+    .event-link-icon svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .event-link-info h4 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        margin: 0 0 0.25rem 0;
+    }
+
+    .event-link-info p {
+        font-size: 0.8rem;
+        color: #6b7280;
+        margin: 0;
+    }
+
+    /* Status Section */
+    .status-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .status-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.85rem 1rem;
+        background: #f9fafb;
+        border-radius: 10px;
+    }
+
+    .status-label {
+        font-size: 0.85rem;
+        color: #6b7280;
+    }
+
+    .status-value {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #1a1a1a;
+    }
+
+    .status-value-success {
+        color: #059669;
+    }
+
+    .status-value-warning {
+        color: #d97706;
+    }
+
+    .status-value-code {
+        font-family: monospace;
+        background: #1a1a1a;
+        color: #e89a3c;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+    }
+
+    .status-winner {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+        border: 2px solid #f59e0b;
+    }
+
+    .status-winner .status-label {
+        color: #92400e;
+    }
+
+    .status-winner .status-value {
+        color: #92400e;
+        font-weight: 800;
+    }
+
+    /* Quick Links */
+    .quick-links-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+
+    .quick-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.25rem;
+        border-radius: 14px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .quick-link:hover {
+        transform: translateY(-4px);
+    }
+
+    .quick-link svg {
+        width: 28px;
+        height: 28px;
         margin-bottom: 0.5rem;
     }
-    
-    .request-name {
-        font-weight: 600;
-        color: #2c2c2c;
-    }
-    
-    .request-message {
-        font-size: 0.875rem;
-        color: #6b6b6b;
-    }
-    
-    .btn-accept {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: #ffffff;
-        padding: 0.25rem 0.75rem;
-        border-radius: 0.375rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        box-shadow: 2px 2px 4px rgba(16, 185, 129, 0.3);
-        transition: all 0.3s ease;
-        border: none;
-    }
-    
-    .btn-accept:hover {
-        box-shadow: 4px 4px 8px rgba(16, 185, 129, 0.4);
-        transform: translateY(-2px);
-    }
-    
-    .btn-reject {
-        font-family: 'Poppins', sans-serif;
-        background: linear-gradient(135deg, #dc2626, #b91c1c);
-        color: #ffffff;
-        padding: 0.25rem 0.75rem;
-        border-radius: 0.375rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        box-shadow: 2px 2px 4px rgba(220, 38, 38, 0.3);
-        transition: all 0.3s ease;
-        border: none;
-    }
-    
-    .btn-reject:hover {
-        box-shadow: 4px 4px 8px rgba(220, 38, 38, 0.4);
-        transform: translateY(-2px);
-    }
-    
-    /* Quick access card */
-    .quick-access-card {
-        background: #FFEEE2;
-        border-radius: 20px;
-        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
-        padding: 1.5rem;
-    }
-    
-    .quick-access-card h3 {
-        font-size: 1.125rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-    
-    /* Quick access items */
-    .quick-access-item {
-        padding: 1rem;
-        border-radius: 15px;
-        text-align: center;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
-    }
-    
-    .quick-access-item:hover {
-        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
-        transform: translateY(-3px);
-    }
-    
-    .quick-access-blue {
-        background: linear-gradient(135deg, rgba(219, 234, 254, 0.5), rgba(191, 219, 254, 0.5));
-    }
-    
-    .quick-access-blue:hover {
-        background: linear-gradient(135deg, rgba(219, 234, 254, 0.7), rgba(191, 219, 254, 0.7));
-    }
-    
-    .quick-access-green {
-        background: linear-gradient(135deg, rgba(209, 250, 229, 0.5), rgba(167, 243, 208, 0.5));
-    }
-    
-    .quick-access-green:hover {
-        background: linear-gradient(135deg, rgba(209, 250, 229, 0.7), rgba(167, 243, 208, 0.7));
-    }
-    
-    .quick-access-purple {
-        background: linear-gradient(135deg, rgba(237, 233, 254, 0.5), rgba(221, 214, 254, 0.5));
-    }
-    
-    .quick-access-purple:hover {
-        background: linear-gradient(135deg, rgba(237, 233, 254, 0.7), rgba(221, 214, 254, 0.7));
-    }
-    
-    .quick-access-yellow {
-        background: linear-gradient(135deg, rgba(254, 249, 195, 0.5), rgba(254, 240, 138, 0.5));
-    }
-    
-    .quick-access-yellow:hover {
-        background: linear-gradient(135deg, rgba(254, 249, 195, 0.7), rgba(254, 240, 138, 0.7));
-    }
-    
-    .quick-access-item svg {
-        width: 2.5rem;
-        height: 2.5rem;
-        margin: 0 auto 0.5rem;
-    }
-    
-    .quick-access-item p:first-of-type {
-        font-size: 0.875rem;
+
+    .quick-link span {
+        font-size: 0.8rem;
         font-weight: 600;
     }
-    
-    .quick-access-item p:last-of-type {
-        font-size: 0.75rem;
+
+    .quick-link small {
+        font-size: 0.7rem;
+        opacity: 0.8;
         margin-top: 0.25rem;
+    }
+
+    .quick-link-blue {
+        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+        color: #1e40af;
+    }
+
+    .quick-link-green {
+        background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+        color: #065f46;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+    }
+
+    .empty-state svg {
+        width: 48px;
+        height: 48px;
+        color: #d1d5db;
+        margin-bottom: 0.75rem;
+    }
+
+    .empty-state p {
+        color: #9ca3af;
+        font-size: 0.875rem;
+        margin: 0;
+    }
+
+    /* Description Box */
+    .description-box {
+        background: #f9fafb;
+        border-radius: 12px;
+        padding: 1.25rem;
+    }
+
+    .description-box p {
+        font-size: 0.875rem;
+        color: #4b5563;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-content {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .hero-actions {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 </style>
 
-<div class="equipo-detalle-page py-12">
+<div class="equipo-detail-page py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <h2 class="font-semibold text-xl mb-6">Mi Equipo</h2>
         
-        <div class="main-card">
-            @if ($inscripcion->equipo->ruta_imagen)
-                <img src="{{ asset('storage/' . $inscripcion->equipo->ruta_imagen) }}" alt="Imagen del equipo">
-            @endif
-            
-            <div class="p-6 sm:p-8">
-                <!-- Información del Equipo y Evento -->
-                <div class="team-header">
-                    <div class="flex items-center justify-between">
-                        <h1 class="team-title">{{ $inscripcion->equipo->nombre }}</h1>
-                        <div class="flex items-center space-x-3">
-                            @if($esLider)
-                                <a href="{{ route('estudiante.equipo.edit') }}" class="btn-edit">
-                                    Editar Equipo
-                                </a>
-                            @else
-                                {{-- Botón para que miembros NO líderes salgan del equipo --}}
-                                <form action="{{ route('estudiante.miembros.leave') }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres abandonar este equipo?');">
-                                    @csrf
-                                    <button type="submit" class="btn-leave">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                                        </svg>
-                                        Salir del Equipo
-                                    </button>
-                                </form>
-                            @endif
-                        </div>
+        <!-- Back Link -->
+        <a href="{{ route('estudiante.equipo.index') }}" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+            </svg>
+            Volver a Mis Equipos
+        </a>
+
+        <!-- Hero Card -->
+        <div class="hero-card">
+            <div class="hero-content">
+                <div class="hero-info">
+                    <div class="hero-badge">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        {{ $inscripcion->miembros->count() }} Miembros
                     </div>
-                    <p class="text-sm mt-2" style="color: #6b6b6b;">
-                        Participando en el evento: 
-                        <a href="{{ route('estudiante.eventos.show', $inscripcion->evento) }}" class="event-link">
+                    <h1 class="hero-title">{{ $inscripcion->equipo->nombre }}</h1>
+                    <p class="hero-event">
+                        Participando en 
+                        <a href="{{ route('estudiante.eventos.show', $inscripcion->evento) }}">
                             {{ $inscripcion->evento->nombre }}
                         </a>
                     </p>
-
-                    @if($inscripcion->equipo->descripcion)
-                        <div class="description-box">
-                            <h3>Descripción del Equipo</h3>
-                            <p class="text-sm" style="line-height: 1.6;">{{ $inscripcion->equipo->descripcion }}</p>
-                        </div>
+                </div>
+                <div class="hero-actions">
+                    @if($esLider)
+                        <a href="{{ route('estudiante.equipo.edit') }}" class="hero-btn hero-btn-edit">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Editar Equipo
+                        </a>
+                    @else
+                        <form action="{{ route('estudiante.miembros.leave') }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres abandonar este equipo?');">
+                            @csrf
+                            <button type="submit" class="hero-btn hero-btn-leave">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                </svg>
+                                Salir del Equipo
+                            </button>
+                        </form>
                     @endif
                 </div>
+            </div>
+        </div>
 
-                <!-- Lista de Miembros -->
-                <div class="members-section">
-                    <h3>
-                        Miembros del Equipo ({{ $inscripcion->equipo->miembros->count() }})
-                    </h3>
-                    <div class="mt-4">
-                        <ul>
-                            @foreach($inscripcion->equipo->miembros as $miembro)
-                                <li class="member-item">
-                                    <div class="flex items-center space-x-4">
-                                        <!-- Foto de Perfil -->
-                                        <img src="{{ $miembro->user->foto_perfil_url }}" alt="{{ $miembro->user->nombre }}" class="member-photo">
-                                        
-                                        <div>
-                                            <div class="flex items-center space-x-2">
-                                                <p class="member-name">{{ $miembro->user->nombre }} {{ $miembro->user->app_paterno }}</p>
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-orange">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                </div>
+                <div class="stat-value">{{ $inscripcion->miembros->count() }}</div>
+                <div class="stat-label">Miembros</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-dark">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <div class="stat-value">{{ $inscripcion->proyecto ? '1' : '0' }}</div>
+                <div class="stat-label">Proyecto</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-gray">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
+                    </svg>
+                </div>
+                <div class="stat-value">{{ $inscripcion->equipo->recursos->count() ?? 0 }}</div>
+                <div class="stat-label">Recursos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon stat-icon-orange">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                </div>
+                <div class="stat-value">0/0</div>
+                <div class="stat-label">Tareas</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content-grid">
+            <!-- Left Column -->
+            <div class="left-column">
+                
+                <!-- Description -->
+                @if($inscripcion->equipo->descripcion)
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Descripción del Equipo
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="description-box">
+                            <p>{{ $inscripcion->equipo->descripcion }}</p>
+                        </div>
+                    </div>
+                </div>
+                @endif
+
+                <!-- Team Members -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
+                            Miembros del Equipo
+                        </h3>
+                        <span class="card-badge">{{ $inscripcion->miembros->count() }} total</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="members-list">
+                            @foreach($inscripcion->miembros as $miembro)
+                                <div class="member-item">
+                                    <div class="member-info">
+                                        <div class="member-avatar {{ $miembro->es_lider ? 'member-avatar-leader' : '' }}">
+                                            {{ strtoupper(substr($miembro->user->nombre ?? 'U', 0, 1)) }}{{ strtoupper(substr($miembro->user->app_paterno ?? '', 0, 1)) }}
+                                        </div>
+                                        <div class="member-details">
+                                            <h4>
+                                                {{ $miembro->user->nombre ?? 'Usuario' }} {{ $miembro->user->app_paterno ?? '' }}
                                                 @if($miembro->es_lider)
-                                                    <span class="badge-lider">Líder</span>
+                                                    <span class="badge-leader">Líder</span>
                                                 @endif
-                                            </div>
-                                            <p class="member-career">{{ $miembro->user->estudiante->carrera->nombre ?? 'Carrera no disponible' }}</p>
-                                            <p style="font-size: 0.75rem; margin-top: 0.125rem;">
-                                                <span class="badge-rol">
-                                                    {{ $miembro->rol->nombre ?? 'Rol no asignado' }}
-                                                </span>
-                                            </p>
+                                            </h4>
+                                            <p>{{ $miembro->user->estudiante->carrera->nombre ?? 'Carrera no disponible' }}</p>
+                                            <span class="badge-role">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                                </svg>
+                                                {{ $miembro->rol->nombre ?? 'Sin rol' }}
+                                            </span>
                                         </div>
                                     </div>
-
-                                    <!-- Controles del Líder para otros miembros -->
+                                    
                                     @if($esLider && !$miembro->es_lider)
                                         <div class="member-controls">
-                                            <!-- Formulario para Cambiar Rol -->
-                                            <form action="{{ route('estudiante.miembros.updateRole', $miembro) }}" method="POST" class="flex items-center space-x-2">
+                                            <form action="{{ route('estudiante.miembros.updateRole', $miembro) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
                                                 @csrf
                                                 @method('PATCH')
                                                 <select name="id_rol_equipo">
@@ -491,100 +850,166 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                <button type="submit" class="btn-update">Actualizar</button>
+                                                <button type="submit" class="btn-sm btn-primary">Actualizar</button>
                                             </form>
-                                            <!-- Formulario para Eliminar -->
-                                            <form action="{{ route('estudiante.miembros.destroy', $miembro) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este miembro del equipo?');">
+                                            <form action="{{ route('estudiante.miembros.destroy', $miembro) }}" method="POST" onsubmit="return confirm('¿Eliminar a este miembro del equipo?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn-remove">Quitar</button>
+                                                <button type="submit" class="btn-sm btn-danger">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                    </svg>
+                                                </button>
                                             </form>
                                         </div>
                                     @endif
-                                </li>
+                                </div>
                             @endforeach
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Acciones de Líder (Solo visible para el líder) -->
+                <!-- Pending Requests (Leader only) -->
                 @if($esLider)
-                    <div class="requests-section">
-                        <h3>Gestionar Solicitudes</h3>
-                        <div class="mt-4">
-                            @forelse($solicitudes as $solicitud)
-                                <div class="request-item">
-                                    <div>
-                                        <p class="request-name">{{ $solicitud->estudiante->user->nombre }} {{ $solicitud->estudiante->user->app_paterno }}</p>
-                                        <p class="request-message">Quiere unirse al equipo</p>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <!-- Formulario para Aceptar -->
-                                        <form action="{{ route('estudiante.solicitudes.accept', $solicitud) }}" method="POST" class="flex items-center space-x-2">
-                                            @csrf
-                                            <select name="id_rol_equipo" required style="font-family: 'Poppins', sans-serif; background: rgba(255, 255, 255, 0.5); border: none; box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; color: #2c2c2c;">
-                                                <option value="">Asignar Rol...</option>
-                                                @foreach($roles as $rol)
-                                                    <option value="{{ $rol->id_rol_equipo }}">{{ $rol->nombre }}</option>
-                                                @endforeach
-                                            </select>
-                                            <button type="submit" class="btn-accept">Aceptar</button>
-                                        </form>
-                                        <!-- Formulario para Rechazar -->
-                                        <form action="{{ route('estudiante.solicitudes.reject', $solicitud) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn-reject">Rechazar</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            @empty
-                                <p style="color: #6b6b6b;">No hay solicitudes pendientes.</p>
-                            @endforelse
-                        </div>
+                <div class="content-card" id="solicitudes">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                            </svg>
+                            Solicitudes Pendientes
+                        </h3>
+                        <span class="card-badge">{{ $solicitudes->count() }}</span>
                     </div>
+                    <div class="card-body">
+                        @forelse($solicitudes as $solicitud)
+                            <div class="request-item">
+                                <div class="request-info">
+                                    <h4>{{ $solicitud->estudiante->user->nombre ?? 'Usuario' }} {{ $solicitud->estudiante->user->app_paterno ?? '' }}</h4>
+                                    <p>Quiere unirse al equipo</p>
+                                </div>
+                                <div class="request-actions">
+                                    <form action="{{ route('estudiante.solicitudes.accept', $solicitud) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
+                                        @csrf
+                                        <select name="id_rol_equipo" required>
+                                            <option value="">Rol...</option>
+                                            @foreach($roles as $rol)
+                                                <option value="{{ $rol->id_rol_equipo }}">{{ $rol->nombre }}</option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn-sm btn-success">Aceptar</button>
+                                    </form>
+                                    <form action="{{ route('estudiante.solicitudes.reject', $solicitud) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn-sm btn-danger">Rechazar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="empty-state">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                </svg>
+                                <p>No hay solicitudes pendientes</p>
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
                 @endif
             </div>
-        </div>
 
-        <!-- Accesos Rápidos -->
-        <div class="quick-access-card">
-            <h3>⚡ Accesos Rápidos</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <!-- Recursos -->
-                <a href="{{ route('estudiante.recursos.index', $inscripcion->equipo) }}" class="quick-access-item quick-access-blue">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #3b82f6;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <p style="color: #1e3a8a;">Recursos</p>
-                    <p style="color: #3b82f6;">{{ $inscripcion->equipo->recursos->count() }} archivos</p>
-                </a>
+            <!-- Right Column -->
+            <div class="right-column">
                 
-                <!-- Proyecto/Hitos -->
-                <a href="#" class="quick-access-item quick-access-green">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #10b981;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <p style="color: #065f46;">Hitos</p>
-                    <p style="color: #10b981;">{{ $inscripcion->proyecto && $inscripcion->proyecto->hitos ? $inscripcion->proyecto->hitos->where('completado', true)->count() . '/' . $inscripcion->proyecto->hitos->count() : '0/0' }}</p>
-                </a>
-                
-                <!-- Tecnologías -->
-                <a href="#" class="quick-access-item quick-access-purple">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #a855f7;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-                    </svg>
-                    <p style="color: #6b21a8;">Tecnologías</p>
-                    <p style="color: #a855f7;">0 tags</p>
-                </a>
-                
-                <!-- Actividad -->
-                <a href="{{ route('estudiante.actividades.equipo', $inscripcion->equipo) }}" class="quick-access-item quick-access-yellow">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #f59e0b;">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    <p style="color: #92400e;">Actividad</p>
-                    <p style="color: #f59e0b;">Feed del equipo</p>
-                </a>
+                <!-- Associated Event -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            Evento Asociado
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ route('estudiante.eventos.show', $inscripcion->evento) }}" class="event-link-card">
+                            <div class="event-link-icon">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                                </svg>
+                            </div>
+                            <div class="event-link-info">
+                                <h4>{{ $inscripcion->evento->nombre }}</h4>
+                                <p>{{ $inscripcion->evento->fecha_inicio->format('d M, Y') }} - {{ $inscripcion->evento->fecha_fin->format('d M, Y') }}</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                            </svg>
+                            Accesos Rápidos
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-links-grid">
+                            <a href="{{ route('estudiante.recursos.index', $inscripcion->equipo) }}" class="quick-link quick-link-blue">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span>Recursos</span>
+                                <small>{{ $inscripcion->equipo->recursos->count() ?? 0 }} archivos</small>
+                            </a>
+                            <a href="{{ route('estudiante.eventos.show', $inscripcion->evento) }}" class="quick-link quick-link-green">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                                <span>Ver Evento</span>
+                                <small>Detalles completos</small>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team Status -->
+                <div class="content-card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Estado del Equipo
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="status-list">
+                            <div class="status-item">
+                                <span class="status-label">Estado Registro</span>
+                                <span class="status-value {{ $inscripcion->status_registro === 'Completo' ? 'status-value-success' : 'status-value-warning' }}">
+                                    {{ $inscripcion->status_registro }}
+                                </span>
+                            </div>
+                            <div class="status-item">
+                                <span class="status-label">Código de Acceso</span>
+                                <span class="status-value-code">
+                                    {{ $inscripcion->codigo_acceso_equipo ?? 'N/A' }}
+                                </span>
+                            </div>
+                            @if($inscripcion->puesto_ganador)
+                                <div class="status-item status-winner">
+                                    <span class="status-label">🏆 Puesto Ganador</span>
+                                    <span class="status-value">#{{ $inscripcion->puesto_ganador }}</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

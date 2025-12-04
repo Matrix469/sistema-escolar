@@ -90,8 +90,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Excluir equipo de un evento específico (sin eliminarlo)
     Route::post('equipos/{equipo}/remove-from-event', [AdminEquipoController::class, 'removeFromEvent'])->name('equipos.remove-from-event');
     
+    // Gestión de miembros por admin
     Route::delete('miembros/{miembro}', [AdminMiembroController::class, 'destroy'])->name('miembros.destroy');
-    // Route::post('miembros/leave', [MiembroController::class, 'leave'])->name('miembros.leave');
+    Route::patch('miembros/{miembro}/role', [AdminEquipoController::class, 'updateMemberRole'])->name('miembros.update-role');
+    Route::patch('miembros/{miembro}/toggle-leader', [AdminEquipoController::class, 'toggleLeader'])->name('miembros.toggle-leader');
     
 });
 

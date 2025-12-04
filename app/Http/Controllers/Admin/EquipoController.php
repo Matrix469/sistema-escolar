@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Equipo;
+use App\Models\MiembroEquipo;
+use App\Models\CatRolEquipo;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Storage;
@@ -25,8 +27,9 @@ class EquipoController extends Controller
     public function show(Equipo $equipo)
     {
         $equipo->load('miembros.user.estudiante.carrera', 'miembros.rol', 'inscripciones.evento');
+        $roles = CatRolEquipo::all();
 
-        return view('admin.equipos.show', compact('equipo'));
+        return view('admin.equipos.show', compact('equipo', 'roles'));
     }
 
     /**
@@ -108,5 +111,42 @@ class EquipoController extends Controller
 
         return redirect()->route('admin.eventos.show', $eventoId)
             ->with('success', "Equipo '{$equipoNombre}' excluido del evento. El equipo y sus miembros se mantienen sin evento.");
+    }
+
+    /**
+     * Update member role (Admin can change any member's role)
+     */
+    public function updateMemberRole(Request $request, MiembroEquipo $miembro)
+    {
+        $request->validate([
+            'id_rol_equipo' => 'required|exists:cat_roles_equipo,id_rol_equipo',
+        ]);
+
+        $miembro->update([
+            'id_rol_equipo' => $request->id_rol_equipo,
+        ]);
+
+        return back()->with('success', 'Rol actualizado correctamente.');
+    }
+
+    /**
+     * Toggle leader status
+     */
+    public function toggleLeader(Request $request, MiembroEquipo $miembro)
+    {
+        // Si se está haciendo líder a este miembro
+        if (!$miembro->es_lider) {
+            // Quitar líder actual
+            MiembroEquipo::where('id_inscripcion', $miembro->id_inscripcion)
+                ->where('es_lider', true)
+                ->update(['es_lider' => false]);
+            
+            $miembro->update(['es_lider' => true]);
+            $message = 'Nuevo líder asignado correctamente.';
+        } else {
+            return back()->with('error', 'No puedes quitar al único líder del equipo.');
+        }
+
+        return back()->with('success', $message);
     }
 }

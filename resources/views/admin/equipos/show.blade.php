@@ -151,6 +151,70 @@
         font-weight: 700;
     }
     
+    /* Role select */
+    .role-select {
+        font-family: 'Poppins', sans-serif;
+        background: rgba(255, 255, 255, 0.8);
+        border: 2px solid transparent;
+        border-radius: 8px;
+        padding: 0.375rem 0.5rem;
+        font-size: 0.75rem;
+        color: #2c2c2c;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    
+    .role-select:focus {
+        outline: none;
+        border-color: #e89a3c;
+    }
+    
+    .btn-update {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #e89a3c, #f5b76c);
+        color: #ffffff;
+        padding: 0.375rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        box-shadow: 2px 2px 4px rgba(232, 154, 60, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-update:hover {
+        transform: translateY(-1px);
+        box-shadow: 3px 3px 6px rgba(232, 154, 60, 0.4);
+    }
+    
+    .btn-make-leader {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        color: #78350f;
+        padding: 0.375rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        box-shadow: 2px 2px 4px rgba(251, 191, 36, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-make-leader:hover {
+        transform: translateY(-1px);
+        box-shadow: 3px 3px 6px rgba(251, 191, 36, 0.4);
+    }
+    
+    .member-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+    
     /* Remove button */
     .btn-remove {
         font-family: 'Poppins', sans-serif;
@@ -283,7 +347,7 @@
             <!-- Lista de Miembros -->
             <div class="members-section">
                 <h3>
-                    Miembros del Equipo ({{ $equipo->miembros->count() }})
+                    Miembros del Equipo ({{ $equipo->miembros->count() }}/5)
                 </h3>
                 <div class="member-list">
                     <ul>
@@ -295,11 +359,32 @@
                                         <p class="member-carrera">{{ optional($miembro->user->estudiante)->carrera->nombre ?? 'N/A' }}</p>
                                     </div>
                                 </div>
-                                <div class="flex items-center space-x-4">
-                                    <span class="badge badge-rol">{{ $miembro->rol->nombre ?? 'Rol no asignado' }}</span>
+                                <div class="member-controls">
+                                    <!-- Formulario para Cambiar Rol -->
+                                    <form action="{{ route('admin.miembros.update-role', $miembro) }}" method="POST" class="flex items-center gap-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <select name="id_rol_equipo" class="role-select">
+                                            @foreach($roles as $rol)
+                                                <option value="{{ $rol->id_rol_equipo }}" @if($rol->id_rol_equipo == $miembro->id_rol_equipo) selected @endif>
+                                                    {{ $rol->nombre }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <button type="submit" class="btn-update">Cambiar</button>
+                                    </form>
+                                    
                                     @if($miembro->es_lider)
                                         <span class="badge badge-lider">Líder</span>
+                                    @else
+                                        <!-- Botón para hacer Líder -->
+                                        <form action="{{ route('admin.miembros.toggle-leader', $miembro) }}" method="POST" onsubmit="return confirm('¿Hacer a este miembro el nuevo líder del equipo?');">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn-make-leader">👑 Hacer Líder</button>
+                                        </form>
                                     @endif
+                                    
                                     <!-- Botón para Eliminar Miembro -->
                                     <form action="{{ route('admin.miembros.destroy', $miembro) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este miembro del equipo?');">
                                         @csrf

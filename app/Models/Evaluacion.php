@@ -48,6 +48,14 @@ class Evaluacion extends Model
     }
 
     /**
+     * Alias para criteriosCalificados (compatibilidad con controlador)
+     */
+    public function criterios()
+    {
+        return $this->criteriosCalificados();
+    }
+
+    /**
      * Calcular calificación final ponderada
      * Fórmula: Σ (calificacion × ponderacion / 100)
      */

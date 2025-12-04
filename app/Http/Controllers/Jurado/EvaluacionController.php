@@ -37,8 +37,8 @@ class EvaluacionController extends Controller
         // Cargar criterios del evento
         $criterios = $inscripcion->evento->criteriosEvaluacion;
         
-        // Cargar calificaciones existentes por criterio
-        $calificacionesCriterios = $evaluacion->criterios->keyBy('id_criterio');
+        // Cargar calificaciones existentes por criterio (usar colección vacía si no hay)
+        $calificacionesCriterios = $evaluacion->criterios ? $evaluacion->criterios->keyBy('id_criterio') : collect();
 
         $proyecto = $inscripcion->proyecto;
         $equipo = $inscripcion->equipo;
@@ -110,8 +110,8 @@ class EvaluacionController extends Controller
                 if ($evaluacion->estaCompleta()) {
                     $evaluacion->finalizar();
                     DB::commit();
-                    return redirect()->route('jurado.dashboard')
-                        ->with('success', 'Evaluación finalizada exitosamente.');
+                    return redirect()->route('jurado.evaluaciones.create', $inscripcion)
+                        ->with('success', '¡Evaluación finalizada exitosamente! Calificación final: ' . $evaluacion->calificacion_final);
                 } else {
                     DB::commit();
                     return redirect()->route('jurado.evaluaciones.create', $inscripcion)
@@ -149,7 +149,7 @@ class EvaluacionController extends Controller
         
         // Cargar criterios del evento y calificaciones
         $criterios = $inscripcion->evento->criteriosEvaluacion;
-        $calificacionesCriterios = $evaluacion->criterios->keyBy('id_criterio');
+        $calificacionesCriterios = $evaluacion->criterios ? $evaluacion->criterios->keyBy('id_criterio') : collect();
 
         return view('jurado.evaluaciones.show', compact('evaluacion', 'inscripcion', 'proyecto', 'equipo', 'criterios', 'calificacionesCriterios'));
     }
