@@ -9,8 +9,6 @@
         max-width: 1200px;
         margin: 0 auto;
         padding: 30px 20px;
-        background: #FFF5ED;
-        min-height: 100vh;
     }
 
     /* Título principal */
@@ -316,6 +314,9 @@
 </style>
 
 <div class="constancias-container">
+    <a href="{{ route('estudiante.dashboard') }}" class="back-button">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+    </a>
     <h1 class="constancias-title">Constancias Disponibles</h1>
     <p class="constancias-subtitle">Eventos en los que has participado y puedes generar constancia</p>
 
