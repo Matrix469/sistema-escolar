@@ -15,8 +15,7 @@
         border-radius: 20px;
         overflow: hidden;
         transition: all 0.4s ease;
-        box-shadow: 8px 8px 16px rgba(230, 213, 201, 0.6),
-                   -8px -8px 16px rgba(255, 255, 255, 0.8);
+        box-shadow: 8px 8px 16px rgba(230, 213, 201, 0.6);
     }
     .back-link {
         font-family: 'Poppins', sans-serif;
