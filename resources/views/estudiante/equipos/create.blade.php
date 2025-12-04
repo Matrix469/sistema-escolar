@@ -35,23 +35,32 @@
     }
     
     /* Back button */
-    .back-button {
-        display: flex;
+    .back-link {
+        font-family: 'Poppins', sans-serif;
+        display: inline-flex;
         align-items: center;
-        justify-content: center;
-        color: #2c2c2c;
-        transition: all 0.2s ease;
-        width: 2.5rem;
-        height: 2.5rem;
-        background: rgba(255, 253, 244, 0.9);
+        color: black;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background: #FFEEE2;
         border-radius: 10px;
         box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        transition: all 0.2s ease;
+        text-decoration: none;
     }
     
-    .back-button:hover {
-        color: #e89a3c;
+    .back-link:hover {
+        color: #4f46e5;
         box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
         transform: translateY(-2px);
+    }
+    
+    .back-link svg {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
     }
     
     /* Main card */
@@ -307,10 +316,11 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="header-container">
             @isset($evento)
-            <a href="{{ route('estudiante.eventos.show', $evento) }}" class="back-button">
+            <a href="{{ route('estudiante.eventos.show', $evento) }}" class="back-link">
                 <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
+                Volver al Evento
             </a>
             @endisset
             <h2>
