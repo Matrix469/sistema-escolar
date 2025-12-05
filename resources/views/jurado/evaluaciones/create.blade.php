@@ -4,16 +4,24 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
     
+    .evaluacion-page {
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
+        min-height: 100vh;
+        font-family: 'Poppins', sans-serif;
+        padding: 2rem;
+    }
+    
+    /* Back link neuromórfico */
     .back-link {
         font-family: 'Poppins', sans-serif;
         display: inline-flex;
         align-items: center;
-        color: black;
+        color: #e89a3c;
         font-size: 0.875rem;
         font-weight: 500;
         margin-bottom: 1rem;
         padding: 0.5rem 1rem;
-        background: #FFEEE2;
+        background: rgba(255, 253, 244, 0.9);
         border-radius: 10px;
         box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
         transition: all 0.2s ease;
@@ -21,7 +29,7 @@
     }
     
     .back-link:hover {
-        color: #4f46e5;
+        color: #d98a2c;
         box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
         transform: translateY(-2px);
     }
@@ -31,16 +39,90 @@
         height: 1rem;
         margin-right: 0.5rem;
     }
-    .evaluacion-page {
-        background: linear-gradient(135deg, #FFFDF4 0%, #FFF8EE 100%);
-        min-height: 100vh;
+
+    /* Page header */
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c2c2c;
+        margin-bottom: 0.25rem;
+    }
+
+    .page-subtitle {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    /* Alerts neuromórficos */
+    .alert {
+        border-radius: 16px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+    }
+
+    .alert svg {
+        width: 1.5rem;
+        height: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .alert p {
+        margin: 0;
+        font-weight: 500;
         font-family: 'Poppins', sans-serif;
     }
+
+    .alert-success {
+        background: linear-gradient(135deg, rgba(209, 250, 229, 0.8), rgba(167, 243, 208, 0.8));
+    }
+
+    .alert-success svg {
+        color: #059669;
+    }
+
+    .alert-success p {
+        color: #059669;
+    }
+
+    .alert-error {
+        background: linear-gradient(135deg, rgba(254, 226, 226, 0.8), rgba(252, 211, 211, 0.8));
+    }
+
+    .alert-error svg {
+        color: #dc2626;
+    }
+
+    .alert-error p {
+        color: #dc2626;
+    }
+
+    .alert-info {
+        background: linear-gradient(135deg, rgba(219, 234, 254, 0.8), rgba(191, 219, 254, 0.8));
+    }
+
+    .alert-info svg {
+        color: #2563eb;
+    }
+
+    .alert-info p {
+        color: #1d4ed8;
+    }
+
+    .alert-info small {
+        font-size: 0.875rem;
+        color: #3b82f6;
+    }
     
+    /* Criterio card neuromórfica */
     .criterio-card {
-        background: linear-gradient(145deg, #ffffff, #fff8f0);
+        background: #FFEEE2;
         border-radius: 16px;
-        border: 1px solid rgba(232, 154, 60, 0.15);
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        padding: 1.25rem;
         transition: all 0.3s ease;
         position: relative;
         overflow: hidden;
@@ -53,12 +135,37 @@
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(90deg, #e89a3c, #f0bc7b);
+        background: linear-gradient(90deg, #e89a3c, #f5a847);
     }
     
     .criterio-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(232, 154, 60, 0.15);
+        box-shadow: 12px 12px 24px #e6d5c9, -12px -12px 24px #ffffff;
+    }
+
+    .criterio-header {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .criterio-info {
+        flex: 1;
+    }
+
+    .criterio-name {
+        font-weight: 600;
+        font-size: 1rem;
+        color: #2c2c2c;
+        font-family: 'Poppins', sans-serif;
+        margin-bottom: 0.25rem;
+    }
+
+    .criterio-desc {
+        font-size: 0.75rem;
+        color: #6b7280;
+        font-family: 'Poppins', sans-serif;
     }
     
     .ponderacion-badge {
@@ -71,7 +178,9 @@
         display: inline-flex;
         align-items: center;
         gap: 0.25rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        margin-left: 0.5rem;
+        flex-shrink: 0;
     }
     
     .ponderacion-badge svg {
@@ -80,8 +189,8 @@
     }
     
     .criterio-input {
-        background: linear-gradient(145deg, #fffdf4, #fff8ee);
-        border: 2px solid rgba(232, 154, 60, 0.2);
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
         border-radius: 12px;
         padding: 0.875rem 1rem;
         font-size: 1.25rem;
@@ -89,19 +198,23 @@
         text-align: center;
         color: #2c2c2c;
         width: 100%;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: inset 3px 3px 6px #e6d5c9, inset -3px -3px 6px #ffffff;
         transition: all 0.3s ease;
     }
     
     .criterio-input:focus {
         outline: none;
-        border-color: #e89a3c;
-        box-shadow: 0 0 0 3px rgba(232, 154, 60, 0.15);
+        box-shadow: inset 4px 4px 8px #e6d5c9, inset -4px -4px 8px #ffffff;
     }
     
     .criterio-input:disabled {
-        background: #f5f5f5;
-        color: #9ca3af;
+        opacity: 0.6;
         cursor: not-allowed;
+    }
+
+    .criterio-input::placeholder {
+        color: #9ca3af;
     }
     
     .score-indicator {
@@ -115,9 +228,10 @@
     .score-bar {
         flex: 1;
         height: 6px;
-        background: rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.6);
         border-radius: 3px;
         overflow: hidden;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
     }
     
     .score-fill {
@@ -125,7 +239,15 @@
         border-radius: 3px;
         transition: width 0.3s ease, background 0.3s ease;
     }
+
+    .score-indicator span {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #9ca3af;
+        font-family: 'Poppins', sans-serif;
+    }
     
+    /* Calificación Final - MANTENER OSCURO */
     .calificacion-final-card {
         background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
         border-radius: 20px;
@@ -133,6 +255,7 @@
         color: white;
         position: relative;
         overflow: hidden;
+        margin-top: 1.5rem;
     }
     
     .calificacion-final-card::before {
@@ -148,18 +271,19 @@
     .final-score {
         font-size: 3rem;
         font-weight: 800;
-        background: linear-gradient(135deg, #e89a3c, #f0bc7b);
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
     
+    /* Leyenda neuromórfica */
     .criterios-legend {
-        background: linear-gradient(145deg, #fff8ee, #ffffff);
-        border: 1px solid rgba(232, 154, 60, 0.2);
+        background: #FFEEE2;
         border-radius: 16px;
         padding: 1rem 1.5rem;
         margin-bottom: 1.5rem;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
     }
     
     .legend-item {
@@ -173,48 +297,73 @@
         width: 12px;
         height: 12px;
         border-radius: 50%;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
-    
-    .btn-guardar {
-        background: linear-gradient(135deg, #6b7280, #4b5563);
+
+    .legend-item span {
+        font-size: 0.875rem;
+        color: #6b7280;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Main card neuromórfica */
+    .neu-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .section-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
+        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
+    }
+
+    .section-icon svg {
+        width: 1.25rem;
+        height: 1.25rem;
         color: white;
-        padding: 0.875rem 2rem;
-        border-radius: 50px;
+    }
+
+    .section-title {
+        font-size: 1.125rem;
         font-weight: 600;
-        transition: all 0.3s ease;
-        border: none;
+        color: #2c2c2c;
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
     }
-    
-    .btn-guardar:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+
+    .section-subtitle {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
     }
-    
-    .btn-finalizar {
-        background: linear-gradient(135deg, #e89a3c, #d4842c);
-        color: white;
-        padding: 0.875rem 2rem;
-        border-radius: 50px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: none;
-    }
-    
-    .btn-finalizar:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(232, 154, 60, 0.4);
-    }
-    
+
+    /* Feedback cards */
     .feedback-card {
-        background: white;
+        background: rgba(255, 255, 255, 0.5);
         border-radius: 16px;
-        border: 1px solid rgba(0, 0, 0, 0.08);
         overflow: hidden;
+        box-shadow: inset 3px 3px 6px #e6d5c9, inset -3px -3px 6px #ffffff;
     }
     
     .feedback-header {
         padding: 1rem 1.5rem;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
         display: flex;
         align-items: center;
         gap: 0.75rem;
@@ -227,6 +376,43 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .feedback-icon svg {
+        width: 1.25rem;
+        height: 1.25rem;
+        color: white;
+    }
+
+    .feedback-icon-green {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .feedback-icon-orange {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .feedback-icon-gray {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+    }
+
+    .feedback-title {
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.95rem;
+    }
+
+    .feedback-title-green {
+        color: #059669;
+    }
+
+    .feedback-title-orange {
+        color: #d97706;
+    }
+
+    .feedback-title-gray {
+        color: #4b5563;
     }
     
     .feedback-textarea {
@@ -237,6 +423,7 @@
         font-family: 'Poppins', sans-serif;
         color: #2c2c2c;
         background: transparent;
+        font-size: 0.875rem;
     }
     
     .feedback-textarea:focus {
@@ -244,10 +431,69 @@
     }
     
     .feedback-textarea::placeholder {
-        color: #a4aeb7;
+        color: #9ca3af;
+    }
+
+    .feedback-textarea:disabled {
+        opacity: 0.6;
     }
     
-    /* Modal de Confirmación */
+    /* Botones neuromórficos */
+    .btn-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.9rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+
+    .btn-action svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    .btn-cancel {
+        background: rgba(255, 255, 255, 0.5);
+        color: #4b5563;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+    }
+
+    .btn-cancel:hover {
+        transform: translateY(-2px);
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+    }
+    
+    .btn-guardar {
+        background: linear-gradient(135deg, #6b7280, #4b5563);
+        color: white;
+        box-shadow: 4px 4px 8px rgba(107, 114, 128, 0.3);
+    }
+    
+    .btn-guardar:hover {
+        transform: translateY(-2px);
+        box-shadow: 6px 6px 12px rgba(107, 114, 128, 0.4);
+    }
+    
+    .btn-finalizar {
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
+        color: white;
+        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
+    }
+    
+    .btn-finalizar:hover {
+        transform: translateY(-2px);
+        box-shadow: 6px 6px 12px rgba(232, 154, 60, 0.4);
+    }
+    
+    /* Modal neuromórfico */
     .modal-overlay {
         position: fixed;
         top: 0;
@@ -271,12 +517,12 @@
     }
     
     .modal-content {
-        background: linear-gradient(145deg, #ffffff, #fff8f0);
+        background: #FFEEE2;
         border-radius: 20px;
         padding: 2rem;
         max-width: 420px;
         width: 90%;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(232, 154, 60, 0.1);
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
         transform: scale(0.9) translateY(20px);
         transition: all 0.3s ease;
     }
@@ -289,11 +535,12 @@
         width: 64px;
         height: 64px;
         border-radius: 50%;
-        background: linear-gradient(135deg, rgba(232, 154, 60, 0.15), rgba(232, 154, 60, 0.05));
+        background: linear-gradient(135deg, rgba(232, 154, 60, 0.2), rgba(232, 154, 60, 0.1));
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto 1.5rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
     }
     
     .modal-icon svg {
@@ -321,14 +568,14 @@
     }
     
     .modal-warning {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.2);
+        background: linear-gradient(135deg, rgba(254, 226, 226, 0.8), rgba(252, 211, 211, 0.8));
         border-radius: 10px;
         padding: 0.75rem 1rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
         margin-bottom: 1.5rem;
+        box-shadow: 4px 4px 8px rgba(239, 68, 68, 0.2);
     }
     
     .modal-warning svg {
@@ -342,6 +589,7 @@
         font-size: 0.8rem;
         color: #dc2626;
         font-weight: 500;
+        font-family: 'Poppins', sans-serif;
     }
     
     .modal-buttons {
@@ -351,45 +599,56 @@
     }
     
     .modal-btn-cancel {
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.5);
         color: #6b7280;
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
         font-size: 0.9rem;
         padding: 0.75rem 1.5rem;
-        border-radius: 50px;
-        border: 1px solid #e5e7eb;
+        border-radius: 20px;
+        border: none;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.05);
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
     }
     
     .modal-btn-cancel:hover {
-        background: #f3f4f6;
         transform: translateY(-2px);
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
     }
     
     .modal-btn-confirm {
-        background: linear-gradient(135deg, #e89a3c, #d4842c);
+        background: linear-gradient(135deg, #e89a3c, #f5a847);
         color: white;
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
         font-size: 0.9rem;
         padding: 0.75rem 1.5rem;
-        border-radius: 50px;
+        border-radius: 20px;
         border: none;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(232, 154, 60, 0.3);
+        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
     }
     
     .modal-btn-confirm:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(232, 154, 60, 0.4);
+        box-shadow: 6px 6px 12px rgba(232, 154, 60, 0.4);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .evaluacion-page {
+            padding: 1rem;
+        }
+
+        .final-score {
+            font-size: 2rem;
+        }
     }
 </style>
 
-<div class="evaluacion-page py-8 px-6 lg:px-12">
+<div class="evaluacion-page">
     <div class="max-w-6xl mx-auto">
         {{-- Header --}}
         <div class="mb-6">
@@ -399,37 +658,37 @@
                 </svg>
                 Volver al Equipo
             </a>
-            <h1 class="text-2xl font-bold" style="color: #2c2c2c;">Evaluación Final del Proyecto</h1>
-            <p class="mt-1" style="color: #6b7280;">{{ $equipo->nombre }} - {{ $proyecto->nombre ?? 'Sin proyecto' }}</p>
+            <h1 class="page-title">Evaluación Final del Proyecto</h1>
+            <p class="page-subtitle">{{ $equipo->nombre }} - {{ $proyecto->nombre ?? 'Sin proyecto' }}</p>
         </div>
 
         {{-- Alertas --}}
         @if(session('success'))
-            <div class="rounded-2xl p-4 mb-6 flex items-center gap-3" style="background-color: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3);">
-                <svg class="w-6 h-6 flex-shrink-0" style="color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="alert alert-success">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <p class="font-medium" style="color: #059669;">{{ session('success') }}</p>
+                <p>{{ session('success') }}</p>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="rounded-2xl p-4 mb-6 flex items-center gap-3" style="background-color: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3);">
-                <svg class="w-6 h-6 flex-shrink-0" style="color: #dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="alert alert-error">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <p class="font-medium" style="color: #dc2626;">{{ session('error') }}</p>
+                <p>{{ session('error') }}</p>
             </div>
         @endif
 
         @if($evaluacion->estado == 'Finalizada')
-            <div class="rounded-2xl p-4 mb-6 flex items-center gap-3" style="background-color: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3);">
-                <svg class="w-6 h-6 flex-shrink-0" style="color: #2563EB;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="alert alert-info">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div>
-                    <p class="font-semibold" style="color: #1D4ED8;">Esta evaluación ya ha sido finalizada</p>
-                    <p class="text-sm" style="color: #3B82F6;">No es posible realizar más modificaciones</p>
+                    <p>Esta evaluación ya ha sido finalizada</p>
+                    <small>No es posible realizar más modificaciones</small>
                 </div>
             </div>
         @endif
@@ -478,57 +737,55 @@
                     </svg>
                     <span class="font-semibold" style="color: #2c2c2c;">Sistema de Ponderación</span>
                 </div>
-                <p class="text-sm" style="color: #6b7280;">
+                <p class="text-sm" style="color: #6b7280; margin-bottom: 0.75rem;">
                     Cada criterio tiene un peso (%) que indica su importancia en la calificación final. 
                     La nota final se calcula automáticamente sumando cada calificación × su ponderación.
                 </p>
-                <div class="flex flex-wrap gap-4 mt-3">
+                <div class="flex flex-wrap gap-4">
                     <div class="legend-item">
                         <div class="legend-dot" style="background: #10b981;"></div>
-                        <span class="text-sm" style="color: #6b7280;">80-100: Excelente</span>
+                        <span>80-100: Excelente</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-dot" style="background: #f59e0b;"></div>
-                        <span class="text-sm" style="color: #6b7280;">60-79: Bueno</span>
+                        <span>60-79: Bueno</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-dot" style="background: #f97316;"></div>
-                        <span class="text-sm" style="color: #6b7280;">40-59: Regular</span>
+                        <span>40-59: Regular</span>
                     </div>
                     <div class="legend-item">
                         <div class="legend-dot" style="background: #ef4444;"></div>
-                        <span class="text-sm" style="color: #6b7280;">0-39: Insuficiente</span>
+                        <span>0-39: Insuficiente</span>
                     </div>
                 </div>
             </div>
 
-            {{-- Criterios de Evaluación Dinámicos --}}
-            <div class="rounded-2xl p-6 shadow-sm mb-6" style="background-color: #FFEFDC;">
-                <div class="flex items-center justify-between mb-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #e89a3c, #d4842c);">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <h2 class="text-lg font-semibold" style="color: #2c2c2c;">Criterios de Evaluación</h2>
-                            <p class="text-sm" style="color: #6b7280;">Califica cada criterio del 0 al 100</p>
-                        </div>
+            {{-- Criterios de Evaluación --}}
+            <div class="neu-card">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="section-title">Criterios de Evaluación</h2>
+                        <p class="section-subtitle">Califica cada criterio del 0 al 100</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    @foreach($criterios as $index => $criterio)
-                        <div class="criterio-card p-5">
-                            <div class="flex items-start justify-between mb-4">
-                                <div class="flex-1">
-                                    <h3 class="font-semibold text-base" style="color: #2c2c2c;">{{ $criterio->nombre }}</h3>
+                    @foreach($criterios as $criterio)
+                        <div class="criterio-card">
+                            <div class="criterio-header">
+                                <div class="criterio-info">
+                                    <h3 class="criterio-name">{{ $criterio->nombre }}</h3>
                                     @if($criterio->descripcion)
-                                        <p class="text-xs mt-1" style="color: #6b7280;">{{ $criterio->descripcion }}</p>
+                                        <p class="criterio-desc">{{ $criterio->descripcion }}</p>
                                     @endif
                                 </div>
-                                <div class="ponderacion-badge ml-2">
+                                <div class="ponderacion-badge">
                                     <svg fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
                                         <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
@@ -551,13 +808,13 @@
                                        {{ $evaluacion->estado == 'Finalizada' ? 'disabled' : '' }}>
                                 
                                 <div class="score-indicator">
-                                    <span class="text-xs font-medium" style="color: #9ca3af;">0</span>
+                                    <span>0</span>
                                     <div class="score-bar">
                                         <div class="score-fill" 
                                              :style="'width: ' + (criterios[{{ $criterio->id_criterio }}] || 0) + '%; background: ' + getScoreColor(criterios[{{ $criterio->id_criterio }}])">
                                         </div>
                                     </div>
-                                    <span class="text-xs font-medium" style="color: #9ca3af;">100</span>
+                                    <span>100</span>
                                 </div>
                             </div>
                             
@@ -568,8 +825,8 @@
                     @endforeach
                 </div>
 
-                {{-- Calificación Final Preview --}}
-                <div class="calificacion-final-card mt-6">
+                {{-- Calificación Final Preview - MANTENER OSCURO --}}
+                <div class="calificacion-final-card">
                     <div class="flex items-center justify-between relative z-10">
                         <div>
                             <p class="text-sm opacity-80">Calificación Final Calculada</p>
@@ -584,29 +841,29 @@
             </div>
 
             {{-- Retroalimentación --}}
-            <div class="rounded-2xl p-6 shadow-sm mb-6" style="background-color: #FFEFDC;">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: linear-gradient(135deg, #e89a3c, #d4842c);">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="neu-card">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-lg font-semibold" style="color: #2c2c2c;">Retroalimentación</h2>
-                        <p class="text-sm" style="color: #6b7280;">Comparte tus comentarios con el equipo</p>
+                        <h2 class="section-title">Retroalimentación</h2>
+                        <p class="section-subtitle">Comparte tus comentarios con el equipo</p>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {{-- Fortalezas --}}
                     <div class="feedback-card">
-                        <div class="feedback-header" style="background: rgba(16, 185, 129, 0.1);">
-                            <div class="feedback-icon" style="background: #10b981;">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="feedback-header">
+                            <div class="feedback-icon feedback-icon-green">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                 </svg>
                             </div>
-                            <span class="font-semibold" style="color: #059669;">Fortalezas del Proyecto</span>
+                            <span class="feedback-title feedback-title-green">Fortalezas del Proyecto</span>
                         </div>
                         <textarea name="comentarios_fortalezas" rows="4" class="feedback-textarea"
                                   placeholder="¿Qué aspectos destacan positivamente del proyecto?"
@@ -615,13 +872,13 @@
 
                     {{-- Áreas de Mejora --}}
                     <div class="feedback-card">
-                        <div class="feedback-header" style="background: rgba(245, 158, 11, 0.1);">
-                            <div class="feedback-icon" style="background: #f59e0b;">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="feedback-header">
+                            <div class="feedback-icon feedback-icon-orange">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
                                 </svg>
                             </div>
-                            <span class="font-semibold" style="color: #d97706;">Áreas de Mejora</span>
+                            <span class="feedback-title feedback-title-orange">Áreas de Mejora</span>
                         </div>
                         <textarea name="comentarios_areas_mejora" rows="4" class="feedback-textarea"
                                   placeholder="¿Qué aspectos podría mejorar el equipo?"
@@ -630,13 +887,13 @@
 
                     {{-- Comentarios Generales --}}
                     <div class="feedback-card lg:col-span-2">
-                        <div class="feedback-header" style="background: rgba(107, 114, 128, 0.1);">
-                            <div class="feedback-icon" style="background: #6b7280;">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="feedback-header">
+                            <div class="feedback-icon feedback-icon-gray">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
                             </div>
-                            <span class="font-semibold" style="color: #4b5563;">Comentarios Generales</span>
+                            <span class="feedback-title feedback-title-gray">Comentarios Generales</span>
                         </div>
                         <textarea name="comentarios_generales" rows="3" class="feedback-textarea"
                                   placeholder="Cualquier otro comentario u observación..."
@@ -649,22 +906,21 @@
             @if($evaluacion->estado != 'Finalizada')
                 <div class="flex flex-col sm:flex-row justify-end gap-3">
                     <a href="{{ route('jurado.eventos.equipo_evento', [$inscripcion->evento, $equipo]) }}"
-                       class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold transition-all"
-                       style="background: white; border: 1px solid #e5e7eb; color: #4b5563;">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="btn-action btn-cancel">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                         Cancelar
                     </a>
-                    <button type="submit" name="finalizar" value="0" class="btn-guardar inline-flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button type="submit" name="finalizar" value="0" class="btn-action btn-guardar">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
                         </svg>
                         Guardar Borrador
                     </button>
-                    <button type="button" class="btn-finalizar inline-flex items-center justify-center gap-2"
+                    <button type="button" class="btn-action btn-finalizar"
                             onclick="openFinalizarModal()">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                         Finalizar Evaluación
@@ -673,8 +929,8 @@
             @else
                 <div class="flex justify-end">
                     <a href="{{ route('jurado.eventos.equipo_evento', [$inscripcion->evento, $equipo]) }}"
-                       class="btn-finalizar inline-flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                       class="btn-action btn-finalizar">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                         </svg>
                         Volver al Equipo
@@ -727,14 +983,12 @@
     }
     
     function submitFinalizar() {
-        // Obtener el formulario por ID
         const form = document.getElementById('evaluacionForm');
         if (!form) {
             console.error('Formulario no encontrado');
             return;
         }
         
-        // Verificar si ya existe el input hidden
         let input = form.querySelector('input[name="finalizar"]');
         if (!input) {
             input = document.createElement('input');
@@ -744,14 +998,10 @@
         }
         input.value = '1';
         
-        // Cerrar el modal
         closeFinalizarModal();
-        
-        // Enviar el formulario
         form.submit();
     }
     
-    // Cerrar con tecla Escape
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeFinalizarModal();

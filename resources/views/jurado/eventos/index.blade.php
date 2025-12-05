@@ -4,16 +4,17 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 
+    /* Back Link Neuromórfico */
     .back-link {
         font-family: 'Poppins', sans-serif;
         display: inline-flex;
         align-items: center;
-        color: black;
+        color: #e89a3c;
         font-size: 0.875rem;
         font-weight: 500;
         margin-bottom: 1rem;
         padding: 0.5rem 1rem;
-        background: #FFEEE2;
+        background: rgba(255, 253, 244, 0.9);
         border-radius: 10px;
         box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
         transition: all 0.2s ease;
@@ -21,7 +22,7 @@
     }
     
     .back-link:hover {
-        color: #4f46e5;
+        color: #d98a2c;
         box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
         transform: translateY(-2px);
     }
@@ -32,9 +33,9 @@
         margin-right: 0.5rem;
     }
 
-    /* Fondo degradado - igual que show */
+    /* Fondo degradado neuromórfico */
     .eventos-page {
-        background: linear-gradient(135deg, #fef3e2 0%, #fde8d0 100%);
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
         min-height: 100vh;
         font-family: 'Poppins', sans-serif;
         padding: 2rem;
@@ -50,10 +51,10 @@
     
     .eventos-page p {
         font-family: 'Poppins', sans-serif;
-        color: #5c5c5c;
+        color: #6b6b6b;
     }
     
-    /* Section headers - estilo show */
+    /* Section headers neuromórficos */
     .section-header {
         display: flex;
         align-items: center;
@@ -62,7 +63,7 @@
         padding: 1rem 1.5rem;
         background: linear-gradient(135deg, #e89a3c, #f5a847);
         border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(232, 154, 60, 0.3);
+        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
     }
     
     .section-header svg {
@@ -79,40 +80,44 @@
         margin: 0;
     }
     
-    /* Alert info */
+    /* Alert info neuromórfico */
     .info-alert {
-        background: rgba(255, 255, 255, 0.9);
-        border-left: 4px solid #e89a3c;
+        background: linear-gradient(135deg, rgba(254, 240, 138, 0.8), rgba(252, 211, 77, 0.8));
+        border-left: 4px solid #f59e0b;
         padding: 1rem 1.5rem;
-        border-radius: 0 15px 15px 0;
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        backdrop-filter: blur(10px);
     }
     
     .info-alert p {
         font-family: 'Poppins', sans-serif;
-        color: #d97706;
+        color: #92400e;
         margin: 0;
+        font-weight: 500;
     }
     
-    /* Evento card - estilo show */
+    /* Evento card neuromórfica */
     .evento-card {
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
+        background: #FFEEE2;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        border-radius: 20px;
         overflow: hidden;
         transition: all 0.3s ease;
         position: relative;
+        border: none;
     }
     
     .evento-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.12), -3px -3px 10px rgba(255, 255, 255, 1);
+        transform: translateY(-5px);
+        box-shadow: 12px 12px 24px #e6d5c9, -12px -12px 24px #ffffff;
     }
     
     .evento-card img {
         height: 200px;
         width: 100%;
         object-fit: cover;
+        border-radius: 20px 20px 0 0;
     }
     
     .evento-card h4 {
@@ -120,35 +125,38 @@
         color: #2c2c2c;
         font-weight: 700;
         font-size: 1.1rem;
+        margin: 0;
     }
     
     .evento-card p {
         font-family: 'Poppins', sans-serif;
-        color: #5c5c5c;
+        color: #6b6b6b;
         font-size: 0.875rem;
+        margin: 0;
     }
     
     .evento-card .p-6 {
-        background: rgba(254, 243, 226, 0.5);
+        padding: 1.5rem;
+        background: #FFEEE2;
     }
     
-    /* Badge asignado - estilo show */
+    /* Badge asignado */
     .asignado-badge {
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
+        top: 1rem;
+        right: 1rem;
         background: linear-gradient(135deg, #10b981, #059669);
         color: #ffffff;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         font-weight: 600;
-        padding: 0.5rem 1rem;
-        text-align: center;
+        padding: 0.4rem 0.85rem;
+        border-radius: 20px;
         z-index: 10;
         font-family: 'Poppins', sans-serif;
+        box-shadow: 4px 4px 8px rgba(16, 185, 129, 0.3);
     }
     
-    /* Badge de estado - estilo show */
+    /* Badge de estado neuromórfico */
     .status-badge {
         font-family: 'Poppins', sans-serif;
         padding: 0.35rem 0.75rem;
@@ -160,44 +168,75 @@
     .status-activo {
         background: linear-gradient(135deg, #e89a3c, #f5a847);
         color: #ffffff;
+        box-shadow: 2px 2px 4px rgba(232, 154, 60, 0.3);
     }
     
     .status-default {
-        background: rgba(254, 243, 226, 0.8);
+        background: rgba(255, 255, 255, 0.5);
         color: #d4a056;
-        border: 1px solid rgba(232, 154, 60, 0.3);
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
     }
     
-    /* Empty state - estilo show */
+    /* Empty state neuromórfico */
     .empty-state {
         text-align: center;
         padding: 3rem 2rem;
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 15px;
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9);
+        background: #FFEEE2;
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
     }
     
     .empty-state svg {
         width: 4rem;
         height: 4rem;
-        color: #d4a056;
+        color: #e89a3c;
         margin: 0 auto 1rem;
-        opacity: 0.6;
+        opacity: 0.4;
     }
     
     .empty-state p {
         font-family: 'Poppins', sans-serif;
-        color: #5c5c5c;
+        color: #6b6b6b;
         font-size: 0.95rem;
     }
     
-    /* Page title - Index */
+    /* Page title */
     .eventos-page-title {
         font-family: 'Poppins', sans-serif;
         font-size: 2rem;
         font-weight: 700;
         color: #2c2c2c;
         margin-bottom: 2rem;
+    }
+
+    /* Grid de eventos */
+    .eventos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
+
+    /* Card header con info */
+    .card-header-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .eventos-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .eventos-page {
+            padding: 1rem;
+        }
+
+        .eventos-page-title {
+            font-size: 1.5rem;
+        }
     }
 </style>
 
@@ -228,24 +267,35 @@
                 <h3>Mis Eventos Asignados</h3>
             </div>
             @if($misEventosInscritos->isNotEmpty())
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="eventos-grid">
                     @foreach ($misEventosInscritos as $evento)
                         <div class="evento-card">
                             <div class="asignado-badge">
-                                Asignado
+                                ✓ Asignado
                             </div>
                             <a href="{{ route('jurado.eventos.show', $evento) }}">
-                                <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                                @if($evento->ruta_imagen)
+                                    <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                                @else
+                                    <div style="height: 200px; background: linear-gradient(135deg, #2c2c2c, #1a1a1a); display: flex; align-items: center; justify-content: center;">
+                                        <svg style="width: 4rem; height: 4rem; color: rgba(232, 154, 60, 0.3);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                @endif
                             </a>
                             <div class="p-6">
-                                <div class="flex items-center justify-between">
+                                <div class="card-header-info">
                                     <h4>{{ $evento->nombre }}</h4>
                                     <span class="status-badge 
                                         @if ($evento->estado == 'Activo') status-activo @else status-default @endif">
                                         {{ $evento->estado }}
                                     </span>
                                 </div>
-                                <p class="mt-1">
+                                <p style="margin-top: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem; display: inline; vertical-align: middle; color: #e89a3c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
                                     Finaliza: {{ $evento->fecha_fin->format('d M, Y') }}
                                 </p>
                             </div>
@@ -271,15 +321,26 @@
                 <h3>Eventos Activos Disponibles</h3>
             </div>
             @if($eventosActivos->isNotEmpty())
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="eventos-grid">
                     @foreach ($eventosActivos as $evento)
                         <div class="evento-card">
                             <a href="{{ route('jurado.eventos.show', $evento) }}">
-                                <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                                @if($evento->ruta_imagen)
+                                    <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                                @else
+                                    <div style="height: 200px; background: linear-gradient(135deg, #2c2c2c, #1a1a1a); display: flex; align-items: center; justify-content: center;">
+                                        <svg style="width: 4rem; height: 4rem; color: rgba(232, 154, 60, 0.3);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                @endif
                             </a>
                             <div class="p-6">
                                 <h4>{{ $evento->nombre }}</h4>
-                                <p class="mt-1">
+                                <p style="margin-top: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem; display: inline; vertical-align: middle; color: #e89a3c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
                                     Finaliza: {{ $evento->fecha_fin->format('d M, Y') }}
                                 </p>
                             </div>
@@ -305,15 +366,26 @@
                 <h3>Próximos Eventos</h3>
             </div>
             @if($eventosProximos->isNotEmpty())
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="eventos-grid">
                     @foreach ($eventosProximos as $evento)
                         <div class="evento-card">
                             <a href="{{ route('jurado.eventos.show', $evento) }}">
-                                <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                                @if($evento->ruta_imagen)
+                                    <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                                @else
+                                    <div style="height: 200px; background: linear-gradient(135deg, #2c2c2c, #1a1a1a); display: flex; align-items: center; justify-content: center;">
+                                        <svg style="width: 4rem; height: 4rem; color: rgba(232, 154, 60, 0.3);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                @endif
                             </a>
                             <div class="p-6">
                                 <h4>{{ $evento->nombre }}</h4>
-                                <p class="mt-1">
+                                <p style="margin-top: 0.5rem;">
+                                    <svg style="width: 1rem; height: 1rem; display: inline; vertical-align: middle; color: #e89a3c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
                                     Inicia: {{ $evento->fecha_inicio->format('d M, Y') }}
                                 </p>
                             </div>

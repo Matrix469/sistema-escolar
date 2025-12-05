@@ -4,119 +4,123 @@
 
 @section('content')
 <style>
-    /* Contenedor principal */
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    /* Contenedor principal neuromórfico */
     .constancias-container {
         max-width: 1200px;
         margin: 0 auto;
-        margin-top: 50px;
-        padding: 30px 20px;
-        background: #FFF5ED;
-        min-height: 80%;
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.4s ease;
-        box-shadow: 8px 8px 16px rgba(230, 213, 201, 0.6);
+        padding: 2rem 1rem;
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
+        min-height: 100vh;
+        font-family: 'Poppins', sans-serif;
     }
+
+    /* Back button neuromórfico */
     .back-btn {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 253, 244, 0.9);
         color: #e89a3c;
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
         font-size: 0.9rem;
         padding: 0.75rem 1.25rem;
-        border-radius: 10px;
+        border-radius: 12px;
         text-decoration: none;
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9);
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
         transition: all 0.3s ease;
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
 
     .back-btn:hover {
-        background: linear-gradient(135deg, #e89a3c, #f5a847);
-        color: white;
+        color: #d98a2c;
         transform: translateY(-2px);
-        box-shadow: 4px 4px 15px rgba(232, 154, 60, 0.3), -2px -2px 8px rgba(255, 255, 255, 0.9);
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
     }
 
     .back-btn:hover svg path {
-        stroke: white;
+        stroke: #d98a2c;
     }
 
     .back-btn svg {
         width: 20px;
         height: 20px;
     }
+
+    .back-btn svg path {
+        transition: all 0.3s ease;
+    }
+
     /* Título principal */
     .constancias-title {
         font-family: 'Poppins', sans-serif;
-        font-size: 2.5rem;
+        font-size: 2rem;
         font-weight: 700;
         color: #2c2c2c;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 0.75rem;
         letter-spacing: -0.5px;
-        position: relative;
-        padding-bottom: 15px;
-    }
-
-    .constancias-title::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 4px;
-        background: linear-gradient(to right, #e89a3c, #f5a847);
-        border-radius: 2px;
     }
 
     /* Subtítulo */
     .constancias-subtitle {
         font-family: 'Poppins', sans-serif;
-        font-size: 1.1rem;
-        color: #6b6b6b;
+        font-size: 1rem;
+        color: #6b7280;
         text-align: center;
-        margin-bottom: 50px;
+        margin-bottom: 3rem;
         font-weight: 400;
-        opacity: 0.9;
     }
 
     /* Grid de constancias */
     .constancias-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 30px;
-        margin-top: 30px;
+        gap: 2rem;
+        margin-top: 2rem;
     }
 
-    /* Tarjeta individual */
+    /* Tarjeta individual neuromórfica */
     .constancia-card {
         background: #FFEEE2;
         border-radius: 20px;
         overflow: hidden;
         transition: all 0.4s ease;
-        position: relative;
-        border: 1px solid rgba(232, 154, 60, 0.1);
-        box-shadow: 8px 8px 16px rgba(230, 213, 201, 0.6),
-                   -8px -8px 16px rgba(255, 255, 255, 0.8);
-        cursor: pointer;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        animation: fadeInUp 0.5s ease forwards;
+        opacity: 0;
     }
 
     .constancia-card:hover {
         transform: translateY(-5px);
-        box-shadow: 12px 12px 24px rgba(230, 213, 201, 0.7),
-                   -12px -12px 24px rgba(255, 255, 255, 0.9);
-        border-color: rgba(232, 154, 60, 0.3);
+        box-shadow: 12px 12px 24px #e6d5c9, -12px -12px 24px #ffffff;
     }
 
-    /* Encabezado de tarjeta */
+    /* Animación de entrada */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .constancia-card:nth-child(1) { animation-delay: 0.1s; }
+    .constancia-card:nth-child(2) { animation-delay: 0.2s; }
+    .constancia-card:nth-child(3) { animation-delay: 0.3s; }
+    .constancia-card:nth-child(4) { animation-delay: 0.4s; }
+    .constancia-card:nth-child(5) { animation-delay: 0.5s; }
+    .constancia-card:nth-child(6) { animation-delay: 0.6s; }
+
+    /* Encabezado de tarjeta - MANTENER GRADIENTE */
     .constancia-card-header {
         background: linear-gradient(135deg, #e89a3c, #f5a847);
-        padding: 25px;
+        padding: 1.5rem;
         position: relative;
         overflow: hidden;
     }
@@ -139,7 +143,7 @@
 
     .constancia-card-title {
         font-family: 'Poppins', sans-serif;
-        font-size: 1.4rem;
+        font-size: 1.25rem;
         font-weight: 600;
         color: white;
         margin: 0;
@@ -148,36 +152,35 @@
         z-index: 1;
     }
 
-    /* Badge de estado */
+    /* Badge de estado (si se necesita) */
     .constancia-badge {
         position: absolute;
-        top: 20px;
-        right: 20px;
+        top: 1.25rem;
+        right: 1.25rem;
         background: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(10px);
-        padding: 5px 15px;
+        padding: 0.35rem 0.85rem;
         border-radius: 20px;
         font-family: 'Poppins', sans-serif;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         font-weight: 500;
         color: white;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     /* Cuerpo de tarjeta */
     .constancia-card-body {
-        padding: 30px;
-        background: #FFEEE2;
+        padding: 1.5rem;
     }
 
     .constancia-card-description {
         font-family: 'Poppins', sans-serif;
-        font-size: 1rem;
+        font-size: 0.9rem;
         color: #2c2c2c;
         line-height: 1.6;
-        margin-bottom: 25px;
-        opacity: 0.9;
+        margin-bottom: 1.5rem;
     }
 
     /* Información adicional */
@@ -185,40 +188,40 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 25px;
-        padding-bottom: 20px;
-        border-bottom: 1px solid rgba(232, 154, 60, 0.2);
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(232, 154, 60, 0.15);
     }
 
     .constancia-date {
         font-family: 'Poppins', sans-serif;
-        font-size: 0.95rem;
-        color: #6b6b6b;
+        font-size: 0.875rem;
+        color: #6b7280;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 0.5rem;
     }
 
     .constancia-date i {
         color: #e89a3c;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
     .constancia-participants {
         font-family: 'Poppins', sans-serif;
-        font-size: 0.95rem;
-        color: #6b6b6b;
+        font-size: 0.875rem;
+        color: #6b7280;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 0.5rem;
     }
 
     .constancia-participants i {
         color: #e89a3c;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
 
-    /* Botón de acción */
+    /* Botón de acción neuromórfico */
     .constancia-action {
         text-align: center;
     }
@@ -227,18 +230,18 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
+        gap: 0.625rem;
         background: linear-gradient(135deg, #e89a3c, #f5a847);
         color: white;
         border: none;
-        padding: 12px 30px;
-        border-radius: 50px;
+        padding: 0.75rem 1.875rem;
+        border-radius: 20px;
         font-family: 'Poppins', sans-serif;
-        font-size: 1rem;
-        font-weight: 500;
+        font-size: 0.95rem;
+        font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(232, 154, 60, 0.3);
+        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
         width: 100%;
         position: relative;
         overflow: hidden;
@@ -257,7 +260,7 @@
 
     .constancia-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(232, 154, 60, 0.4);
+        box-shadow: 6px 6px 12px rgba(232, 154, 60, 0.4);
         color: white;
         text-decoration: none;
     }
@@ -267,19 +270,36 @@
     }
 
     .constancia-btn i {
-        font-size: 1.1rem;
+        font-size: 1rem;
         transition: transform 0.3s ease;
     }
 
     .constancia-btn:hover i {
-        transform: translateX(5px);
+        transform: translateX(3px);
+    }
+
+    /* Botón deshabilitado */
+    .constancia-btn:disabled {
+        background: linear-gradient(135deg, rgba(156, 163, 175, 0.8), rgba(209, 213, 219, 0.8));
+        color: #4b5563;
+        box-shadow: 4px 4px 8px rgba(156, 163, 175, 0.3);
+        cursor: not-allowed;
+    }
+
+    .constancia-btn:disabled:hover {
+        transform: none;
+        box-shadow: 4px 4px 8px rgba(156, 163, 175, 0.3);
+    }
+
+    .constancia-btn:disabled i {
+        transform: none !important;
     }
 
     /* Estado cuando no hay eventos */
     .no-constancias {
         grid-column: 1 / -1;
         text-align: center;
-        padding: 60px 20px;
+        padding: 4rem 2rem;
         background: #FFEEE2;
         border-radius: 20px;
         box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
@@ -288,67 +308,85 @@
     .no-constancias i {
         font-size: 4rem;
         color: #e89a3c;
-        margin-bottom: 20px;
-        opacity: 0.5;
+        margin-bottom: 1.5rem;
+        opacity: 0.4;
     }
 
     .no-constancias h3 {
         font-family: 'Poppins', sans-serif;
         color: #2c2c2c;
         font-size: 1.5rem;
-        margin-bottom: 10px;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
     }
 
     .no-constancias p {
         font-family: 'Poppins', sans-serif;
-        color: #6b6b6b;
+        color: #6b7280;
         font-size: 1rem;
+        margin: 0;
     }
 
     /* Responsive */
     @media (max-width: 768px) {
+        .constancias-container {
+            padding: 1.5rem 0.75rem;
+        }
+
         .constancias-grid {
             grid-template-columns: 1fr;
-            gap: 20px;
+            gap: 1.5rem;
         }
 
         .constancias-title {
-            font-size: 2rem;
+            font-size: 1.75rem;
         }
 
-        .constancia-card {
-            margin: 0 10px;
+        .constancias-subtitle {
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .constancia-card-header {
+            padding: 1.25rem;
+        }
+
+        .constancia-card-title {
+            font-size: 1.125rem;
         }
 
         .constancia-info {
             flex-direction: column;
-            gap: 15px;
+            gap: 0.75rem;
             align-items: flex-start;
         }
-    }
 
-    /* Efecto de carga */
-    @keyframes fadeInUp {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
+        .no-constancias {
+            padding: 3rem 1.5rem;
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
+
+        .no-constancias i {
+            font-size: 3rem;
+        }
+
+        .no-constancias h3 {
+            font-size: 1.25rem;
+        }
+
+        .no-constancias p {
+            font-size: 0.9rem;
         }
     }
 
-    .constancia-card {
-        animation: fadeInUp 0.5s ease forwards;
-        opacity: 0;
-    }
+    @media (max-width: 480px) {
+        .constancias-grid {
+            grid-template-columns: 1fr;
+        }
 
-    .constancia-card:nth-child(1) { animation-delay: 0.1s; }
-    .constancia-card:nth-child(2) { animation-delay: 0.2s; }
-    .constancia-card:nth-child(3) { animation-delay: 0.3s; }
-    .constancia-card:nth-child(4) { animation-delay: 0.4s; }
-    .constancia-card:nth-child(5) { animation-delay: 0.5s; }
+        .constancia-card {
+            margin: 0;
+        }
+    }
 </style>
 
 <div class="constancias-container">
@@ -358,6 +396,7 @@
         </svg>
         Volver al Dashboard
     </a>
+    
     <h1 class="constancias-title">Constancias Disponibles</h1>
     <p class="constancias-subtitle">Eventos en los que has evaluado y puedes generar constancia</p>
 
@@ -366,7 +405,6 @@
             <div class="constancia-card">
                 <div class="constancia-card-header">
                     <h3 class="constancia-card-title">{{ $evento->nombre }}</h3>
-                    
                 </div>
                 <div class="constancia-card-body">
                     <p class="constancia-card-description">
@@ -387,7 +425,7 @@
                                 <i class="fas fa-file-pdf"></i> Ver Constancia
                             </a>
                         @else
-                            <button class="constancia-btn" style="opacity: 0.7; cursor: not-allowed;" disabled>
+                            <button class="constancia-btn" disabled>
                                 <i class="fas fa-clock"></i> Constancia en Proceso
                             </button>
                         @endif
@@ -406,6 +444,4 @@
 
 <!-- Font Awesome para iconos -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<!-- Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 @endsection

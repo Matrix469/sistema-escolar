@@ -756,7 +756,7 @@
         }
 
         .welcome-highlight {
-            color: var(--color-primary);
+            color: #292929ff;
         }
     </style>
 

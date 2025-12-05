@@ -1,10 +1,13 @@
 @extends('jurado.layouts.app')
 @section('content')
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
     .evento-detail-page {
         min-height: 100vh;
-        background: linear-gradient(135deg, #fef3e2 0%, #fde8d0 100%);
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
         padding: 2rem;
+        font-family: 'Poppins', sans-serif;
     }
 
     .evento-detail-container {
@@ -12,16 +15,37 @@
         margin: 0 auto;
     }
 
-    /* Page Header */
-    .page-header {
-        margin-bottom: 2rem;
+    /* Botón volver neuromórfico */
+    .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: rgba(255, 253, 244, 0.9);
+        color: #e89a3c;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        text-decoration: none;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        transition: all 0.3s ease;
+        margin-bottom: 1.5rem;
     }
 
-    .page-header h1 {
-        font-family: 'Poppins', sans-serif;
-        font-size: 2rem;
-        font-weight: 700;
-        color: #2c2c2c;
+    .back-btn:hover {
+        color: #d98a2c;
+        transform: translateY(-2px);
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+    }
+
+    .back-btn svg path {
+        stroke: #e89a3c;
+        transition: all 0.3s ease;
+    }
+
+    .back-btn:hover svg path {
+        stroke: #d98a2c;
     }
 
     /* Header con imagen del evento */
@@ -34,12 +58,12 @@
 
     .evento-imagen {
         position: relative;
-        border-radius: 15px;
+        border-radius: 20px;
         overflow: hidden;
         flex-shrink: 0;
         width: 380px;
-        background: rgba(255, 255, 255, 0.9);
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9);
+        background: #FFEEE2;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
     }
 
     .evento-imagen img {
@@ -61,10 +85,11 @@
         font-family: 'Poppins', sans-serif;
         font-weight: 600;
         font-size: 0.95rem;
+        box-shadow: 0 -4px 8px rgba(232, 154, 60, 0.2);
     }
 
     .status-badge-large.proximo {
-        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        background: linear-gradient(135deg, #6366f1, #818cf8);
     }
 
     /* Descripción del evento */
@@ -83,10 +108,10 @@
     }
 
     .descripcion-card {
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
+        background: #FFEEE2;
+        border-radius: 20px;
         overflow: hidden;
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9);
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
         flex: 1;
     }
 
@@ -102,10 +127,34 @@
 
     .descripcion-body {
         padding: 1.5rem;
-        color: #5c5c5c;
+        color: #6b6b6b;
         line-height: 1.7;
         font-family: 'Poppins', sans-serif;
         font-size: 0.95rem;
+    }
+
+    /* Estado del jurado */
+    .jurado-status {
+        margin-top: 1rem;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.85rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+    }
+
+    .jurado-status.no-asignado {
+        background: linear-gradient(135deg, rgba(254, 240, 138, 0.8), rgba(252, 211, 77, 0.8));
+        color: #92400e;
+    }
+
+    .jurado-status.asignado {
+        background: linear-gradient(135deg, rgba(209, 250, 229, 0.8), rgba(167, 243, 208, 0.8));
+        color: #065f46;
     }
 
     /* Sección de equipos */
@@ -121,7 +170,7 @@
         padding: 1rem 1.5rem;
         background: linear-gradient(135deg, #e89a3c, #f5a847);
         border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(232, 154, 60, 0.3);
+        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
     }
 
     .section-header svg {
@@ -140,12 +189,13 @@
 
     .section-badge {
         margin-left: auto;
-        padding: 0.25rem 0.75rem;
-        background: rgba(255, 255, 255, 0.9);
+        padding: 0.35rem 0.85rem;
+        background: rgba(255, 255, 255, 0.95);
         border-radius: 20px;
         font-size: 0.75rem;
         font-weight: 600;
         color: #e89a3c;
+        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .equipos-grid {
@@ -154,22 +204,22 @@
         gap: 1rem;
     }
 
-    /* Lista de equipos - estilo de tarjeta */
+    /* Lista de equipos neuromórfica */
     .equipo-item {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr auto;
         align-items: center;
         gap: 1rem;
         padding: 1rem 1.5rem;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 15px;
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9);
+        background: #FFEEE2;
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
         transition: all 0.3s ease;
     }
 
     .equipo-item:hover {
-        transform: translateY(-2px);
-        box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.12), -3px -3px 10px rgba(255, 255, 255, 1);
+        transform: translateY(-3px);
+        box-shadow: 12px 12px 24px #e6d5c9, -12px -12px 24px #ffffff;
     }
 
     .equipo-field {
@@ -177,21 +227,22 @@
         align-items: center;
         gap: 0.75rem;
         padding: 0.75rem 1rem;
-        background: rgba(254, 243, 226, 0.8);
+        background: rgba(255, 255, 255, 0.4);
         border-radius: 10px;
+        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
     }
 
     .equipo-field svg {
         width: 1.25rem;
         height: 1.25rem;
-        color: #d4a056;
+        color: #e89a3c;
         flex-shrink: 0;
     }
 
     .equipo-field span {
         font-family: 'Poppins', sans-serif;
         font-size: 0.9rem;
-        color: #5c5c5c;
+        color: #6b6b6b;
         font-weight: 500;
     }
 
@@ -213,13 +264,13 @@
         font-weight: 600;
         text-decoration: none;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(232, 154, 60, 0.3);
+        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
         white-space: nowrap;
     }
 
     .btn-explorar:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(232, 154, 60, 0.4);
+        box-shadow: 6px 6px 12px rgba(232, 154, 60, 0.4);
         color: white;
     }
 
@@ -228,87 +279,39 @@
         height: 1rem;
     }
 
+    /* Empty state neuromórfico */
     .empty-state {
         text-align: center;
         padding: 3rem 2rem;
-        background: rgba(255, 255, 255, 0.7);
-        border-radius: 15px;
+        background: #FFEEE2;
+        border-radius: 20px;
         margin-top: 1rem;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
     }
 
     .empty-state svg {
         width: 4rem;
         height: 4rem;
-        color: #d1d5db;
+        color: #e89a3c;
         margin-bottom: 1rem;
+        opacity: 0.4;
     }
 
     .empty-state h3 {
         font-family: 'Poppins', sans-serif;
         font-size: 1.25rem;
         font-weight: 600;
-        color: #6b7280;
+        color: #2c2c2c;
         margin-bottom: 0.5rem;
     }
 
     .empty-state p {
         color: #9ca3af;
         font-size: 0.9rem;
-    }
-
-    .jurado-status {
-        margin-top: 1rem;
-        padding: 0.75rem 1rem;
-        border-radius: 10px;
         font-family: 'Poppins', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
     }
 
-    .jurado-status.no-asignado {
-        background: rgba(251, 191, 36, 0.15);
-        color: #d97706;
-        border: 1px solid rgba(251, 191, 36, 0.3);
-    }
-
-    .jurado-status.asignado {
-        background: rgba(16, 185, 129, 0.15);
-        color: #059669;
-        border: 1px solid rgba(16, 185, 129, 0.3);
-    }
-
-    /* Botón volver */
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 255, 255, 0.9);
-        color: #e89a3c;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        font-size: 0.9rem;
-        padding: 0.75rem 1.25rem;
-        border-radius: 10px;
-        text-decoration: none;
-        box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.08), -2px -2px 8px rgba(255, 255, 255, 0.9);
-        transition: all 0.3s ease;
-        margin-bottom: 1.5rem;
-    }
-
-    .back-btn:hover {
-        background: linear-gradient(135deg, #e89a3c, #f5a847);
-        color: #ffffff;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(232, 154, 60, 0.3);
-    }
-
-    .back-btn:hover svg path {
-        stroke: #ffffff;
-    }
-
+    /* Responsive */
     @media (max-width: 900px) {
         .evento-header {
             flex-direction: column;
@@ -332,6 +335,10 @@
             width: 100%;
             justify-content: center;
         }
+
+        .evento-detail-page {
+            padding: 1rem;
+        }
     }
 </style>
 
@@ -350,7 +357,15 @@
         <div class="evento-header">
             <!-- Imagen del evento -->
             <div class="evento-imagen">
-                <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="{{ $evento->nombre }}">
+                @if($evento->ruta_imagen)
+                    <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="{{ $evento->nombre }}">
+                @else
+                    <div style="height: 220px; background: linear-gradient(135deg, #2c2c2c, #1a1a1a); display: flex; align-items: center; justify-content: center;">
+                        <svg style="width: 4rem; height: 4rem; color: rgba(232, 154, 60, 0.3);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                @endif
                 @if($eventoActivo)
                     <div class="status-badge-large">Ya esta aqui!</div>
                 @else
@@ -371,7 +386,10 @@
                 </div>
                 
                 {{-- Estado del jurado --}}
-                @if($esJuradoDelEvento)   
+                @if($esJuradoDelEvento)
+                    <div class="jurado-status asignado">
+                        ✓ Estás asignado como jurado en este evento
+                    </div>
                 @else
                     <div class="jurado-status no-asignado">
                         ⚠ No estás asignado como jurado en este evento
