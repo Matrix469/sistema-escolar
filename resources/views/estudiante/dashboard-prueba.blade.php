@@ -1047,7 +1047,7 @@
         </div>
 
         {{-- GRÁFICAS DE PROGRESO DE PROYECTOS --}}
-        <h3 class="section-title animate-in delay-2">
+        <h3 class="section-title animate-in delay-2" id="titulodescuadrado">
             <i class="fas fa-chart-pie"></i>
             Progreso de Proyectos
         </h3>
