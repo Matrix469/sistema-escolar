@@ -116,7 +116,6 @@ Route::middleware(['auth', 'role:jurado'])->prefix('jurado')->name('jurado.')->g
     Route::get('/eventos/{evento}/equipos/{equipo}/avance/{avance}', [EventosController::class, 'calificar_avance'])->name('eventos.calificar_avance');
     Route::post('/eventos/{evento}/equipos/{equipo}/avance/{avance}/guardar', [EventosController::class, 'guardar_calificacion'])->name('eventos.guardar_calificacion');
 
-   
 });
 
 //? Rutas para Estudiantes
