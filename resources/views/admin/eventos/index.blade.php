@@ -23,6 +23,34 @@
         color: #6b6b6b;
     }
     
+    .back-link {
+        font-family: 'Poppins', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        color: black;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background: #FFEEE2;
+        border-radius: 10px;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    
+    .back-link:hover {
+        color: #4f46e5;
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    .back-link svg {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+    }
+
     /* Create button */
     .create-button {
         font-family: 'Poppins', sans-serif;
@@ -274,6 +302,12 @@
 
 <div class="eventos-index-page py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <a href="{{ route('dashboard') }}" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Volver al Dashboard
+        </a>
         <div class="flex justify-between items-center mb-6">
             <h2 class="font-semibold text-xl">
                 {{ __('Gestión de Eventos') }}

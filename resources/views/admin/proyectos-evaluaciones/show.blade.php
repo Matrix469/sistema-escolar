@@ -16,25 +16,31 @@
 
     /* Back Link */
     .back-link {
+        font-family: 'Poppins', sans-serif;
         display: inline-flex;
         align-items: center;
-        gap: 0.5rem;
-        color: #e89a3c;
+        color: black;
         font-size: 0.875rem;
         font-weight: 500;
-        text-decoration: none;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background: #FFEEE2;
+        border-radius: 10px;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
         transition: all 0.2s ease;
+        text-decoration: none;
     }
-
+    
     .back-link:hover {
-        color: #d98a2c;
-        transform: translateX(-3px);
+        color: #4f46e5;
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+        transform: translateY(-2px);
     }
-
+    
     .back-link svg {
-        width: 18px;
-        height: 18px;
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
     }
 
     /* Hero Header */
@@ -658,12 +664,11 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
     <!-- Back Link -->
     <a href="{{ route('admin.proyectos-evaluaciones.index') }}" class="back-link">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
         Volver a Proyectos
     </a>
-
     <!-- Hero Header -->
     <div class="hero-header">
         <div class="hero-info">
