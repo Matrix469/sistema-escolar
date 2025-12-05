@@ -52,21 +52,22 @@ class EventosController extends Controller
                 $query->orderBy('fecha_inscripcion', 'desc');
             },
             'inscripciones.equipo',
+            'inscripciones.proyecto',
             'inscripciones.miembros' => function($query) {
                 $query->orderBy('es_lider', 'desc');
             },
             'inscripciones.miembros.user',
         ]);
 
-        // Procesar cada inscripción para obtener el líder y el número de miembros
+        // Procesar cada inscripción para obtener el líder y el nombre del proyecto
         foreach ($evento->inscripciones as $inscripcion) {
             if ($inscripcion->equipo) {
                 // Obtener el líder del equipo
                 $lider = $inscripcion->miembros->where('es_lider', true)->first();
                 $inscripcion->equipo->lider_nombre = $lider ? $lider->user->nombre : 'Sin líder';
                 
-                // Obtener el número de miembros
-                $inscripcion->equipo->num_miembros = $inscripcion->miembros->count();
+                // Obtener el nombre del proyecto
+                $inscripcion->equipo->nombre_proyecto = $inscripcion->proyecto?->nombre ?? 'Sin proyecto';
             }
         }
 
