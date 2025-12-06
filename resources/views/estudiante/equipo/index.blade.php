@@ -669,6 +669,23 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Filtro de Búsqueda -->
+        <div class="filter-card" style="background: #FFEEE2; border-radius: 20px; padding: 1rem; margin-bottom: 2rem; box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;">
+            <form action="{{ route('estudiante.equipo.index') }}" method="GET">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-3">
+                        <input type="text" name="search" placeholder="Buscar por nombre de equipo o evento..." value="{{ $search ?? '' }}" 
+                            style="font-family: 'Poppins', sans-serif; background: rgba(255, 255, 255, 0.5); border: none; box-shadow: inset 4px 4px 8px #e6d5c9, inset -4px -4px 8px #ffffff; color: #2c2c2c; width: 100%; padding: 0.5rem 1rem; border-radius: 0.375rem;"
+                            class="w-full">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button type="submit" style="font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #2c2c2c, #1a1a1a); color: #ffffff; font-weight: 600; padding: 0.5rem 1rem; border-radius: 0.375rem; box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2); border: none; width: 100%;">Buscar</button>
+                        <a href="{{ route('estudiante.equipo.index') }}" style="font-family: 'Poppins', sans-serif; background: rgba(255, 255, 255, 0.5); color: #2c2c2c; font-weight: 500; padding: 0.5rem 1rem; border-radius: 0.375rem; box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff; border: none; text-decoration: none; text-align: center; width: 100%;">Limpiar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
 
         @if($equipos->count() > 0)
             <!-- Teams Grid -->

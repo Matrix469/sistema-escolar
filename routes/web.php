@@ -44,6 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
     
     Route::post('/inscripciones/{inscripcion}/unirse', [InscripcionController::class, 'unirse'])->name('inscripciones.unirse');
+    
+    // Perfil público de usuario
+    Route::get('/perfil/{user}', [App\Http\Controllers\PerfilController::class, 'show'])->name('perfil.show');
 });
 
 //? Rutas para Administradores

@@ -17,9 +17,10 @@ class MiEquipoController extends Controller
     public function __invoke(Request $request)
     {
         $user = Auth::user();
+        $search = $request->input('search');
 
         // Buscar TODAS las inscripciones del estudiante
-        $misInscripciones = InscripcionEvento::whereHas('miembros', function ($query) use ($user) {
+        $query = InscripcionEvento::whereHas('miembros', function ($query) use ($user) {
             $query->where('id_estudiante', $user->id_usuario);
         })->where(function ($query) {
             // Equipos sin evento O eventos NO finalizados (incluyendo eliminados)
@@ -28,7 +29,20 @@ class MiEquipoController extends Controller
                       $q->withTrashed() // Incluir eventos eliminados (soft deleted)
                         ->where('estado', '!=', 'Finalizado');
                   });
-        })->with([
+        });
+        
+        // Aplicar filtro de búsqueda
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->whereHas('equipo', function($eq) use ($search) {
+                    $eq->where('nombre', 'like', "%{$search}%");
+                })->orWhereHas('evento', function($ev) use ($search) {
+                    $ev->withTrashed()->where('nombre', 'like', "%{$search}%");
+                });
+            });
+        }
+        
+        $misInscripciones = $query->with([
             'equipo', 
             'miembros.user.estudiante.carrera',
             'miembros.rol',
@@ -66,6 +80,7 @@ class MiEquipoController extends Controller
 
         return view('estudiante.equipo.index', [
             'equipos' => $equiposData,
+            'search' => $search,
         ]);
     }
 

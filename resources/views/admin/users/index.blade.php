@@ -362,7 +362,9 @@
                         @forelse ($usuarios as $usuario)
                             <tr>
                                 <td>
-                                    <div class="user-name">{{ $usuario->nombre }} {{ $usuario->app_paterno }}</div>
+                                    <a href="{{ route('perfil.show', $usuario) }}" class="user-name" style="text-decoration: none; cursor: pointer;">
+                                        {{ $usuario->nombre }} {{ $usuario->app_paterno }}
+                                    </a>
                                 </td>
                                 <td class="user-email">{{ $usuario->email }}</td>
                                 <td>

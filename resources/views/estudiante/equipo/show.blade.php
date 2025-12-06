@@ -926,12 +926,16 @@
                             @foreach($inscripcion->miembros as $miembro)
                                 <div class="member-item">
                                     <div class="member-info">
-                                        <div class="member-avatar {{ $miembro->es_lider ? 'member-avatar-leader' : '' }}">
-                                            {{ strtoupper(substr($miembro->user->nombre ?? 'U', 0, 1)) }}{{ strtoupper(substr($miembro->user->app_paterno ?? '', 0, 1)) }}
-                                        </div>
+                                        <a href="{{ route('perfil.show', $miembro->user) }}" style="text-decoration: none;">
+                                            <div class="member-avatar {{ $miembro->es_lider ? 'member-avatar-leader' : '' }}">
+                                                {{ strtoupper(substr($miembro->user->nombre ?? 'U', 0, 1)) }}{{ strtoupper(substr($miembro->user->app_paterno ?? '', 0, 1)) }}
+                                            </div>
+                                        </a>
                                         <div class="member-details">
                                             <h4>
-                                                {{ $miembro->user->nombre ?? 'Usuario' }} {{ $miembro->user->app_paterno ?? '' }}
+                                                <a href="{{ route('perfil.show', $miembro->user) }}" style="text-decoration: none; color: inherit; cursor: pointer;">
+                                                    {{ $miembro->user->nombre ?? 'Usuario' }} {{ $miembro->user->app_paterno ?? '' }}
+                                                </a>
                                                 @if($miembro->es_lider)
                                                     <span class="badge-leader">Líder</span>
                                                 @endif
