@@ -13,15 +13,29 @@ class JuradoAssignmentController extends Controller
     /**
      * Show the form for assigning jurors to an event.
      */
-    public function edit(Evento $evento)
+    public function edit(Request $request, Evento $evento)
     {
-        // Obtener todos los jurados con su información de usuario
-        $juradosDisponibles = Jurado::with('user')->get();
+        // Obtener búsqueda
+        $search = $request->input('search');
+        
+        // Obtener todos los jurados con su información de usuario con filtro
+        $query = Jurado::with('user');
+        
+        if ($search) {
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('nombre', 'like', "%{$search}%")
+                  ->orWhere('app_paterno', 'like', "%{$search}%")
+                  ->orWhere('app_materno', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+        
+        $juradosDisponibles = $query->paginate(12)->withQueryString();
 
         // Obtener los IDs de los jurados ya asignados a este evento
         $juradosAsignadosIds = $evento->jurados()->pluck('jurados.id_usuario')->toArray();
 
-        return view('admin.eventos.asignar-jurados', compact('evento', 'juradosDisponibles', 'juradosAsignadosIds'));
+        return view('admin.eventos.asignar-jurados', compact('evento', 'juradosDisponibles', 'juradosAsignadosIds', 'search'));
     }
 
     /**

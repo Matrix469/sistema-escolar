@@ -181,6 +181,108 @@
         box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
         transform: translateY(-2px);
     }
+    
+    /* Filter card */
+    .filter-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Inputs */
+    .neuro-input {
+        font-family: 'Poppins', sans-serif;
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
+        box-shadow: inset 4px 4px 8px #e6d5c9, inset -4px -4px 8px #ffffff;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(10px);
+        color: #2c2c2c;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+    }
+    
+    .neuro-input::placeholder {
+        color: #9ca3af;
+    }
+    
+    .neuro-input:focus {
+        outline: none;
+        box-shadow: inset 6px 6px 12px #e6d5c9, inset -6px -6px 12px #ffffff;
+    }
+    
+    .neuro-button-primary {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+    }
+    
+    .neuro-button-primary:hover {
+        box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .neuro-button-secondary {
+        font-family: 'Poppins', sans-serif;
+        background: rgba(255, 255, 255, 0.5);
+        color: #2c2c2c;
+        font-weight: 500;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        transition: all 0.3s ease;
+        border: none;
+        backdrop-filter: blur(10px);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        text-decoration: none;
+    }
+    
+    .neuro-button-secondary:hover {
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    /* Pagination container */
+    .pagination-container {
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(5px);
+        border-radius: 0 0 20px 20px;
+        margin-top: 1rem;
+    }
+    
+    /* Counter card */
+    .counter-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        padding: 1rem 1.5rem;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .counter-card h3 {
+        font-family: 'Poppins', sans-serif;
+        color: #6b6b6b;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin: 0;
+    }
+    
+    .counter-card .count {
+        font-family: 'Poppins', sans-serif;
+        color: #e89a3c;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
 </style>
 
 <div class="asignar-jurados-page py-12">
@@ -189,12 +291,31 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
-        Volver al evento
+        Regresar al Evento
     </a>
-        <div class="flex items-center mb-6">
+        <div class="flex items-center justify-between mb-6">
             <h2 class="font-semibold text-xl ml-2">
                 Asignar Jurados a: {{ $evento->nombre }}
             </h2>
+            <div class="counter-card">
+                <h3>Jurados Asignados:</h3>
+                <span class="count">{{ count($juradosAsignadosIds) }}/5</span>
+            </div>
+        </div>
+        
+        <!-- Filtro de Búsqueda -->
+        <div class="filter-card">
+            <form action="{{ route('admin.eventos.asignar', $evento) }}" method="GET">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-3">
+                        <input type="text" name="search" placeholder="Buscar por nombre, apellido o email..." value="{{ $search ?? '' }}" class="neuro-input block w-full">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button type="submit" class="neuro-button-primary w-full">Buscar</button>
+                        <a href="{{ route('admin.eventos.asignar', $evento) }}" class="neuro-button-secondary text-center">Limpiar</a>
+                    </div>
+                </div>
+            </form>
         </div>
         
         <div class="main-card">
@@ -227,14 +348,24 @@
                         <label class="checkbox-card flex items-center space-x-3">
                             <input type="checkbox" name="jurados[]" value="{{ $jurado->id_usuario }}" 
                                 {{ in_array($jurado->id_usuario, $juradosAsignadosIds) ? 'checked' : '' }}>
-                            <span>
-                                {{ $jurado->user->nombre }} {{ $jurado->user->app_paterno }}
-                            </span>
+                            <div>
+                                <span>
+                                    {{ $jurado->user->nombre }} {{ $jurado->user->app_paterno }}
+                                </span>
+                                <p style="font-size: 0.75rem; color: #6b6b6b; margin: 0;">{{ $jurado->user->email }}</p>
+                            </div>
                         </label>
                     @empty
                         <p class="empty-state">No hay jurados disponibles en el sistema.</p>
                     @endforelse
                 </div>
+                
+                <!-- Paginación -->
+                @if($juradosDisponibles->hasPages())
+                <div class="pagination-container">
+                    {{ $juradosDisponibles->links() }}
+                </div>
+                @endif
 
                 <div class="flex items-center justify-end mt-6">
                     <button type="submit" class="submit-button">
