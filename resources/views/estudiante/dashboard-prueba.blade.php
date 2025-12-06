@@ -3,9 +3,55 @@
 @section('title', 'Inicio')
 
 @section('content')
+{{-- MENSAJES DE ALERTA --}}
+    @if(session('success'))
+        <div style="position: fixed; top: 80px; right: 20px; z-index: 9999; padding: 1rem 1.5rem; background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; border-radius: 12px; box-shadow: 4px 4px 12px rgba(0,0,0,0.15); font-family: 'Poppins', sans-serif; font-weight: 500; max-width: 400px; animation: slideInRight 0.5s ease;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-check-circle" style="font-size: 1.25rem;"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div style="position: fixed; top: 80px; right: 20px; z-index: 9999; padding: 1rem 1.5rem; background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b; border-radius: 12px; box-shadow: 4px 4px 12px rgba(0,0,0,0.15); font-family: 'Poppins', sans-serif; font-weight: 500; max-width: 400px; animation: slideInRight 0.5s ease;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-exclamation-circle" style="font-size: 1.25rem;"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
         
+        /* Animación para las alertas */
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Animación de salida para las alertas */
+        @keyframes slideOutRight {
+            0% {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translateX(20px) scale(0.98);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translateX(400px) scale(0.9);
+                opacity: 0;
+            }
+        }
+
         /* =============================================== */
         /* COLORES NEUROMÓRFICOS */
         /* =============================================== */
@@ -737,6 +783,7 @@
         .welcome-highlight {
             color: #2c2c2c;
         }
+
     </style>
 
     <!-- SVG Gradients for Charts -->
@@ -1358,6 +1405,16 @@
             eventosCarousel = new Carousel('eventosTrack', 'eventosDots', 'eventosProgress', 6000);
             equiposCarousel = new Carousel('equiposTrack', 'equiposDots', 'equiposProgress', 5000);
             animateProgressCharts();
+
+            const alerts = document.querySelectorAll('[style*="slideInRight"]');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.animation = 'slideOutRight 0.3s ease forwards';
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        });
+
+
         });
         
         function animateProgressCharts() {
