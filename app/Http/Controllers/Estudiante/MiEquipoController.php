@@ -17,28 +17,40 @@ class MiEquipoController extends Controller
     public function __invoke(Request $request)
     {
         $user = Auth::user();
+        $search = $request->input('search');
 
-        // Buscar TODAS las inscripciones del estudiante (con o sin evento, no finalizadas)
-        $misInscripciones = InscripcionEvento::whereHas('miembros', function ($query) use ($user) {
+        // Buscar TODAS las inscripciones del estudiante
+        $query = InscripcionEvento::whereHas('miembros', function ($query) use ($user) {
             $query->where('id_estudiante', $user->id_usuario);
         })->where(function ($query) {
-            // Equipos sin evento O eventos no finalizados
+            // Equipos sin evento O eventos NO finalizados (incluyendo eliminados)
             $query->whereNull('id_evento')
                   ->orWhereHas('evento', function ($q) {
-                      $q->whereIn('estado', ['Próximo', 'Activo', 'Cerrado']);
+                      $q->withTrashed() // Incluir eventos eliminados (soft deleted)
+                        ->where('estado', '!=', 'Finalizado');
                   });
-        })->with([
+        });
+        
+        // Aplicar filtro de búsqueda
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->whereHas('equipo', function($eq) use ($search) {
+                    $eq->where('nombre', 'like', "%{$search}%");
+                })->orWhereHas('evento', function($ev) use ($search) {
+                    $ev->withTrashed()->where('nombre', 'like', "%{$search}%");
+                });
+            });
+        }
+        
+        $misInscripciones = $query->with([
             'equipo', 
             'miembros.user.estudiante.carrera',
             'miembros.rol',
-            'evento'
+            'evento' => function ($query) {
+                $query->withTrashed(); // Incluir eventos eliminados en la relación
+            }
         ])->get();
         
-        if ($misInscripciones->isEmpty()) {
-            // Si no tiene equipos, redirigir a eventos
-            return redirect()->route('estudiante.eventos.index')->with('info', 'No perteneces a ningún equipo activo. ¡Busca un evento y únete o crea un equipo!');
-        }
-
         // Preparar datos de cada equipo
         $equiposData = $misInscripciones->map(function ($inscripcion) use ($user) {
             $miembro = $inscripcion->miembros->firstWhere('id_estudiante', $user->id_usuario);
@@ -68,6 +80,7 @@ class MiEquipoController extends Controller
 
         return view('estudiante.equipo.index', [
             'equipos' => $equiposData,
+            'search' => $search,
         ]);
     }
 
@@ -90,7 +103,9 @@ class MiEquipoController extends Controller
             'equipo',
             'miembros.user.estudiante.carrera',
             'miembros.rol',
-            'evento'
+            'evento' => function ($query) {
+                $query->withTrashed(); // Incluir eventos eliminados
+            }
         ]);
 
         $esLider = $miembro->es_lider;

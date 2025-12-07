@@ -1,66 +1,379 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="flex items-center">
-            <a href="{{ route('admin.eventos.show', $evento) }}" class="text-gray-500 hover:text-gray-700">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-            </a>
-            <h2 class="font-semibold text-xl text-gray-800 mb-6">
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+    
+    /* Fondo degradado */
+    .asignar-jurados-page {
+        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
+        min-height: 100vh;
+        font-family: 'Poppins', sans-serif;
+    }
+    
+    /* Textos */
+    .asignar-jurados-page h2 {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+    }
+    
+    .asignar-jurados-page p {
+        font-family: 'Poppins', sans-serif;
+        color: #6b6b6b;
+    }
+    
+    /* Back button */
+    .back-link {
+        font-family: 'Poppins', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        color: black;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+        padding: 0.5rem 1rem;
+        background: #FFEEE2;
+        border-radius: 10px;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    
+    .back-link:hover {
+        color: #4f46e5;
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    .back-link svg {
+        width: 1rem;
+        height: 1rem;
+        margin-right: 0.5rem;
+    }
+    
+    /* Main card */
+    .main-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        overflow: hidden;
+        padding: 2rem;
+    }
+    
+    /* Alert success */
+    .alert-success {
+        background: rgba(209, 250, 229, 0.8);
+        border-left: 4px solid #10b981;
+        color: #065f46;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        backdrop-filter: blur(10px);
+    }
+    
+    .alert-success p {
+        font-family: 'Poppins', sans-serif;
+        color: #065f46;
+    }
+    
+    .alert-success .font-bold {
+        font-weight: 700;
+    }
+    
+    /* Alert error */
+    .alert-error {
+        background: rgba(254, 226, 226, 0.8);
+        border-left: 4px solid #ef4444;
+        color: #991b1b;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        backdrop-filter: blur(10px);
+    }
+    
+    .alert-error p,
+    .alert-error li {
+        font-family: 'Poppins', sans-serif;
+        color: #991b1b;
+    }
+    
+    .alert-error .font-bold {
+        font-weight: 700;
+    }
+    
+    .alert-error ul {
+        list-style: disc;
+        margin-left: 1.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    /* Instruction text */
+    .instruction-text {
+        font-family: 'Poppins', sans-serif;
+        color: #6b6b6b;
+        margin-bottom: 1rem;
+    }
+    
+    /* Checkbox card */
+    .checkbox-card {
+        background: rgba(255, 255, 255, 0.5);
+        border-radius: 15px;
+        padding: 1rem;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        backdrop-filter: blur(10px);
+    }
+    
+    .checkbox-card:hover {
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    .checkbox-card input[type="checkbox"] {
+        width: 1.25rem;
+        height: 1.25rem;
+        border-radius: 0.375rem;
+        border: 2px solid #d1d5db;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .checkbox-card input[type="checkbox"]:checked {
+        background: #e89a3c;
+        border-color: #e89a3c;
+    }
+    
+    .checkbox-card input[type="checkbox"]:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(232, 154, 60, 0.2);
+    }
+    
+    .checkbox-card span {
+        font-family: 'Poppins', sans-serif;
+        color: #2c2c2c;
+        font-weight: 500;
+    }
+    
+    /* Empty state */
+    .empty-state {
+        font-family: 'Poppins', sans-serif;
+        color: #6b6b6b;
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    /* Submit button */
+    .submit-button {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+        color: #ffffff;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .submit-button:hover {
+        box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    /* Filter card */
+    .filter-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Inputs */
+    .neuro-input {
+        font-family: 'Poppins', sans-serif;
+        background: rgba(255, 255, 255, 0.5);
+        border: none;
+        box-shadow: inset 4px 4px 8px #e6d5c9, inset -4px -4px 8px #ffffff;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(10px);
+        color: #2c2c2c;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+    }
+    
+    .neuro-input::placeholder {
+        color: #9ca3af;
+    }
+    
+    .neuro-input:focus {
+        outline: none;
+        box-shadow: inset 6px 6px 12px #e6d5c9, inset -6px -6px 12px #ffffff;
+    }
+    
+    .neuro-button-primary {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+        color: #ffffff;
+        font-weight: 600;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+    }
+    
+    .neuro-button-primary:hover {
+        box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+    
+    .neuro-button-secondary {
+        font-family: 'Poppins', sans-serif;
+        background: rgba(255, 255, 255, 0.5);
+        color: #2c2c2c;
+        font-weight: 500;
+        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
+        transition: all 0.3s ease;
+        border: none;
+        backdrop-filter: blur(10px);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        text-decoration: none;
+    }
+    
+    .neuro-button-secondary:hover {
+        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
+        transform: translateY(-2px);
+    }
+    
+    /* Pagination container */
+    .pagination-container {
+        padding: 1rem 1.5rem;
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(5px);
+        border-radius: 0 0 20px 20px;
+        margin-top: 1rem;
+    }
+    
+    /* Counter card */
+    .counter-card {
+        background: #FFEEE2;
+        border-radius: 20px;
+        padding: 1rem 1.5rem;
+        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .counter-card h3 {
+        font-family: 'Poppins', sans-serif;
+        color: #6b6b6b;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin: 0;
+    }
+    
+    .counter-card .count {
+        font-family: 'Poppins', sans-serif;
+        color: #e89a3c;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+</style>
+
+<div class="asignar-jurados-page py-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <a href="{{ route('admin.eventos.show', $evento) }}" class="back-link">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Regresar al Evento
+    </a>
+        <div class="flex items-center justify-between mb-6">
+            <h2 class="font-semibold text-xl ml-2">
                 Asignar Jurados a: {{ $evento->nombre }}
             </h2>
-        </div>
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    
-                    @if (session('success'))
-                        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-md shadow-sm" role="alert">
-                            <p class="font-bold">Éxito</p>
-                            <p>{{ session('success') }}</p>
-                        </div>
-                    @endif
-
-                    @if ($errors->any())
-                        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md shadow-sm" role="alert">
-                            <p class="font-bold">¡Ups!</p>
-                            <ul class="mt-2 list-disc list-inside">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <form action="{{ route('admin.eventos.actualizar_asignacion', $evento) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-
-                        <p class="mb-4 text-gray-600">Selecciona los jurados para este evento (mínimo 3, máximo 5).</p>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            @forelse ($juradosDisponibles as $jurado)
-                                <label class="flex items-center space-x-3 bg-gray-50 p-4 rounded-lg shadow-sm hover:bg-gray-100 cursor-pointer">
-                                    <input type="checkbox" name="jurados[]" value="{{ $jurado->id_usuario }}" 
-                                        {{ in_array($jurado->id_usuario, $juradosAsignadosIds) ? 'checked' : '' }} 
-                                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                                    <span class="text-gray-900 font-medium">
-                                        {{ $jurado->user->nombre }} {{ $jurado->user->app_paterno }}
-                                    </span>
-                                </label>
-                            @empty
-                                <p class="col-span-full text-gray-600">No hay jurados disponibles en el sistema.</p>
-                            @endforelse
-                        </div>
-
-                        <div class="flex items-center justify-end mt-6">
-                            <button type="submit" class="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800 font-semibold">
-                                Guardar Asignación
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <div class="counter-card">
+                <h3>Jurados Asignados:</h3>
+                <span class="count">{{ count($juradosAsignadosIds) }}/5</span>
             </div>
         </div>
+        
+        <!-- Filtro de Búsqueda -->
+        <div class="filter-card">
+            <form action="{{ route('admin.eventos.asignar', $evento) }}" method="GET">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-3">
+                        <input type="text" name="search" placeholder="Buscar por nombre, apellido o email..." value="{{ $search ?? '' }}" class="neuro-input block w-full">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button type="submit" class="neuro-button-primary w-full">Buscar</button>
+                        <a href="{{ route('admin.eventos.asignar', $evento) }}" class="neuro-button-secondary text-center">Limpiar</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="main-card">
+            @if (session('success'))
+                <div class="alert-success" role="alert">
+                    <p class="font-bold">Éxito</p>
+                    <p>{{ session('success') }}</p>
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert-error" role="alert">
+                    <p class="font-bold">¡Ups!</p>
+                    <ul class="mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('admin.eventos.actualizar_asignacion', $evento) }}" method="POST">
+                @csrf
+                @method('PATCH')
+
+                <p class="instruction-text">Selecciona los jurados para este evento (mínimo 3, máximo 5).</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    @forelse ($juradosDisponibles as $jurado)
+                        <label class="checkbox-card flex items-center space-x-3">
+                            <input type="checkbox" name="jurados[]" value="{{ $jurado->id_usuario }}" 
+                                {{ in_array($jurado->id_usuario, $juradosAsignadosIds) ? 'checked' : '' }}>
+                            <div>
+                                <span>
+                                    {{ $jurado->user->nombre }} {{ $jurado->user->app_paterno }}
+                                </span>
+                                <p style="font-size: 0.75rem; color: #6b6b6b; margin: 0;">{{ $jurado->user->email }}</p>
+                            </div>
+                        </label>
+                    @empty
+                        <p class="empty-state">No hay jurados disponibles en el sistema.</p>
+                    @endforelse
+                </div>
+                
+                <!-- Paginación -->
+                @if($juradosDisponibles->hasPages())
+                <div class="pagination-container">
+                    {{ $juradosDisponibles->links() }}
+                </div>
+                @endif
+
+                <div class="flex items-center justify-end mt-6">
+                    <button type="submit" class="submit-button">
+                        Guardar Asignación
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 @endsection

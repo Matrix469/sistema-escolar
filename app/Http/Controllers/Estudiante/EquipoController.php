@@ -41,9 +41,11 @@ class EquipoController extends Controller
         }
         if ($request->filled('status')) {
             if ($request->input('status') == 'Completo') {
-                $query->whereRaw('(SELECT COUNT(*) FROM miembros_equipo me JOIN inscripciones_evento ie ON me.id_inscripcion = ie.id_inscripcion WHERE ie.id_equipo = inscripciones_evento.id_equipo) >= ?', [$evento->cupo_max_equipos]);
+                // Equipos con 5 o más miembros (llenos)
+                $query->whereRaw('(SELECT COUNT(*) FROM miembros_equipo me WHERE me.id_inscripcion = inscripciones_evento.id_inscripcion) >= 5');
             } else {
-                $query->whereRaw('(SELECT COUNT(*) FROM miembros_equipo me JOIN inscripciones_evento ie ON me.id_inscripcion = ie.id_inscripcion WHERE ie.id_equipo = inscripciones_evento.id_equipo) < ?', [$evento->cupo_max_equipos]);
+                // Equipos con menos de 5 miembros (con lugares disponibles)
+                $query->whereRaw('(SELECT COUNT(*) FROM miembros_equipo me WHERE me.id_inscripcion = inscripciones_evento.id_inscripcion) < 5');
             }
         }
         $inscripciones = $query->paginate(12);
@@ -194,6 +196,8 @@ class EquipoController extends Controller
             ->with('inscripcion.equipo')
             ->firstOrFail();
         $equipo = $miembro->inscripcion->equipo;
+        $inscripcion = $miembro->inscripcion;
+        
         $request->validate([
             'nombre' => ['required', 'string', 'max:100', Rule::unique('equipos')->ignore($equipo->id_equipo, 'id_equipo')],
             'descripcion' => 'nullable|string|max:1000',
@@ -207,7 +211,7 @@ class EquipoController extends Controller
             $data['ruta_imagen'] = $request->file('ruta_imagen')->store('imagenes_equipos', 'public');
         }
         $equipo->update($data);
-        return redirect()->route('estudiante.equipo.index')->with('success', 'Equipo actualizado correctamente.');
+        return redirect()->route('estudiante.equipo.show-detalle', $inscripcion)->with('success', 'Equipo actualizado correctamente.');
     }
 
     public function show(Evento $evento, Equipo $equipo)
@@ -217,9 +221,10 @@ class EquipoController extends Controller
         // Obtener la inscripción del equipo para este evento
         $inscripcion = InscripcionEvento::where('id_equipo', $equipo->id_equipo)
             ->where('id_evento', $evento->id_evento)
-            ->with(['equipo.miembros.user.estudiante.carrera', 'equipo.miembros.rol', 'evento'])
+            ->with(['equipo', 'miembros.user.estudiante.carrera', 'miembros.rol', 'evento'])
             ->firstOrFail();
-        
+
+            
         // Verificar si el usuario ya es miembro de un equipo en este evento
         $miInscripcion = MiembroEquipo::where('id_estudiante', $user->id_usuario)
             ->whereHas('inscripcion', function ($query) use ($evento) {

@@ -42,17 +42,12 @@ class Proyecto extends Model
 
     /**
      * Tecnologías/tags del proyecto
-     */
-    public function tecnologias()
-    {
-        return $this->hasMany(ProyectoTecnologia::class, 'id_proyecto', 'id_proyecto');
-    }
+     
+        *public function tecnologias()
+        *{
+        *return $this->hasMany(ProyectoTecnologia::class, 'id_proyecto', 'id_proyecto');
+            *}
+    */
 
-    /**
-     * Hitos/milestones del proyecto
-     */
-    public function hitos()
-    {
-        return $this->hasMany(HitoProyecto::class, 'id_proyecto', 'id_proyecto');
-    }
+
 }

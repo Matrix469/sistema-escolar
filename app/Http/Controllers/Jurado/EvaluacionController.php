@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Jurado;
 
 use App\Http\Controllers\Controller;
 use App\Models\Evaluacion;
+use App\Models\EvaluacionCriterio;
 use App\Models\InscripcionEvento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Services\EmailNotificacionService;
 
 class EvaluacionController extends Controller
 {
@@ -32,10 +36,16 @@ class EvaluacionController extends Controller
             ['estado' => 'Borrador']
         );
 
+        // Cargar criterios del evento
+        $criterios = $inscripcion->evento->criteriosEvaluacion;
+        
+        // Cargar calificaciones existentes por criterio (usar colección vacía si no hay)
+        $calificacionesCriterios = $evaluacion->criterios ? $evaluacion->criterios->keyBy('id_criterio') : collect();
+
         $proyecto = $inscripcion->proyecto;
         $equipo = $inscripcion->equipo;
 
-        return view('jurado.evaluaciones.create', compact('inscripcion', 'evaluacion', 'proyecto', 'equipo', 'jurado'));
+        return view('jurado.evaluaciones.create', compact('inscripcion', 'evaluacion', 'proyecto', 'equipo', 'jurado', 'criterios', 'calificacionesCriterios'));
     }
 
     /**
@@ -44,43 +54,116 @@ class EvaluacionController extends Controller
     public function store(Request $request, InscripcionEvento $inscripcion)
     {
         $jurado = Auth::user()->jurado;
-
-        $request->validate([
-            'calificacion_innovacion' => 'nullable|numeric|min:0|max:100',
-            'calificacion_funcionalidad' => 'nullable|numeric|min:0|max:100',
-            'calificacion_presentacion' => 'nullable|numeric|min:0|max:100',
-            'calificacion_impacto' => 'nullable|numeric|min:0|max:100',
+        
+        // Obtener criterios del evento para validación dinámica
+        $criterios = $inscripcion->evento->criteriosEvaluacion;
+        
+        // Construir reglas de validación dinámicas
+        $rules = [
             'comentarios_fortalezas' => 'nullable|string',
             'comentarios_areas_mejora' => 'nullable|string',
             'comentarios_generales' => 'nullable|string',
             'finalizar' => 'nullable|boolean',
-        ]);
-
-        $evaluacion = Evaluacion::updateOrCreate(
-            [
-                'id_inscripcion' => $inscripcion->id_inscripcion,
-                'id_jurado' => $jurado->id_usuario,
-            ],
-            [
-                'calificacion_innovacion' => $request->calificacion_innovacion,
-                'calificacion_funcionalidad' => $request->calificacion_funcionalidad,
-                'calificacion_presentacion' => $request->calificacion_presentacion,
-                'calificacion_impacto' => $request->calificacion_impacto,
-                'comentarios_fortalezas' => $request->comentarios_fortalezas,
-                'comentarios_areas_mejora' => $request->comentarios_areas_mejora,
-                'comentarios_generales' => $request->comentarios_generales,
-            ]
-        );
-
-        // Si se pidió finalizar la evaluación
-        if ($request->finalizar && $evaluacion->estaCompleta()) {
-            $evaluacion->finalizar();
-            return redirect()->route('jurado.dashboard')
-                ->with('success', 'Evaluación finalizada exitosamente.');
+        ];
+        
+        // Añadir validación para cada criterio
+        foreach ($criterios as $criterio) {
+            $rules["criterio_{$criterio->id_criterio}"] = 'nullable|numeric|min:0|max:100';
         }
 
-        return redirect()->route('jurado.evaluaciones.create', $inscripcion)
-            ->with('success', 'Evaluación guardada como borrador.');
+        $request->validate($rules);
+
+        DB::beginTransaction();
+        try {
+            $evaluacion = Evaluacion::updateOrCreate(
+                [
+                    'id_inscripcion' => $inscripcion->id_inscripcion,
+                    'id_jurado' => $jurado->id_usuario,
+                ],
+                [
+                    'comentarios_fortalezas' => $request->comentarios_fortalezas,
+                    'comentarios_areas_mejora' => $request->comentarios_areas_mejora,
+                    'comentarios_generales' => $request->comentarios_generales,
+                ]
+            );
+
+            // Guardar calificaciones por criterio
+            foreach ($criterios as $criterio) {
+                $calificacion = $request->input("criterio_{$criterio->id_criterio}");
+                
+                if ($calificacion !== null) {
+                    EvaluacionCriterio::updateOrCreate(
+                        [
+                            'id_evaluacion' => $evaluacion->id_evaluacion,
+                            'id_criterio' => $criterio->id_criterio,
+                        ],
+                        [
+                            'calificacion' => $calificacion,
+                        ]
+                    );
+                }
+            }
+
+            // Si se pidió finalizar la evaluación
+            if ($request->finalizar) {
+                // Recargar criterios para verificar si está completa
+                $evaluacion->load('criterios');
+                
+                if ($evaluacion->estaCompleta()) {
+                    $evaluacion->finalizar();
+
+                    // Enviar email al estudiante
+                    Log::info("=== INICIANDO ENVÍO EMAIL EVALUACIÓN FINAL ===");
+                    Log::info("ID Líder del equipo: " . $inscripcion->equipo->id_lider);
+
+                    // Cargar el líder del equipo con su usuario
+                    $lider = $inscripcion->equipo->miembros()->where('es_lider', true)->with('user')->first();
+
+                    if ($lider && $lider->user) {
+                        Log::info("Líder encontrado: " . $lider->user->nombre);
+                        Log::info("Email del líder: " . $lider->user->email);
+
+                        $emailService = new EmailNotificacionService();
+                        $proyecto = $inscripcion->proyecto;
+
+                        $resultado = $emailService->notificarCalificacionFinal(
+                            $lider->user->id_usuario,
+                            [
+                                'nombre' => $proyecto->nombre ?? 'Proyecto sin nombre',
+                                'nombre_jurado' => Auth::user()->nombre,
+                                'comentarios' => 'Tu proyecto ha sido evaluado. Revisa el sistema para más detalles.'
+                            ],
+                            $evaluacion->calificacion_final
+                        );
+
+                        if ($resultado) {
+                            Log::info("✅ Email de evaluación final enviado a " . $lider->user->email);
+                        } else {
+                            Log::error("❌ Falló envío de email de evaluación final");
+                        }
+                    } else {
+                        Log::error("❌ No se encontró líder o el líder no tiene usuario");
+                    }
+
+                    DB::commit();
+                    return redirect()->route('jurado.evaluaciones.show', $evaluacion)
+                        ->with('success', '¡Evaluación finalizada exitosamente! Calificación final: ' . $evaluacion->calificacion_final . ' (Email enviado al estudiante)');
+                } else {
+                    DB::commit();
+                    return redirect()->route('jurado.evaluaciones.create', $inscripcion)
+                        ->with('error', 'Debes calificar todos los criterios antes de finalizar.');
+                }
+            }
+
+            DB::commit();
+            return redirect()->route('jurado.evaluaciones.create', $inscripcion)
+                ->with('success', 'Evaluación guardada como borrador.');
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('jurado.evaluaciones.create', $inscripcion)
+                ->with('error', 'Error al guardar la evaluación: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -99,7 +182,11 @@ class EvaluacionController extends Controller
         $inscripcion = $evaluacion->inscripcion;
         $proyecto = $inscripcion->proyecto;
         $equipo = $inscripcion->equipo;
+        
+        // Cargar criterios del evento y calificaciones
+        $criterios = $inscripcion->evento->criteriosEvaluacion;
+        $calificacionesCriterios = $evaluacion->criterios ? $evaluacion->criterios->keyBy('id_criterio') : collect();
 
-        return view('jurado.evaluaciones.show', compact('evaluacion', 'inscripcion', 'proyecto', 'equipo'));
+        return view('jurado.evaluaciones.show', compact('evaluacion', 'inscripcion', 'proyecto', 'equipo', 'criterios', 'calificacionesCriterios'));
     }
 }

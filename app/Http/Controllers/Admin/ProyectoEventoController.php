@@ -8,6 +8,8 @@ use App\Models\ProyectoEvento;
 use App\Models\InscripcionEvento;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use App\Services\EmailNotificacionService;
 
 class ProyectoEventoController extends Controller
 {
@@ -39,9 +41,9 @@ class ProyectoEventoController extends Controller
         }
 
         // Verificar si ya existe un proyecto
-        $proyectoExistente = $evento->proyectoGeneral;
+        $proyectoEvento = $evento->proyectoGeneral;
 
-        return view('admin.proyectos-evento.create', compact('evento', 'proyectoExistente'));
+        return view('admin.proyectos-evento.create', compact('evento', 'proyectoEvento'));
     }
 
     /**
@@ -139,9 +141,30 @@ class ProyectoEventoController extends Controller
     public function publicar(ProyectoEvento $proyectoEvento)
     {
         $proyectoEvento->publicar();
+        $evento = $proyectoEvento->evento;
+        $mensaje = 'Proyecto publicado exitosamente.';
 
-        return redirect()->back()
-            ->with('success', 'Proyecto publicado exitosamente.');
+        // Si es proyecto GENERAL, cambiar evento a "En Progreso" automáticamente
+        if ($proyectoEvento->esGeneral()) {
+            if ($evento->cambiarAEnProgreso()) {
+                $mensaje .= ' El evento ahora está en progreso y visible para los estudiantes.';
+            }
+        }
+        
+        // Si es proyecto INDIVIDUAL, verificar si todos están publicados
+        if ($proyectoEvento->esIndividual()) {
+            if ($evento->todosProyectosIndividualesPublicados()) {
+                if ($evento->cambiarAEnProgreso()) {
+                    $mensaje .= ' ¡Todos los proyectos han sido publicados! El evento ahora está en progreso.';
+                }
+            } else {
+                $totalEquipos = $evento->inscripciones()->where('status_registro', 'Completo')->count();
+                $publicados = $evento->proyectosEventoIndividuales()->where('publicado', true)->count();
+                $mensaje .= " Proyectos publicados: {$publicados}/{$totalEquipos}";
+            }
+        }
+
+        return redirect()->back()->with('success', $mensaje);
     }
 
     /**
@@ -183,6 +206,9 @@ class ProyectoEventoController extends Controller
                 ->with('error', 'Este evento no está configurado para proyectos individuales.');
         }
 
+        // Cargar relaciones necesarias
+        $inscripcion->load('equipo.miembros.user.estudiante', 'equipo.miembros.rol');
+
         return view('admin.proyectos-evento.create-individual', compact('evento', 'inscripcion'));
     }
 
@@ -203,8 +229,6 @@ class ProyectoEventoController extends Controller
         ]);
 
         $data = $request->except(['archivo_bases', 'archivo_recursos']);
-        $data['id_evento'] = $evento->id_evento;
-        $data['id_inscripcion'] = $inscripcion->id_inscripcion;
 
         // Manejo de archivos
         if ($request->hasFile('archivo_bases')) {
@@ -217,9 +241,45 @@ class ProyectoEventoController extends Controller
                 ->store('proyectos-evento/recursos', 'public');
         }
 
-        ProyectoEvento::create($data);
+        // Usar updateOrCreate para evitar error de llave duplicada
+        $proyecto = ProyectoEvento::updateOrCreate(
+            [
+                'id_evento' => $evento->id_evento,
+                'id_inscripcion' => $inscripcion->id_inscripcion
+            ],
+            $data
+        );
+
+        // Enviar email al líder del equipo (solo si es un proyecto nuevo)
+        if ($proyecto->wasRecentlyCreated) {
+            Log::info("Enviando email de proyecto asignado al líder del equipo");
+
+            // Buscar al líder del equipo
+            $lider = $inscripcion->equipo->miembros()
+                ->where('es_lider', true)
+                ->with('user')
+                ->first();
+
+            if ($lider && $lider->user) {
+                Log::info("Líder encontrado: " . $lider->user->nombre);
+
+                $emailService = new EmailNotificacionService();
+                $emailService->notificarProyectoAsignado(
+                    $lider->user->id_usuario,
+                    [
+                        'nombre_equipo' => $inscripcion->equipo->nombre,
+                        'nombre_evento' => $evento->nombre,
+                        'nombre_proyecto' => $request->titulo,
+                        'descripcion' => $request->descripcion_completa ?? 'Sin descripción',
+                        'objetivo' => $request->objetivo ?? 'Sin objetivo específico'
+                    ]
+                );
+            } else {
+                Log::warning("No se encontró líder para el equipo " . $inscripcion->equipo->nombre);
+            }
+        }
 
         return redirect()->route('admin.proyectos-evento.asignar', $evento)
-            ->with('success', 'Proyecto asignado exitosamente.');
+            ->with('success', 'Proyecto asignado exitosamente' . ($proyecto->wasRecentlyCreated ? '. Email enviado al líder del equipo.' : '.'));
     }
 }

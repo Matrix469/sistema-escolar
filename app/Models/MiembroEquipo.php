@@ -17,6 +17,14 @@ class MiembroEquipo extends Model
         'es_lider',
     ];
 
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'id_miembro';
+    }
+
     public function rol()
     {
         return $this->belongsTo(CatRolEquipo::class, 'id_rol_equipo', 'id_rol_equipo');

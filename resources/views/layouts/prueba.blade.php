@@ -19,27 +19,32 @@
     
     <style>
         :root {
-            --primary-color: #6366f1;
+            --primary-color: #e89a3c;
+            --primary-dark: #d98a2c;
             --secondary-color: #8b5cf6;
             --accent-color: #ec4899;
-            --bg-color: #f3f4f6;
-            --card-bg: #ffffff;
-            --text-primary: #1f2937;
-            --text-secondary: #6b7280;
+            --bg-base: #FFFDF4;
+            --bg-secondary: #FFEEE2;
+            --card-bg: #FFEEE2;
+            --text-primary: #2c2c2c;
+            --text-secondary: #6b6b6b;
+            --shadow-light: #ffffff;
+            --shadow-dark: #e6d5c9;
         }
 
         body {
-            background-color: var(--bg-color);
+            background: linear-gradient(to bottom, var(--bg-base), var(--bg-secondary)) !important;
             font-family: 'Figtree', sans-serif;
+            min-height: 100vh;
         }
 
         .dashboard-container {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
+            grid-template-columns: 400px 1fr;
+            gap: 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
-            padding: 2rem;
+            padding: 0;
         }
 
         @media (max-width: 1024px) {
@@ -49,62 +54,61 @@
         }
 
         .section-title {
-            font-size: 1.5rem;
+            font-size: 0.85rem;
             font-weight: 700;
             color: var(--text-primary);
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.5rem;
         }
 
         /* Neumorphic Card Style */
         .neu-card {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 1.5rem;
-            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.1),
-                        -8px -8px 16px rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            padding: 1rem;
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
             transition: all 0.3s ease;
         }
 
         .neu-card:hover {
-            box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.15),
-                        -12px -12px 24px rgba(255, 255, 255, 0.8);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
             transform: translateY(-2px);
         }
 
         /* Event Cards */
         .event-card-container {
-            margin-bottom: 2rem;
+            margin-bottom: 1.25rem;
         }
 
         .event-card-header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
             color: white;
-            padding: 1rem;
-            border-radius: 12px;
+            padding: 0.75rem;
+            border-radius: 10px;
             font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
         }
 
         .event-card-body {
-            padding: 0.5rem;
+            padding: 0.375rem;
         }
 
         .event-desc {
             color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.375rem;
+            font-size: 0.8rem;
         }
 
         .event-date {
             color: var(--text-primary);
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.375rem;
+            font-size: 0.75rem;
         }
 
         .event-participants {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.75rem;
         }
 
         /* Progress Card */
@@ -121,12 +125,13 @@
         }
 
         .info-item {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
+            background: rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
             padding: 0.75rem 1rem;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 500;
             font-size: 0.95rem;
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
         }
 
         .progress-circle-container {
@@ -143,20 +148,20 @@
             background: conic-gradient(
                 var(--primary-color) 0%,
                 var(--primary-color) 50%,
-                var(--bg-color) 50%,
-                var(--bg-color) 100%
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0.3) 100%
             );
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
         }
 
         .progress-ring::before {
             content: '';
             width: 110px;
             height: 110px;
-            background: white;
+            background: var(--card-bg);
             border-radius: 50%;
             position: absolute;
         }
@@ -187,48 +192,49 @@
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            gap: 0.75rem;
         }
 
         .small-card {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            padding: 1.25rem;
+            gap: 0.75rem;
+            padding: 0.875rem;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .small-card:hover {
-            transform: translateY(-4px);
+            transform: translateY(-2px);
         }
 
         .card-icon-box {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1rem;
             color: white;
             flex-shrink: 0;
+            box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light);
         }
 
         .icon-athena {
-            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
         }
 
         .icon-const {
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
         }
 
         .icon-projects {
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
         }
 
         .icon-teams {
-            background: linear-gradient(135deg, #ec4899, #be185d);
+            background: linear-gradient(135deg, #10b981, #059669);
         }
 
         .card-content-box h4 {
@@ -248,10 +254,16 @@
             display: flex;
             flex-direction: column;
         }
+
+        /* Contenedor principal sin fondo gris */
+        .main-wrapper {
+            min-height: 100vh;
+            background: transparent;
+        }
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+    <div class="main-wrapper">
         @include('layouts.navigation')
 
         <!-- Page Heading -->
@@ -264,8 +276,12 @@
         @endisset
 
         <!-- Page Content -->
-        <main class="dashboard-container">
-            @yield('content')
+        <main class="pt-24 pb-8">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="dashboard-container">
+                    @yield('content')
+                </div>
+            </div>
         </main>
     </div>
 </body>
