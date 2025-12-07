@@ -39,7 +39,7 @@
                 @csrf
                 @method('PATCH')
 
-                <h3 class="section-header">Datos Personales</h3>
+                <h3 class="section-header-editar-usuario">Datos Personales</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label for="nombre" class="form-label">Nombre(s)</label>
@@ -59,7 +59,7 @@
                     </div>
                 </div>
 
-                <h3 class="section-header">Rol del Sistema</h3>
+                <h3 class="section-header-editar-usuario">Rol del Sistema</h3>
                 <div>
                     <label for="id_rol_sistema" class="form-label">Rol</label>
                     <select name="id_rol_sistema" id="id_rol_sistema" class="neuro-select">
@@ -72,7 +72,7 @@
                 </div>
                 
                 @if($user->estudiante)
-                    <h3 class="section-header">Datos de Estudiante</h3>
+                    <h3 class="section-header-editar-usuario">Datos de Estudiante</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="numero_control" class="form-label">Número de Control</label>
@@ -88,7 +88,7 @@
                         </div>
                     </div>
                 @elseif($user->jurado)
-                     <h3 class="section-header">Datos de Jurado</h3>
+                     <h3 class="section-header-editar-usuario">Datos de Jurado</h3>
                      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label for="especialidad" class="form-label">Especialidad</label>

@@ -2,7 +2,6 @@
 
 @section('content')
 
-
 <div class="evento-edit-page py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
         <a href="{{ route('admin.eventos.index') }}" class="back-link">
@@ -82,18 +81,57 @@
                 <!-- Imagen del Evento -->
                 <div class="mt-6">
                     <label for="ruta_imagen" class="form-label">Nueva Imagen del Evento (Opcional)</label>
-                    <input type="file" name="ruta_imagen" id="ruta_imagen" class="neuro-file">
+                    
+                    {{-- Área de drag and drop --}}
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="file-upload-content">
+                            <svg class="file-upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <p class="file-upload-text">
+                                <strong>Arrastra un archivo aquí o haz clic para seleccionar</strong>
+                            </p>
+                            <p class="file-upload-hint">
+                                JPG, PNG, GIF - Máximo 2MB
+                            </p>
+                        </div>
+                        <input type="file" 
+                               name="ruta_imagen" 
+                               id="ruta_imagen" 
+                               accept="image/jpeg,image/png,image/jpg,image/gif"
+                               class="neuro-file"
+                               onchange="handleFileSelect(this)">
+                    </div>
+                    
+                    {{-- Preview del archivo seleccionado --}}
+                    <div id="filePreview" class="file-preview">
+                        <div class="file-preview-icon">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="file-preview-info">
+                            <div class="file-preview-name" id="fileName"></div>
+                            <div class="file-preview-size" id="fileSize"></div>
+                        </div>
+                        <button type="button" class="file-preview-remove" onclick="removeFile()">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Imagen Actual -->
-                <div class="image-preview">
-                    <label class="form-label">Imagen Actual</label>
-                    @if ($evento->ruta_imagen)
-                        <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen actual">
-                    @else
-                        <p>No hay imagen actualmente.</p>
-                    @endif
+                @if ($evento->ruta_imagen)
+                <div class="image-preview-current">
+                    <label class="form-label">Imagen Actual del Evento</label>
+                    <div class="current-image-container">
+                        <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen actual del evento">
+                        <p class="current-image-label">Esta imagen se mantendrá si no subes una nueva</p>
+                    </div>
                 </div>
+                @endif
 
                 <!-- Criterios de Evaluación -->
                 <div class="criterios-section">
@@ -172,13 +210,13 @@
 
                         <!-- Validación visual -->
                         <div x-show="totalPonderacion !== 100" class="mt-4">
-                            <p class="text-sm" :class="totalPonderacion > 100 ? 'text-red-600' : 'text-amber-600'">
+                            <p class="text-sm" :class="totalPonderacion > 100 ? 'text-red-600' : 'text-amber-600'" style="font-family: 'Poppins', sans-serif;">
                                 <span x-show="totalPonderacion < 100">⚠️ Faltan <span x-text="(100 - totalPonderacion).toFixed(0)"></span>% para completar el 100%</span>
                                 <span x-show="totalPonderacion > 100">❌ Excediste por <span x-text="(totalPonderacion - 100).toFixed(0)"></span>% el límite del 100%</span>
                             </p>
                         </div>
                         <div x-show="totalPonderacion === 100" class="mt-4">
-                            <p class="text-sm text-green-600">✅ ¡Perfecto! Los criterios suman exactamente 100%</p>
+                            <p class="text-sm text-green-600" style="font-family: 'Poppins', sans-serif;">✅ ¡Perfecto! Los criterios suman exactamente 100%</p>
                         </div>
                     @else
                         <div class="warning-box">
@@ -197,7 +235,7 @@
                                     <span class="readonly-criterio-pond">{{ $criterio->ponderacion }}%</span>
                                 </div>
                             @empty
-                                <p class="text-gray-500 text-sm text-center py-4">No hay criterios definidos para este evento.</p>
+                                <p class="text-gray-500 text-sm text-center py-4" style="font-family: 'Poppins', sans-serif;">No hay criterios definidos para este evento.</p>
                             @endforelse
                         </div>
                     @endif
@@ -217,4 +255,77 @@
         </div>
     </div>
 </div>
+
+<script>
+    // Elementos del DOM
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    const fileInput = document.getElementById('ruta_imagen');
+    const filePreview = document.getElementById('filePreview');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    
+    // Prevenir comportamiento por defecto en drag and drop
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        fileUploadArea.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+    
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+    
+    // Highlight en drag over
+    ['dragenter', 'dragover'].forEach(eventName => {
+        fileUploadArea.addEventListener(eventName, highlight, false);
+    });
+    
+    ['dragleave', 'drop'].forEach(eventName => {
+        fileUploadArea.addEventListener(eventName, unhighlight, false);
+    });
+    
+    function highlight() {
+        fileUploadArea.classList.add('dragover');
+    }
+    
+    function unhighlight() {
+        fileUploadArea.classList.remove('dragover');
+    }
+    
+    // Manejar el drop
+    fileUploadArea.addEventListener('drop', handleDrop, false);
+    
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        
+        if (files.length > 0) {
+            fileInput.files = files;
+            handleFileSelect(fileInput);
+        }
+    }
+    
+    // Manejar selección de archivo
+    function handleFileSelect(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const size = (file.size / 1024 / 1024).toFixed(2); // Size in MB
+            
+            // Actualizar preview
+            fileName.textContent = file.name;
+            fileSize.textContent = `${size} MB`;
+            filePreview.classList.add('show');
+            
+            // Ocultar área de upload
+            fileUploadArea.style.display = 'none';
+        }
+    }
+    
+    // Remover archivo
+    function removeFile() {
+        fileInput.value = '';
+        filePreview.classList.remove('show');
+        fileUploadArea.style.display = 'block';
+    }
+</script>
 @endsection
