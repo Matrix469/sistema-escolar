@@ -35,7 +35,13 @@
             'resources/css/admin/equipos/edit.css',
             'resources/css/admin/equipos/create.css',
             'resources/css/estudiante/dashboard.css',
+            'resources/css/estudiante/tarea/index-especific.css',
+            'resources/css/estudiante/stats/dashboard.css',
+            'resources/css/estudiante/recursos/index.css',
             'resources/css/navigation.css',
+            'resource/css/estudiante/proyecto-evento/show.css',
+            'resources/css/estudiante/proyecto/tareas.css',
+            'resources/css/estudiante/proyecto/show.css',
             'resources/js/app.js'])
 
         <!-- Alpine.js -->
