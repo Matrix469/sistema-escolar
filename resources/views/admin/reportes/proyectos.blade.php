@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-        .body { font-family: 'Poppins', sans-serif; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header img { vertical-align: middle; }
-        .header-text { display: inline-block; vertical-align: middle; margin-left: 10px; font-weight: bold; font-size: 16pt; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #000000; padding: 5px; text-align: center; }
-        th { background-color: #cccccc; font-weight: bold; }
-    </style>
+ 
 </head>
 <body>
     <div class="header">

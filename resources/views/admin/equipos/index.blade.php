@@ -128,14 +128,10 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if($equipo->inscripciones->first())
-                                        @if($equipo->inscripciones->first()->status_registro === 'Completo')
-                                            <span class="status-badge status-completo">Completo</span>
-                                        @else
-                                            <span class="status-badge status-incompleto">Incompleto</span>
-                                        @endif
+                                    @if($equipo->miembros->count() >= 5)
+                                        <span class="status-badge status-completo">Completo ({{ $equipo->miembros->count() }}/5)</span>
                                     @else
-                                        <span class="status-badge status-incompleto">Sin inscripción</span>
+                                        <span class="status-badge status-incompleto">Incompleto ({{ $equipo->miembros->count() }}/5)</span>
                                     @endif
                                 </td>
                                 <td class="text-right">

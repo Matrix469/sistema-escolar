@@ -157,6 +157,9 @@ Route::middleware(['auth', 'role:estudiante'])->prefix('estudiante')->name('estu
     Route::get('mi-equipo/{inscripcion}', [MiEquipoController::class, 'showDetalle'])->name('equipo.show-detalle');
     Route::resource('eventos.equipos', EstudianteEquipoController::class)->only(['index', 'create', 'store', 'show']);
 
+    // Ruta para vista previa de equipos desde carrusel
+    Route::get('equipos/{equipo}/vista-previa', [EstudianteEquipoController::class, 'vistaPrevia'])->name('equipos.vista-previa');
+
     // Rutas para registrar equipo existente a evento
     Route::get('eventos/{evento}/registrar-equipo-existente', [EstudianteEquipoController::class, 'selectEquipoExistente'])->name('eventos.select-equipo-existente');
     Route::post('eventos/{evento}/registrar-equipo-existente', [EstudianteEquipoController::class, 'registrarEquipoExistente'])->name('eventos.registrar-equipo-existente');
@@ -243,6 +246,9 @@ Route::middleware(['auth', 'role:estudiante'])->prefix('estudiante')->name('estu
     Route::get('constancias', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'index'])->name('constancias.index');
     //Ruta para ver constancias
     Route::get('constancias/ver/{evento}', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'generarPdf'])->name('constancias.ver');
+
+    // Ruta para vista previa de equipos desde carrusel
+    Route::get('equipos/vista-previa/{equipo}', [App\Http\Controllers\Estudiante\EquipoController::class, 'vistaPrevia'])->name('equipos.vista-previa');
     //? Rutas para proyectos del evento
 Route::post('eventos/{evento}/configurar-tipo-proyecto', [App\Http\Controllers\Admin\ProyectoEventoController::class, 'configurarTipo'])->name('eventos.configurar-proyectos');
 Route::get('eventos/{evento}/proyecto/create', [App\Http\Controllers\Admin\ProyectoEventoController::class, 'create'])->name('proyectos-evento.create');

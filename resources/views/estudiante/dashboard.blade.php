@@ -1,815 +1,10 @@
 @extends('layouts.app')
 
+@push('styles')
+<link rel="stylesheet" href="{{ Vite::asset('resources/css/estudiante/dashboard.css') }}">
+@endpush
+
 @section('content')
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-    
-    .student-dashboard {
-        background: linear-gradient(135deg, #FFFDF4 0%, #FFF8F0 50%, #FFEEE2 100%);
-        min-height: 100vh;
-        font-family: 'Poppins', sans-serif;
-    }
-    
-    .student-dashboard * {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    /* Hero Welcome Section */
-    .welcome-hero {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 50%, #3d3d3d 100%);
-        border-radius: 24px;
-        padding: 2rem 2.5rem;
-        margin-bottom: 2rem;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-    }
-
-    .welcome-hero::before {
-        content: '';
-        position: absolute;
-        top: -100px;
-        right: -100px;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(circle, rgba(232, 154, 60, 0.2) 0%, transparent 70%);
-        pointer-events: none;
-    }
-
-    .welcome-hero::after {
-        content: '';
-        position: absolute;
-        bottom: -50px;
-        left: -50px;
-        width: 200px;
-        height: 200px;
-        background: radial-gradient(circle, rgba(232, 154, 60, 0.1) 0%, transparent 70%);
-        pointer-events: none;
-    }
-
-    .welcome-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-        z-index: 1;
-    }
-
-    .welcome-text h1 {
-        color: #ffffff;
-        font-size: 1.75rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    .welcome-text h1 span {
-        color: #e89a3c;
-    }
-
-    .welcome-text p {
-        color: rgba(255, 255, 255, 0.7);
-        font-size: 0.95rem;
-    }
-
-    .welcome-stats {
-        display: flex;
-        gap: 1.5rem;
-    }
-
-    .welcome-stat {
-        text-align: center;
-        padding: 0.75rem 1.5rem;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-    }
-
-    .welcome-stat-number {
-        color: #e89a3c;
-        font-size: 1.75rem;
-        font-weight: 800;
-        line-height: 1;
-    }
-
-    .welcome-stat-label {
-        color: rgba(255, 255, 255, 0.6);
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-top: 0.25rem;
-    }
-
-    /* Main Grid Layout */
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2rem;
-    }
-
-    @media (max-width: 1024px) {
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    /* Section Titles */
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.25rem;
-    }
-
-    .section-title {
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .section-title-icon {
-        width: 28px;
-        height: 28px;
-        background: linear-gradient(135deg, #e89a3c, #f5b76c);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .section-title-icon svg {
-        width: 16px;
-        height: 16px;
-        color: white;
-    }
-
-    .section-link {
-        color: #e89a3c;
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        transition: all 0.2s ease;
-    }
-
-    .section-link:hover {
-        color: #d98a2c;
-        transform: translateX(3px);
-    }
-
-    .section-link svg {
-        width: 16px;
-        height: 16px;
-    }
-
-    /* Event Cards */
-    .event-card {
-        background: #ffffff;
-        border-radius: 20px;
-        overflow: hidden;
-        margin-bottom: 1.25rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-        border: 1px solid rgba(0, 0, 0, 0.04);
-        transition: all 0.3s ease;
-    }
-
-    .event-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-    }
-
-    .event-card-active {
-        border: 2px solid #e89a3c;
-    }
-
-    .event-card-header {
-        background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
-        padding: 1.25rem 1.5rem;
-        position: relative;
-    }
-
-    .event-card-active .event-card-header {
-        background: linear-gradient(135deg, #e89a3c, #f5b76c);
-    }
-
-    .event-badge {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        font-size: 0.7rem;
-        font-weight: 600;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .event-card-active .event-badge {
-        background: rgba(0, 0, 0, 0.2);
-    }
-
-    .event-title {
-        color: #ffffff;
-        font-size: 1.125rem;
-        font-weight: 700;
-        margin-bottom: 0.25rem;
-        padding-right: 80px;
-    }
-
-    .event-card-body {
-        padding: 1.5rem;
-    }
-
-    .event-desc {
-        color: #6b7280;
-        font-size: 0.875rem;
-        line-height: 1.6;
-        margin-bottom: 1rem;
-    }
-
-    .event-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        margin-bottom: 1.25rem;
-    }
-
-    .event-meta-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.8rem;
-        color: #6b7280;
-    }
-
-    .event-meta-item svg {
-        width: 16px;
-        height: 16px;
-        color: #e89a3c;
-    }
-
-    .event-action-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
-        color: #ffffff;
-        padding: 0.75rem 1.25rem;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-    }
-
-    .event-action-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-        color: #ffffff;
-    }
-
-    .event-action-btn svg {
-        width: 16px;
-        height: 16px;
-    }
-
-    /* Progress Section */
-    .progress-card {
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 1.75rem;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-        border: 1px solid rgba(0, 0, 0, 0.04);
-        margin-bottom: 1.5rem;
-    }
-
-    .progress-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1.5rem;
-    }
-
-    .progress-info {
-        flex: 1;
-    }
-
-    .progress-team-name {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-bottom: 0.5rem;
-    }
-
-    .progress-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .progress-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.375rem;
-        background: linear-gradient(135deg, rgba(232, 154, 60, 0.1), rgba(232, 154, 60, 0.05));
-        color: #b37a2e;
-        padding: 0.375rem 0.75rem;
-        border-radius: 8px;
-        font-size: 0.75rem;
-        font-weight: 500;
-    }
-
-    .progress-tag svg {
-        width: 12px;
-        height: 12px;
-    }
-
-    .progress-circle {
-        position: relative;
-        width: 100px;
-        height: 100px;
-    }
-
-    .progress-circle-bg {
-        fill: none;
-        stroke: #f3f4f6;
-        stroke-width: 8;
-    }
-
-    .progress-circle-fill {
-        fill: none;
-        stroke: url(#progressGradient);
-        stroke-width: 8;
-        stroke-linecap: round;
-        stroke-dasharray: 251.2;
-        stroke-dashoffset: 251.2;
-        transform: rotate(-90deg);
-        transform-origin: center;
-        transition: stroke-dashoffset 1s ease;
-    }
-
-    .progress-circle-text {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-    }
-
-    .progress-percentage {
-        font-size: 1.5rem;
-        font-weight: 800;
-        color: #e89a3c;
-        line-height: 1;
-    }
-
-    .progress-label {
-        font-size: 0.65rem;
-        color: #9ca3af;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .progress-details {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 1rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #f3f4f6;
-    }
-
-    .progress-detail-item {
-        text-align: center;
-    }
-
-    .progress-detail-value {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #1a1a1a;
-    }
-
-    .progress-detail-label {
-        font-size: 0.7rem;
-        color: #9ca3af;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .progress-link {
-        display: flex;
-        justify-content: center;
-        margin-top: 1.25rem;
-    }
-
-    .progress-link a {
-        color: #e89a3c;
-        font-size: 0.875rem;
-        font-weight: 500;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 0.25rem;
-        transition: all 0.2s ease;
-    }
-
-    .progress-link a:hover {
-        color: #d98a2c;
-    }
-
-    /* Quick Actions Grid */
-    .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-    }
-
-    .quick-action-card {
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 1.25rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        text-decoration: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-        border: 1px solid rgba(0, 0, 0, 0.04);
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .quick-action-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-        border-color: #e89a3c;
-    }
-
-    .quick-action-icon {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .quick-action-icon svg {
-        width: 24px;
-        height: 24px;
-        color: white;
-    }
-
-    .icon-events {
-        background: linear-gradient(135deg, #e89a3c, #f5b76c);
-    }
-
-    .icon-project {
-        background: linear-gradient(135deg, #1a1a1a, #3d3d3d);
-    }
-
-    .icon-certificates {
-        background: linear-gradient(135deg, #059669, #34d399);
-    }
-
-    .icon-team {
-        background: linear-gradient(135deg, #7c3aed, #a78bfa);
-    }
-
-    .quick-action-content h4 {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-bottom: 0.125rem;
-    }
-
-    .quick-action-content p {
-        font-size: 0.75rem;
-        color: #9ca3af;
-    }
-
-    .quick-action-disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-    }
-
-    .quick-action-disabled:hover {
-        transform: none;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-        border-color: rgba(0, 0, 0, 0.04);
-    }
-
-    /* Empty State */
-    .empty-state {
-        background: #ffffff;
-        border-radius: 20px;
-        padding: 2.5rem;
-        text-align: center;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-        border: 1px solid rgba(0, 0, 0, 0.04);
-    }
-
-    .empty-state-icon {
-        width: 64px;
-        height: 64px;
-        background: linear-gradient(135deg, rgba(232, 154, 60, 0.1), rgba(232, 154, 60, 0.05));
-        border-radius: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 1rem;
-    }
-
-    .empty-state-icon svg {
-        width: 32px;
-        height: 32px;
-        color: #e89a3c;
-    }
-
-    .empty-state h3 {
-        font-size: 1.125rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state p {
-        color: #6b7280;
-        font-size: 0.875rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .empty-state-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: linear-gradient(135deg, #e89a3c, #f5b76c);
-        color: #ffffff;
-        padding: 0.75rem 1.5rem;
-        border-radius: 12px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-    }
-
-    .empty-state-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(232, 154, 60, 0.3);
-        color: #ffffff;
-    }
-
-    /* No Progress State */
-    .no-progress-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 2rem;
-    }
-
-    .no-progress-icon {
-        width: 80px;
-        height: 80px;
-        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 1rem;
-    }
-
-    .no-progress-icon svg {
-        width: 40px;
-        height: 40px;
-        color: #9ca3af;
-    }
-
-    .no-progress-text {
-        text-align: center;
-    }
-
-    .no-progress-text h4 {
-        font-size: 1rem;
-        font-weight: 600;
-        color: #4b5563;
-        margin-bottom: 0.25rem;
-    }
-
-    .no-progress-text p {
-        font-size: 0.875rem;
-        color: #9ca3af;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .welcome-content {
-            flex-direction: column;
-            text-align: center;
-            gap: 1.5rem;
-        }
-
-        .welcome-stats {
-            justify-content: center;
-        }
-
-        .quick-actions {
-            grid-template-columns: 1fr;
-        }
-
-        .progress-header {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 1.5rem;
-        }
-
-        .progress-details {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-        }
-    }
-
-        /* Carousel Styles */
-        .carousel-container {
-            position: relative;
-            width: 100%;
-            overflow: hidden;
-            border-radius: 12px;
-            background: #FFEEE2;
-            box-shadow: 8px 8px 16px rgba(230, 213, 201, 0.5);
-        }
-
-        .carousel-track-container {
-            overflow: hidden;
-            border-radius: 12px;
-            width: 100%;
-        }
-
-        .carousel-track {
-            display: flex;
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            width: 100%;
-        }
-
-        .carousel-slide {
-            min-width: 100%;
-            width: 100%;
-            flex-shrink: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        .carousel-nav {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .carousel-arrow {
-            position: relative;
-            width: 28px;
-            height: 28px;
-            background: rgba(255, 255, 255, 0.8);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #2c2c2c;
-            transition: all 0.3s ease;
-            box-shadow: 4px 4px 8px rgba(230, 213, 201, 0.5);
-        }
-
-        .carousel-arrow:hover {
-            color: #e89a3c;
-            box-shadow: 6px 6px 12px rgba(230, 213, 201, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .carousel-dots {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .carousel-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: rgba(232, 154, 60, 0.3);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: none;
-        }
-
-        .carousel-dot.active {
-            background: #e89a3c;
-            width: 16px;
-            border-radius: 3px;
-        }
-
-        .carousel-progress {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-            margin-top: 0.75rem;
-            overflow: hidden;
-        }
-
-        .carousel-progress-bar {
-            height: 100%;
-            background: #e89a3c;
-            border-radius: 4px;
-            transition: width 0.1s linear;
-            width: 0%;
-        }
-
-        .team-card {
-            background: #FFEEE2;
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 4px 4px 8px rgba(230, 213, 201, 0.5);
-            transition: transform 0.3s ease;
-        }
-
-        .team-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 6px 6px 12px rgba(230, 213, 201, 0.3);
-        }
-
-        .team-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .team-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .team-members {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .member-avatar {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #e89a3c, #f5a847);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .member-avatar.more {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-        }
-
-        .team-status {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-
-        .team-status.incompleto {
-            background: rgba(34, 197, 94, 0.1);
-            color: #16a34a;
-        }
-
-        .team-status.completo {
-            background: rgba(107, 114, 128, 0.1);
-            color: #6b7280;
-        }
-</style>
 
 <div class="student-dashboard py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -870,16 +65,16 @@
                         <div class="carousel-track" id="equiposTrack">
                             @foreach ($equiposDisponibles as $inscripcion)
                                 <div class="carousel-slide">
-                                    <a href="{{ route('estudiante.equipos.show', $inscripcion->equipo) }}" class="team-card" style="text-decoration: none; color: inherit; display: block;">
+                                    <div class="team-card">
                                         <div class="team-header">
                                             <div class="team-avatar">
-                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #fff;">
+                                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                 </svg>
                                             </div>
                                             <div class="team-info">
-                                                <h4 style="color: #2c2c2c; margin: 0; font-size: 0.95rem;">{{ $inscripcion->equipo->nombre }}</h4>
-                                                <p style="color: #9ca3af; margin: 0; font-size: 0.8rem;">{{ $inscripcion->evento->nombre }}</p>
+                                                <h4>{{ $inscripcion->equipo->nombre }}</h4>
+                                                <p>{{ $inscripcion->evento->nombre }}</p>
                                             </div>
                                         </div>
 
@@ -897,7 +92,7 @@
                                         </div>
 
                                         <div class="team-status {{ $inscripcion->miembros->count() >= 5 ? 'completo' : 'incompleto' }}">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px; margin-right: 0.25rem;">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 @if($inscripcion->miembros->count() >= 5)
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                 @else
@@ -906,20 +101,28 @@
                                             </svg>
                                             {{ $inscripcion->miembros->count() >= 5 ? 'Equipo Completo' : (5 - $inscripcion->miembros->count()) . ' espacio' . ((5 - $inscripcion->miembros->count()) != 1 ? 's' : '') . ' disponible' }}
                                         </div>
-                                    </a>
+
+                                        <a href="{{ route('estudiante.equipos.vista-previa', $inscripcion->equipo) }}" class="team-view-btn">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                            </svg>
+                                            Ver Equipo
+                                        </a>
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
                     </div>
 
                     <div class="carousel-nav">
-                        <button class="carousel-arrow prev" onclick="equiposCarousel.prev()">
+                        <button class="carousel-arrow prev" onclick="navigateCarousel('prev')">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                             </svg>
                         </button>
                         <div class="carousel-dots" id="equiposDots"></div>
-                        <button class="carousel-arrow next" onclick="equiposCarousel.next()">
+                        <button class="carousel-arrow next" onclick="navigateCarousel('next')">
                             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width: 14px; height: 14px;">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
@@ -937,8 +140,11 @@
             
             <!-- Left Column - Events -->
             <div class="left-column">
-                
-                <!-- Active Event -->
+                {{-- Eventos Disponibles (partial) --}}
+                @include('estudiante.partials.eventos-carousel')
+
+                {{-- Equipos Disponibles (partial) --}}
+                @include('estudiante.partials.equipos-carousel')
                 @if ($miInscripcion)
                 <div class="section-header">
                     <h3 class="section-title">
@@ -1267,31 +473,46 @@
 // Carousel functionality for equipos
 class Carousel {
     constructor(trackId, dotsId, progressBarId) {
+        console.log('Carousel constructor called with:', trackId, dotsId, progressBarId);
+
         this.track = document.getElementById(trackId);
         this.dotsContainer = document.getElementById(dotsId);
         this.progressBar = document.getElementById(progressBarId);
+
+        if (!this.track) {
+            console.error('Track element not found:', trackId);
+            return;
+        }
+
         this.currentIndex = 0;
         this.slides = this.track.querySelectorAll('.carousel-slide');
         this.totalSlides = this.slides.length;
+
+        console.log('Carousel found slides:', this.totalSlides);
 
         this.init();
     }
 
     init() {
-        if (this.totalSlides <= 1) return;
+        // Always initialize, even with 1 or 0 slides
+        console.log('Initializing carousel with', this.totalSlides, 'slides');
 
-        // Create dots
-        this.createDots();
+        // Create dots only if we have slides
+        if (this.totalSlides > 0) {
+            this.createDots();
+        }
 
         // Set initial state
         this.updateCarousel();
 
-        // Auto-play
-        this.startAutoPlay();
+        // Auto-play only if we have more than 1 slide
+        if (this.totalSlides > 1) {
+            this.startAutoPlay();
 
-        // Pause on hover
-        this.track.addEventListener('mouseenter', () => this.stopAutoPlay());
-        this.track.addEventListener('mouseleave', () => this.startAutoPlay());
+            // Pause on hover
+            this.track.addEventListener('mouseenter', () => this.stopAutoPlay());
+            this.track.addEventListener('mouseleave', () => this.startAutoPlay());
+        }
     }
 
     createDots() {
@@ -1310,28 +531,34 @@ class Carousel {
     }
 
     next() {
+        if (this.totalSlides <= 1) return;
         this.currentIndex = (this.currentIndex + 1) % this.totalSlides;
         this.updateCarousel();
     }
 
     prev() {
+        if (this.totalSlides <= 1) return;
         this.currentIndex = (this.currentIndex - 1 + this.totalSlides) % this.totalSlides;
         this.updateCarousel();
     }
 
     updateCarousel() {
+        if (!this.track || !this.dotsContainer || !this.progressBar) return;
+
         // Update position
         this.track.style.transform = `translateX(-${this.currentIndex * 100}%)`;
 
-        // Update dots
+        // Update dots only if they exist
         const dots = this.dotsContainer.querySelectorAll('.carousel-dot');
         dots.forEach((dot, index) => {
             dot.classList.toggle('active', index === this.currentIndex);
         });
 
-        // Update progress bar
-        const progress = ((this.currentIndex + 1) / this.totalSlides) * 100;
-        this.progressBar.style.width = `${progress}%`;
+        // Update progress bar only if we have slides
+        if (this.totalSlides > 0) {
+            const progress = ((this.currentIndex + 1) / this.totalSlides) * 100;
+            this.progressBar.style.width = `${progress}%`;
+        }
     }
 
     startAutoPlay() {
@@ -1346,9 +573,43 @@ class Carousel {
     }
 }
 
+// Global navigation function
+function navigateCarousel(direction) {
+    if (window.equiposCarousel) {
+        console.log('Navigating carousel:', direction);
+        if (direction === 'prev') {
+            window.equiposCarousel.prev();
+        } else if (direction === 'next') {
+            window.equiposCarousel.next();
+        }
+    } else {
+        console.error('Carousel not initialized');
+    }
+}
+
 // Initialize carousels
 document.addEventListener('DOMContentLoaded', function() {
-    const equiposCarousel = new Carousel('equiposTrack', 'equiposDots', 'equiposProgress');
+    console.log('DOM loaded, checking for carousel elements...');
+
+    // Check if carousel elements exist before initializing
+    const equiposTrack = document.getElementById('equiposTrack');
+    const equiposDots = document.getElementById('equiposDots');
+    const equiposProgress = document.getElementById('equiposProgress');
+
+    console.log('Carousel elements found:', {
+        track: !!equiposTrack,
+        dots: !!equiposDots,
+        progress: !!equiposProgress
+    });
+
+    if (equiposTrack && equiposDots && equiposProgress) {
+        const equiposCarousel = new Carousel('equiposTrack', 'equiposDots', 'equiposProgress');
+        // Make it globally accessible for onclick handlers
+        window.equiposCarousel = equiposCarousel;
+        console.log('Carousel initialized successfully');
+    } else {
+        console.error('Carousel elements not found');
+    }
 });
 </script>
 @endsection

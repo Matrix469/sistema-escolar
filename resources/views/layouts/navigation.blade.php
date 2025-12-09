@@ -167,7 +167,7 @@
                     Reclutamiento
                 </a>
 
-                <a href="{{ route('admin.reportes.index') }}" class="menu-item {{ request()->routeIs('admin.reportes.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.reportes.index') }}" class="menu-item-nav {{ request()->routeIs('admin.reportes.*') ? 'active' : '' }}">
                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v6m12 0h.01M8 12h.01M12 12h.01M16 12h.01"/>
                     </svg>

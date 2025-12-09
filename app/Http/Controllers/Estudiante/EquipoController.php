@@ -330,6 +330,45 @@ class EquipoController extends Controller
             return back()->with('error', 'Error al registrar el equipo: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Mostrar vista previa de un equipo desde el carrusel del dashboard
+     */
+    public function vistaPrevia(Equipo $equipo)
+    {
+        // Cargar el equipo con sus relaciones
+        $equipo->load([
+            'miembros.user',
+            'miembros.rol',
+            'inscripciones.evento'
+        ]);
+
+        // Obtener la inscripción activa del equipo (si existe)
+        $inscripcionActiva = $equipo->inscripciones()
+            ->whereHas('evento', function($q) {
+                $q->whereIn('estado', ['Próximo', 'Activo', 'En Progreso']);
+            })
+            ->with(['evento', 'miembros.user', 'miembros.rol'])
+            ->first();
+
+        // Verificar si el usuario actual es miembro del equipo
+        $user = Auth::user();
+        $esMiembro = false;
+        if ($inscripcionActiva) {
+            $esMiembro = $inscripcionActiva->miembros()
+                ->where('id_estudiante', $user->id_usuario)
+                ->exists();
+        }
+
+        // Verificar si hay una solicitud pendiente
+        $solicitudActual = SolicitudUnion::where('equipo_id', $equipo->id_equipo)
+            ->where('estudiante_id', $user->id_usuario)
+            ->where('status', 'pendiente')
+            ->first();
+
+        return view('estudiante.equipos.vista-previa', compact('equipo', 'inscripcionActiva', 'esMiembro', 'solicitudActual'));
+    }
+
     public function destroy(string $id)
     {
         //
