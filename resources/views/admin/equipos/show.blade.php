@@ -62,6 +62,12 @@
                         @forelse($equipo->miembros as $miembro)
                             <li class="member-item">
                                 <div class="flex items-center space-x-4">
+                                    {{-- Foto de perfil --}}
+                                    <div class="member-avatar" style="width: 48px; height: 48px; border-radius: 50%; overflow: hidden; flex-shrink: 0; border: 2px solid {{ $miembro->es_lider ? '#f59e0b' : '#e5e7eb' }};">
+                                        <img src="{{ $miembro->user->foto_perfil_url }}" 
+                                             alt="{{ $miembro->user->nombre }}" 
+                                             style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
                                     <div>
                                         <p class="member-name">{{ $miembro->user->nombre_completo }}</p>
                                         <p class="member-carrera">{{ optional($miembro->user->estudiante)->carrera->nombre ?? 'N/A' }}</p>

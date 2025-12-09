@@ -17,33 +17,36 @@ class EquipoController extends Controller
      */
     public function index(Request $request)
     {
-        // Contadores
+        // Contadores basados en cantidad de miembros (5 = completo)
         $totalEquipos = Equipo::count();
+        
+        // Equipos completos: tienen 5 o más miembros
         $equiposCompletos = Equipo::whereHas('inscripciones', function($q) {
-            $q->where('status_registro', 'Completo');
-        })->count();
-        $equiposIncompletos = Equipo::whereHas('inscripciones', function($q) {
-            $q->where('status_registro', 'Incompleto');
+            $q->whereHas('miembros', function($mq) {
+                // Contamos por inscripción
+            }, '>=', 5);
         })->count();
         
+        // Calculamos incompletos como la diferencia
+        $equiposIncompletos = $totalEquipos - $equiposCompletos;
+        
         // Query base con relaciones
-        $query = Equipo::with('miembros.user', 'inscripciones.evento');
+        $query = Equipo::with('miembros.user', 'inscripciones.evento')
+            ->withCount('miembros');
         
         // Filtro de búsqueda por nombre
         if ($request->filled('search')) {
             $query->where('nombre', 'ilike', '%' . $request->search . '%');
         }
         
-        // Filtro por estado (completo/incompleto)
+        // Filtro por estado (completo/incompleto) basado en cantidad de miembros
         if ($request->filled('estado')) {
             if ($request->estado === 'completo') {
-                $query->whereHas('inscripciones', function($q) {
-                    $q->where('status_registro', 'Completo');
-                });
+                // Equipos con 5+ miembros
+                $query->has('miembros', '>=', 5);
             } elseif ($request->estado === 'incompleto') {
-                $query->whereHas('inscripciones', function($q) {
-                    $q->where('status_registro', 'Incompleto');
-                });
+                // Equipos con menos de 5 miembros
+                $query->has('miembros', '<', 5);
             }
         }
         

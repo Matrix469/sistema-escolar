@@ -178,14 +178,29 @@
         </h3>
         
         @php
+            $userId = auth()->id();
+            
+            // Obtener los IDs de eventos donde el usuario ya está inscrito
+            $eventosDelUsuario = \App\Models\InscripcionEvento::whereHas('miembros', function($q) use ($userId) {
+                $q->where('id_estudiante', $userId);
+            })->pluck('id_evento')->toArray();
+            
+            // Obtener equipos disponibles:
+            // - En eventos 'Próximo' o 'Activo'
+            // - NO en eventos donde el usuario ya está
             $equiposDisponibles = \App\Models\InscripcionEvento::whereHas('evento', function($q) {
-                $q->where('estado', 'Próximo')
-                  ->orWhere('estado', 'Activo');
+                $q->whereIn('estado', ['Próximo', 'Activo']);
             })
-            ->where('status_registro', 'Incompleto')
-            ->with(['equipo', 'evento', 'miembros.rol'])
-            ->take(6)
-            ->get();
+            ->when(count($eventosDelUsuario) > 0, function($q) use ($eventosDelUsuario) {
+                $q->whereNotIn('id_evento', $eventosDelUsuario);
+            })
+            ->withCount('miembros')
+            ->with(['equipo', 'evento', 'miembros.user'])
+            ->get()
+            ->filter(function($inscripcion) {
+                return $inscripcion->miembros_count < 5;
+            })
+            ->take(6);
         @endphp
 
         @if($equiposDisponibles->count() > 0)
@@ -194,7 +209,7 @@
                     <div class="carousel-track" id="equiposTrack">
                         @foreach ($equiposDisponibles as $inscripcion)
                             <div class="carousel-slide">
-                                <div class="team-card">
+                                <div class="team-card" onclick="window.location.href='{{ route('estudiante.equipos.vista-previa', $inscripcion->equipo) }}'" style="cursor: pointer;">
                                     <div class="team-header">
                                         <div class="team-avatar">
                                             <i class="fas fa-users"></i>
@@ -204,7 +219,7 @@
                                             <p>{{ $inscripcion->evento->nombre }}</p>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="team-members">
                                         @foreach($inscripcion->miembros->take(4) as $miembro)
                                             <div class="member-avatar" title="{{ $miembro->estudiante->user->nombre ?? 'Miembro' }}">
@@ -217,10 +232,15 @@
                                             </div>
                                         @endif
                                     </div>
-                                    
-                                    <div class="team-status {{ $inscripcion->status_registro === 'Completo' ? 'completo' : 'incompleto' }}">
-                                        <i class="fas {{ $inscripcion->status_registro === 'Completo' ? 'fa-check-circle' : 'fa-user-plus' }}"></i>
-                                        {{ $inscripcion->status_registro === 'Completo' ? 'Equipo Completo' : 'Buscando Miembros' }}
+
+                                    <div class="team-status {{ $inscripcion->miembros->count() >= 5 ? 'completo' : 'incompleto' }}">
+                                        <i class="fas {{ $inscripcion->miembros->count() >= 5 ? 'fa-check-circle' : 'fa-user-plus' }}"></i>
+                                        {{ $inscripcion->miembros->count() >= 5 ? 'Equipo Completo' : (5 - $inscripcion->miembros->count()) . ' espacio' . ((5 - $inscripcion->miembros->count()) != 1 ? 's' : '') . ' disponible' }}
+                                    </div>
+
+                                    <div class="team-view-btn">
+                                        <i class="fas fa-eye"></i>
+                                        Ver Detalles
                                     </div>
                                 </div>
                             </div>
@@ -638,10 +658,26 @@
         }
         
         let eventosCarousel, equiposCarousel;
-        
+
         document.addEventListener('DOMContentLoaded', function() {
-            eventosCarousel = new Carousel('eventosTrack', 'eventosDots', 'eventosProgress', 6000);
-            equiposCarousel = new Carousel('equiposTrack', 'equiposDots', 'equiposProgress', 5000);
+            console.log('Initializing carousels...');
+
+            // Initialize events carousel
+            try {
+                eventosCarousel = new Carousel('eventosTrack', 'eventosDots', 'eventosProgress', 6000);
+                console.log('Events carousel initialized');
+            } catch (error) {
+                console.error('Error initializing events carousel:', error);
+            }
+
+            // Initialize teams carousel
+            try {
+                equiposCarousel = new Carousel('equiposTrack', 'equiposDots', 'equiposProgress', 5000);
+                console.log('Teams carousel initialized');
+            } catch (error) {
+                console.error('Error initializing teams carousel:', error);
+            }
+
             animateProgressCharts();
 
             const alerts = document.querySelectorAll('[style*="slideInRight"]');
