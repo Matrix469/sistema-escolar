@@ -55,6 +55,7 @@
             'resources/css/estudiante/equipos/show.css',
             'resources/css/estudiante/equipos/select-existente.css',
             'resources/css/estudiante/equipos/preview.css',
+            'resources/css/estudiante/equipos/vista-previa.css',
             'resources/css/estudiante/equipos/index.css',
             'resources/css/estudiante/equipos/edit.css',
             'resources/css/estudiante/equipos/create.css',

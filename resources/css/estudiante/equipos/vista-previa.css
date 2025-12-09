@@ -1,5 +1,4 @@
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 .back-link-previa {
     display: inline-flex;
@@ -11,7 +10,7 @@
     padding: 0.5rem 1rem;
     background: rgba(255, 255, 255, 0.9);
     border-radius: 10px;
-    box-shadow: 4px 4px 8px rgba(0,0,0,0.08), -4px -4px 8px #ffffff;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.08), -4px -4px 8px #ffffff;
     transition: all 0.2s ease;
     text-decoration: none;
     max-width: 900px;
@@ -19,7 +18,7 @@
 
 .back-link-previa:hover {
     color: #6366f1;
-    box-shadow: 6px 6px 12px rgba(0,0,0,0.1), -6px -6px 12px #ffffff;
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.1), -6px -6px 12px #ffffff;
     transform: translateY(-2px);
 }
 
@@ -32,7 +31,7 @@
 .vista-previa-container {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #eef2ff 100%);
     min-height: 100vh;
-    font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
     padding: 2rem 1rem;
 }
 
@@ -43,7 +42,7 @@
     backdrop-filter: blur(20px);
     border-radius: 32px;
     box-shadow: 0 25px 80px rgba(0, 0, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.4);
     overflow: hidden;
     position: relative;
@@ -57,13 +56,17 @@
 }
 
 .vista-previa-header::before {
-    content: '';
+    content: "";
     position: absolute;
     top: -100px;
     right: -100px;
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, rgba(232, 154, 60, 0.15) 0%, transparent 70%);
+    background: radial-gradient(
+        circle,
+        rgba(232, 154, 60, 0.15) 0%,
+        transparent 70%
+    );
     pointer-events: none;
 }
 
@@ -162,24 +165,24 @@
 
 .miembros-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
 .miembro-card {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    background: linear-gradient(145deg, #ffffff, #f8fafc);
+    border-radius: 24px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
     border: 1px solid rgba(0, 0, 0, 0.04);
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
 }
 
 .miembro-card::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -188,30 +191,76 @@
     background: linear-gradient(90deg, #e89a3c, #f5b76c);
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease;
 }
 
 .miembro-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12), 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
 .miembro-card:hover::before {
     transform: scaleX(1);
 }
 
+/* Tarjeta del Líder - Estilo especial */
+.miembro-card.is-lider {
+    background: linear-gradient(145deg, #fffbeb, #fef3c7);
+    border: 2px solid rgba(232, 154, 60, 0.3);
+}
+
+.miembro-card.is-lider::before {
+    transform: scaleX(1);
+    background: linear-gradient(90deg, #d97706, #f59e0b, #fbbf24);
+}
+
+/* Corona del líder */
+.lider-crown {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    animation: crownFloat 3s ease-in-out infinite;
+}
+
+.lider-crown svg {
+    width: 22px;
+    height: 22px;
+    color: white;
+}
+
+@keyframes crownFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+/* Header del miembro */
 .miembro-header {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .miembro-avatar {
-    width: 56px;
-    height: 56px;
-    border-radius: 16px;
-    background: linear-gradient(135deg, #6366f1, #818cf8);
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -219,34 +268,143 @@
     font-weight: 700;
     font-size: 1.25rem;
     flex-shrink: 0;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    overflow: hidden;
 }
 
-.miembro-info h4 {
+.miembro-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.miembro-card.is-lider .miembro-avatar {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+}
+
+.miembro-nombre-rol {
+    flex: 1;
+    min-width: 0;
+}
+
+.miembro-nombre {
     color: #1a1a1a;
     font-size: 1.1rem;
     font-weight: 700;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
 }
 
 .miembro-rol {
     display: inline-flex;
     align-items: center;
     gap: 0.375rem;
-    background: linear-gradient(135deg, rgba(232, 154, 60, 0.1), rgba(232, 154, 60, 0.05));
-    color: #b37a2e;
-    padding: 0.375rem 0.75rem;
-    border-radius: 8px;
+    background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.1),
+        rgba(139, 92, 246, 0.08)
+    );
+    color: #6366f1;
+    padding: 0.4rem 0.85rem;
+    border-radius: 10px;
     font-size: 0.75rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.03em;
+}
+
+.miembro-rol svg {
+    width: 14px;
+    height: 14px;
 }
 
 .miembro-rol.lider {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(16, 185, 129, 0.12),
+        rgba(5, 150, 105, 0.08)
+    );
     color: #059669;
 }
 
+/* Información Académica */
+.miembro-info-academica {
+    margin-bottom: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0;
+    color: #4b5563;
+    font-size: 0.875rem;
+}
+
+.info-item svg {
+    width: 18px;
+    height: 18px;
+    color: #9ca3af;
+    flex-shrink: 0;
+}
+
+.info-item.carrera {
+    font-weight: 600;
+    color: #1f2937;
+    background: rgba(99, 102, 241, 0.05);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+}
+
+.info-item.carrera svg {
+    color: #6366f1;
+}
+
+.info-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.info-row .info-item {
+    flex: 1;
+    background: rgba(248, 250, 252, 0.8);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+}
+
+/* Contacto */
+.miembro-contacto {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.email-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+    font-size: 0.85rem;
+    text-decoration: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.email-link:hover {
+    color: #e89a3c;
+    background: rgba(232, 154, 60, 0.08);
+}
+
+.email-link svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Estilos antiguos deprecados pero mantenidos por compatibilidad */
 .miembro-detalle {
     color: #6b7280;
     font-size: 0.875rem;
@@ -279,7 +437,7 @@
 }
 
 .btn-accion::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
@@ -353,12 +511,20 @@
 }
 
 .badge-status.disponible {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(16, 185, 129, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(16, 185, 129, 0.1),
+        rgba(16, 185, 129, 0.05)
+    );
     color: #059669;
 }
 
 .badge-status.completo {
-    background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(107, 114, 128, 0.05));
+    background: linear-gradient(
+        135deg,
+        rgba(107, 114, 128, 0.1),
+        rgba(107, 114, 128, 0.05)
+    );
     color: #6b7280;
 }
 
@@ -414,6 +580,12 @@
 }
 
 @keyframes slideInRight {
-    from { opacity: 0; transform: translateX(100px); }
-    to { opacity: 1; transform: translateX(0); }
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
