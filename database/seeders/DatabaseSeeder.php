@@ -17,8 +17,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             InicializadorSeeder::class,
-            HabilidadesSeeder::class,
-            LogrosSeeder::class,
         ]);
     }
 }
