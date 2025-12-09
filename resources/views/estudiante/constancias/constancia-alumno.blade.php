@@ -173,7 +173,7 @@
                 <div class="a-text">A</div>
                 
                 <div class="student-name">
-                    ESTUDIANTE {{ $user->nombre }} {{ $user->app_paterno }} {{ $user->app_materno }}
+                    {{ $user->nombre }} {{ $user->app_paterno }} {{ $user->app_materno }}
                 </div>
 
                 <div class="body-text">
