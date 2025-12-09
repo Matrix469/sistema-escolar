@@ -7,7 +7,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css', 
                 'resources/css/admin/dashboard.css',
-                'resources/css/admin/',
+                'resources/css/admin/equipos/edit.css',
                 'resources/css/navigation.css',
                 'resources/js/app.js',
             ],
