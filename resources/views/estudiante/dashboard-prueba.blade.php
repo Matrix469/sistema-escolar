@@ -47,32 +47,32 @@
     </svg>
 
     <!-- Welcome Banner -->
-    <div class="welcome-banner animate-in" style="grid-column: 1 / -1;">
-        <svg class="welcome-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <div class="welcome-banner-dbshdE animate-in-dbshdE" style="grid-column: 1 / -1;">
+        <svg class="welcome-svg-dbshdE" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="50" cy="50" r="45" stroke="white" stroke-width="2"/>
             <path d="M35 50 L45 60 L65 40" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <h2>¡Hola, <span class="welcome-highlight">{{ Auth::user()->nombre }}</span>!</h2>
+        <h2>¡Hola, <span class="welcome-highlight-dbshdE">{{ Auth::user()->nombre }}</span>!</h2>
         <p>Panel de estudiante — {{ now()->translatedFormat('d \\d\\e F, Y') }}</p>
     </div>
 
-    <section class="left-col">
-        <h3 class="section-title animate-in">
+    <section class="left-col-dbshdE">
+        <h3 class="section-title-dbshdE animate-in-dbshdE">
             <i class="fas fa-calendar-check"></i>
             Evento Actual
         </h3>
         
         @if ($miInscripcion)
             {{-- Evento Activo --}}
-            <div class="event-card-container neu-card animate-in delay-1">
-                <div class="event-card-header">
-                    <span class="event-badge">
+            <div class="event-card-container neu-card animate-in-dbshdE delay-1-dbshdE">
+                <div class="event-card-header-dbshdE">
+                    <span class="event-badge-dbshdE" style="color: #ffffff">
                         <i class="fas fa-star"></i> Activo
                     </span>
                     {{ $miInscripcion->evento->nombre }}
                 </div>
-                <div class="event-card-body">
-                    <p class="event-desc">{{ Str::limit($miInscripcion->evento->descripcion ?? 'Sin descripción disponible', 100) }}</p>
+                <div class="event-card-body-dbshdE">
+                    <p class="event-desc-dbshdE">{{ Str::limit($miInscripcion->evento->descripcion ?? 'Sin descripción disponible', 100) }}</p>
                     <p class="event-date">
                         <i class="fas fa-calendar-alt"></i>
                         {{ $miInscripcion->evento->fecha_inicio->format('d \d\e F, Y') }}
@@ -89,46 +89,46 @@
                 </div>
             </div>
         @else
-            <div class="event-card-container neu-card animate-in delay-1">
-                <div class="event-card-header">No hay eventos activos</div>
-                <div class="event-card-body">
-                    <p class="event-desc">Actualmente no estás participando en ningún evento. Explora los eventos disponibles para unirte.</p>
+            <div class="event-card-container neu-card animate-in-dbshdE delay-1-dbshdE">
+                <div class="event-card-header-dbshdE">No hay eventos activos</div>
+                <div class="event-card-body-dbshdE">
+                    <p class="event-desc-dbshdE">Actualmente no estás participando en ningún evento. Explora los eventos disponibles para unirte.</p>
                 </div>
             </div>
         @endif
 
         {{-- CARRUSEL DE EVENTOS DISPONIBLES --}}
-        <h3 class="section-title animate-in delay-2">
+        <h3 class="section-title-dbshdE animate-in-dbshdE delay-2-dbshdE">
             <i class="fas fa-calendar-star"></i>
             Eventos Disponibles
         </h3>
         
         @if($eventosDisponibles->count() > 0)
-            <div class="carousel-container animate-in delay-2" id="eventosCarousel">
-                <div class="carousel-track-container">
-                    <div class="carousel-track" id="eventosTrack">
+            <div class="carousel-container-dbshdE animate-in-dbshdE delay-2-dbshdE" id="eventosCarousel">
+                <div class="carousel-track-container-dbshdE">
+                    <div class="carousel-track-dbshdE" id="eventosTrack">
                         @foreach ($eventosDisponibles as $evento)
-                            <div class="carousel-slide">
-                                <div class="event-card-container neu-card event-card-with-image" style="margin-bottom: 0;">
+                            <div class="carousel-slide-dbshdE">
+                                <div class="event-card-container neu-card event-card-with-image" style="margin-bottom: 0;" id="cardEv">
                                     @if($evento->ruta_imagen)
                                         <div class="event-image">
                                             <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="{{ $evento->nombre }}">
-                                            <span class="event-badge">
+                                            <span class="event-badge-dbshdE">
                                                 <i class="fas fa-clock"></i> Próximo
                                             </span>
                                         </div>
                                     @else
                                         <div class="event-image event-image-placeholder">
                                             <i class="fas fa-calendar-alt"></i>
-                                            <span class="event-badge">
+                                            <span class="event-badge-dbshdE">
                                                 <i class="fas fa-clock"></i> Próximo
                                             </span>
                                         </div>
                                     @endif
                                     <div class="event-card-content">
-                                        <h4 class="event-title">{{ $evento->nombre }}</h4>
-                                        <p class="event-desc">{{ Str::limit($evento->descripcion ?? 'Sin descripción', 80) }}</p>
-                                        <div class="event-meta">
+                                        <h4 class="event-title-dbshdE">{{ $evento->nombre }}</h4>
+                                        <p class="event-desc-dbshdE">{{ Str::limit($evento->descripcion ?? 'Sin descripción', 80) }}</p>
+                                        <div class="event-meta-dbshdE">
                                             <p class="event-date">
                                                 <i class="fas fa-calendar-alt"></i>
                                                 {{ $evento->fecha_inicio->format('d M, Y') }}
@@ -149,22 +149,22 @@
                 </div>
                 
                 <!-- Navegación debajo del contenido -->
-                <div class="carousel-nav">
-                    <button class="carousel-arrow prev" onclick="eventosCarousel.prev()">
+                <div class="carousel-nav-dbshdE">
+                    <button class="carousel-arrow-dbshdE prev" onclick="eventosCarousel.prev()">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <div class="carousel-dots" id="eventosDots"></div>
-                    <button class="carousel-arrow next" onclick="eventosCarousel.next()">
+                    <div class="carousel-dots-dbshdE" id="eventosDots"></div>
+                    <button class="carousel-arrow-dbshdE next" onclick="eventosCarousel.next()">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
-                <div class="carousel-progress">
-                    <div class="carousel-progress-bar" id="eventosProgress"></div>
+                <div class="carousel-progress-dbshdE">
+                    <div class="carousel-progress-bar-dbshdE" id="eventosProgress"></div>
                 </div>
             </div>
         @else
-            <div class="event-card-container neu-card animate-in delay-2">
-                <div class="empty-state">
+            <div class="event-card-container neu-card animate-in-dbshdE delay-2-dbshdE">
+                <div class="empty-state-dbshdE">
                     <i class="fas fa-calendar-times"></i>
                     <p>No hay eventos disponibles en este momento.</p>
                 </div>
@@ -172,7 +172,7 @@
         @endif
 
         {{-- CARRUSEL DE EQUIPOS --}}
-        <h3 class="section-title animate-in delay-3">
+        <h3 class="section-title-dbshdE animate-in-dbshdE delay-3-dbshdE">
             <i class="fas fa-users-cog"></i>
             Equipos Disponibles
         </h3>
@@ -204,41 +204,41 @@
         @endphp
 
         @if($equiposDisponibles->count() > 0)
-            <div class="carousel-container animate-in delay-3" id="equiposCarousel">
-                <div class="carousel-track-container">
-                    <div class="carousel-track" id="equiposTrack">
+            <div class="carousel-container-dbshdE animate-in-dbshdE delay-3-dbshdE" id="equiposCarousel">
+                <div class="carousel-track-container-dbshdE">
+                    <div class="carousel-track-dbshdE" id="equiposTrack">
                         @foreach ($equiposDisponibles as $inscripcion)
-                            <div class="carousel-slide">
-                                <div class="team-card" onclick="window.location.href='{{ route('estudiante.equipos.vista-previa', $inscripcion->equipo) }}'" style="cursor: pointer;">
-                                    <div class="team-header">
-                                        <div class="team-avatar">
-                                            <i class="fas fa-users"></i>
+                            <div class="carousel-slide-dbshdE">
+                                <div class="team-card-dbshdE" onclick="window.location.href='{{ route('estudiante.equipos.vista-previa', $inscripcion->equipo) }}'" style="cursor: pointer;">
+                                    <div class="team-header-dbshdE">
+                                        <div class="team-avatar-dbshdE">
+                                            <i class="fas fa-users" style="color:#ffffff"></i>
                                         </div>
-                                        <div class="team-info">
+                                        <div class="team-info-dbshdE">
                                             <h4>{{ $inscripcion->equipo->nombre }}</h4>
                                             <p>{{ $inscripcion->evento->nombre }}</p>
                                         </div>
                                     </div>
 
-                                    <div class="team-members">
+                                    <div class="team-members-dbshdE">
                                         @foreach($inscripcion->miembros->take(4) as $miembro)
-                                            <div class="member-avatar" title="{{ $miembro->estudiante->user->nombre ?? 'Miembro' }}">
+                                            <div class="member-avatar-dbshdE" title="{{ $miembro->estudiante->user->nombre ?? 'Miembro' }}">
                                                 {{ strtoupper(substr($miembro->estudiante->user->nombre ?? 'M', 0, 1)) }}
                                             </div>
                                         @endforeach
                                         @if($inscripcion->miembros->count() > 4)
-                                            <div class="member-avatar more">
+                                            <div class="member-avatar-dbshdE more">
                                                 +{{ $inscripcion->miembros->count() - 4 }}
                                             </div>
                                         @endif
                                     </div>
 
-                                    <div class="team-status {{ $inscripcion->miembros->count() >= 5 ? 'completo' : 'incompleto' }}">
+                                    <div class="team-status-dbshdE {{ $inscripcion->miembros->count() >= 5 ? 'completo' : 'incompleto' }}">
                                         <i class="fas {{ $inscripcion->miembros->count() >= 5 ? 'fa-check-circle' : 'fa-user-plus' }}"></i>
                                         {{ $inscripcion->miembros->count() >= 5 ? 'Equipo Completo' : (5 - $inscripcion->miembros->count()) . ' espacio' . ((5 - $inscripcion->miembros->count()) != 1 ? 's' : '') . ' disponible' }}
                                     </div>
 
-                                    <div class="team-view-btn">
+                                    <div class="team-view-btn-dbshdE">
                                         <i class="fas fa-eye"></i>
                                         Ver Detalles
                                     </div>
@@ -248,22 +248,22 @@
                     </div>
                 </div>
                 
-                <div class="carousel-nav">
-                    <button class="carousel-arrow prev" onclick="equiposCarousel.prev()">
+                <div class="carousel-nav-dbshdE">
+                    <button class="carousel-arrow-dbshdE prev" onclick="equiposCarousel.prev()">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <div class="carousel-dots" id="equiposDots"></div>
-                    <button class="carousel-arrow next" onclick="equiposCarousel.next()">
+                    <div class="carousel-dots-dbshdE" id="equiposDots"></div>
+                    <button class="carousel-arrow-dbshdE next" onclick="equiposCarousel.next()">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
-                <div class="carousel-progress">
-                    <div class="carousel-progress-bar" id="equiposProgress"></div>
+                <div class="carousel-progress-dbshdE">
+                    <div class="carousel-progress-bar-dbshdE" id="equiposProgress"></div>
                 </div>
             </div>
         @else
-            <div class="event-card-container neu-card animate-in delay-3">
-                <div class="empty-state">
+            <div class="event-card-container neu-card animate-in-dbshdE delay-3-dbshdE">
+                <div class="empty-state-dbshdE">
                     <i class="fas fa-users-slash"></i>
                     <p>No hay equipos buscando miembros en este momento.</p>
                 </div>
@@ -271,14 +271,14 @@
         @endif
     </section>
 
-    <section class="right-col">
+    <section class="right-col-dbshdE">
         {{-- ACCESO RÁPIDO --}}
-        <h3 class="section-title animate-in">
+        <h3 class="section-title-dbshdE animate-in-dbshdE">
             <i class="fas fa-bolt"></i>
             Acceso Rápido
         </h3>
 
-        <div class="cards-grid animate-in delay-1">
+        <div class="cards-grid animate-in-dbshdE delay-1-dbshdE">
             <a href="{{ route('estudiante.eventos.index') }}" class="small-card neu-card">
                 <div class="card-icon-box icon-athena"><i class="fas fa-calendar-alt"></i></div>
                 <div class="card-content-box">
@@ -352,7 +352,7 @@
         </div>
 
         {{-- GRÁFICAS DE PROGRESO DE PROYECTOS --}}
-        <h3 class="section-title animate-in delay-2" id="titulodescuadrado">
+        <h3 class="section-title-dbshdE animate-in-dbshdE delay-2-dbshdE" id="titulodescuadrado">
             <i class="fas fa-chart-pie"></i>
             Progreso de Proyectos
         </h3>
@@ -413,7 +413,7 @@
         @endphp
 
         @if($tieneProyecto && $totalTareas > 0)
-            <div class="progress-charts-container animate-in delay-1">
+            <div class="progress-charts-container animate-in-dbshdE delay-1-dbshdE">
                 @foreach($progressData as $index => $data)
                     @if($data['total'] > 0)
                         <div class="progress-chart-card" data-percentage="{{ $data['percentage'] }}" data-color="{{ $data['color'] }}">
@@ -433,8 +433,8 @@
                 @endforeach
             </div>
         @else
-            <div class="neu-card animate-in delay-1" style="padding: 2rem; text-align: center;">
-                <div class="empty-state">
+            <div class="neu-card animate-in-dbshdE delay-1-dbshdE" style="padding: 2rem; text-align: center;">
+                <div class="empty-state-dbshdE">
                     <i class="fas fa-clipboard-list"></i>
                     <p>@if(!$miInscripcion)
                         No estás inscrito en ningún evento activo.
@@ -447,12 +447,12 @@
             </div>
         @endif
 
-        <h3 class="section-title animate-in delay-2" id="titulodescuadrado">
+        <h3 class="section-title-dbshdE animate-in-dbshdE delay-2-dbshdE" id="titulodescuadrado">
             <i class="fas fa-tasks"></i>
             Progreso del Proyecto Actual
         </h3>
         
-        <div class="progress-main-card neu-card animate-in delay-2">
+        <div class="progress-main-card neu-card animate-in-dbshdE delay-2-dbshdE">
             @if($miInscripcion && $miInscripcion->equipo)
                 <div class="progress-info-items">
                     <div class="info-item">
@@ -504,7 +504,7 @@
                 
                 if (!this.track) return;
                 
-                this.slides = this.track.querySelectorAll('.carousel-slide');
+                this.slides = this.track.querySelectorAll('.carousel-slide-dbshdE');
                 this.currentIndex = 0;
                 this.autoPlayDelay = autoPlayDelay;
                 this.autoPlayTimer = null;
@@ -524,7 +524,7 @@
                     this.startAutoPlay();
                 }
                 
-                const container = this.track.closest('.carousel-container');
+                const container = this.track.closest('.carousel-container-dbshdE');
                 if (container) {
                     container.addEventListener('mouseenter', () => this.pauseAutoPlay());
                     container.addEventListener('mouseleave', () => this.startAutoPlay());
@@ -539,7 +539,7 @@
                 this.dotsContainer.innerHTML = '';
                 this.slides.forEach((_, index) => {
                     const dot = document.createElement('div');
-                    dot.classList.add('carousel-dot');
+                    dot.classList.add('carousel-dot-dbshdE');
                     if (index === 0) dot.classList.add('active');
                     dot.addEventListener('click', () => this.goTo(index));
                     this.dotsContainer.appendChild(dot);
@@ -550,7 +550,7 @@
                 this.track.style.transform = `translateX(-${this.currentIndex * 100}%)`;
                 
                 if (this.dotsContainer) {
-                    const dots = this.dotsContainer.querySelectorAll('.carousel-dot');
+                    const dots = this.dotsContainer.querySelectorAll('.carousel-dot-dbshdE');
                     dots.forEach((dot, index) => {
                         dot.classList.toggle('active', index === this.currentIndex);
                     });

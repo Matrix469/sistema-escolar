@@ -148,28 +148,28 @@
 
                 <ul class="step-list">
                     <li class="step-item">
-                        <div class="step-number">1</div>
+                        <div class="step-number"></div>
                         <div class="step-content">
                             <h5>Ingresa el email</h5>
                             <p>Escribe el correo electrónico del jurado que deseas invitar</p>
                         </div>
                     </li>
                     <li class="step-item">
-                        <div class="step-number">2</div>
+                        <div class="step-number"></div>
                         <div class="step-content">
                             <h5>Define la vigencia</h5>
                             <p>Establece cuántos días será válido el token de acceso</p>
                         </div>
                     </li>
                     <li class="step-item">
-                        <div class="step-number">3</div>
+                        <div class="step-number"></div>
                         <div class="step-content">
                             <h5>Genera el token</h5>
                             <p>Se creará un código único y se enviará automáticamente al jurado</p>
                         </div>
                     </li>
                     <li class="step-item">
-                        <div class="step-number">4</div>
+                        <div class="step-number"></div>
                         <div class="step-content">
                             <h5>Registro del jurado</h5>
                             <p>El jurado usará el token para completar su registro en la plataforma</p>

@@ -1,13 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap");
 
 /* ========================================
-   REPORTES PAGE - DISEÑO MODERNO INNOVADOR
-   Paleta: Naranja #ff9500 / Negro / Blanco
+   REPORTES PAGE - DISEÑO NEUMÓRFICO
+   Paleta: Naranja / Crema / Negro
    ======================================== */
 
-/* Fondo principal con degradado sutil */
+/* Fondo principal con degradado crema */
 .reportes-page {
-    background: linear-gradient(135deg, #ffffff 0%, #f9fafb 25%, #ffffff 100%);
+    background: linear-gradient(135deg, #FFFDF4 0%, #FFEEE2 50%, #FFF5E8 100%);
     min-height: 100vh;
     font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
     position: relative;
@@ -23,18 +23,18 @@
     height: 500px;
     background: linear-gradient(
         135deg,
-        rgba(255, 149, 0, 0.03) 0%,
+        rgba(232, 154, 60, 0.05) 0%,
         transparent 100%
     );
     z-index: 0;
     pointer-events: none;
 }
 
-/* Contenedor principal - Alineado con el menú */
+/* Contenedor principal */
 .reportes-container {
-    max-width: 80rem; /* max-w-7xl */
+    max-width: 80rem;
     margin: 0 auto;
-    padding: 3rem 1.5rem; /* py-12 sm:px-6 */
+    padding: 3rem 1.5rem;
     position: relative;
     z-index: 1;
 }
@@ -54,18 +54,19 @@
 }
 
 /* ========================================
-   HEADER - Hero Section
+   HEADER - Hero Section NEUMÓRFICO
    ======================================== */
 .reportes-header {
-    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
     border-radius: 28px;
     padding: 3rem;
     margin-bottom: 2.5rem;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.15), 
+                -8px -8px 16px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(232, 154, 60, 0.2);
+    border: 1px solid rgba(232, 154, 60, 0.3);
 }
 
 .reportes-header::before {
@@ -78,9 +79,9 @@
     background: linear-gradient(
         90deg,
         transparent 0%,
-        #ff9500 15%,
-        #ffaa33 50%,
-        #ff9500 85%,
+        #e89a3c 15%,
+        #f5a847 50%,
+        #e89a3c 85%,
         transparent 100%
     );
 }
@@ -94,7 +95,7 @@
     height: 400px;
     background: radial-gradient(
         circle,
-        rgba(255, 149, 0, 0.08) 0%,
+        rgba(232, 154, 60, 0.12) 0%,
         transparent 70%
     );
     border-radius: 50%;
@@ -132,8 +133,9 @@
     left: 0;
     width: 80px;
     height: 4px;
-    background: linear-gradient(90deg, #ff9500, #ffaa33);
+    background: linear-gradient(90deg, #e89a3c, #f5a847);
     border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(232, 154, 60, 0.4);
 }
 
 .reportes-header p {
@@ -169,16 +171,14 @@
 }
 
 /* ========================================
-   EXPORT CARD - Glassmorphism Design
+   EXPORT CARD - NEUMÓRFICO
    ======================================== */
 .export-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: #ffeee2;
     border-radius: 24px;
     padding: 2rem;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 10px 10px 20px #e6d5c9, -10px -10px 20px rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(232, 154, 60, 0.1);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
@@ -191,7 +191,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ff9500, #ffaa33);
+    background: linear-gradient(90deg, #e89a3c, #f5a847);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s ease;
@@ -199,8 +199,7 @@
 
 .export-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12),
-        0 0 0 1px rgba(255, 149, 0, 0.1);
+    box-shadow: 14px 14px 28px #e6d5c9, -14px -14px 28px rgba(255, 255, 255, 0.7);
 }
 
 .export-card:hover::before {
@@ -219,7 +218,7 @@
     margin-bottom: 1.75rem;
     color: white;
     position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.15), -3px -3px 8px rgba(255, 255, 255, 0.5);
 }
 
 .export-card-icon::after {
@@ -229,7 +228,7 @@
     border-radius: 23px;
     background: inherit;
     filter: blur(15px);
-    opacity: 0.4;
+    opacity: 0.3;
     z-index: -1;
 }
 
@@ -242,7 +241,7 @@
 }
 
 .export-card-icon.combined {
-    background: linear-gradient(135deg, #ff9500 0%, #ffaa33 100%);
+    background: linear-gradient(135deg, #e89a3c 0%, #f5a847 100%);
 }
 
 .export-card h3 {
@@ -261,7 +260,7 @@
 }
 
 /* ========================================
-   FORM INPUTS - Modern Style
+   FORM INPUTS - NEUMÓRFICO
    ======================================== */
 .export-card label {
     display: block;
@@ -278,38 +277,40 @@
     content: "";
     width: 6px;
     height: 6px;
-    background: #ff9500;
+    background: #e89a3c;
     border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(232, 154, 60, 0.3);
 }
 
 .export-card input[type="date"] {
     width: 100%;
     padding: 0.875rem 1rem;
-    background: #f9fafb;
-    border: 2px solid #e5e7eb;
+    background: #ffffff;
+    border: none;
     border-radius: 14px;
     font-size: 0.95rem;
     color: #1a1a1a;
     font-family: "Inter", sans-serif;
     font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+    box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .export-card input[type="date"]:focus {
     outline: none;
-    border-color: #ff9500;
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(255, 149, 0, 0.12),
-        inset 0 2px 4px rgba(0, 0, 0, 0.03);
+    box-shadow: inset 3px 3px 6px #e6d5c9, 
+                inset -3px -3px 6px rgba(255, 255, 255, 0.5),
+                0 0 0 3px rgba(232, 154, 60, 0.1);
 }
 
 .export-card input[type="date"]:hover {
-    border-color: #d1d5db;
+    box-shadow: inset 2px 2px 4px #e6d5c9, 
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5),
+                0 0 0 1px rgba(232, 154, 60, 0.2);
 }
 
 /* ========================================
-   EXPORT BUTTONS - Premium Design
+   EXPORT BUTTONS - NEUMÓRFICO
    ======================================== */
 .export-buttons {
     display: flex;
@@ -364,31 +365,43 @@
 .btn-export-excel {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
-    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    box-shadow: 6px 6px 12px rgba(16, 185, 129, 0.3), -3px -3px 8px rgba(255, 255, 255, 0.5);
 }
 
 .btn-export-excel:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+    box-shadow: 8px 8px 16px rgba(16, 185, 129, 0.4), -4px -4px 10px rgba(255, 255, 255, 0.6);
+}
+
+.btn-export-excel:active {
+    transform: translateY(-1px);
+    box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.15), inset -2px -2px 4px rgba(255, 255, 255, 0.2);
 }
 
 .btn-export-pdf {
-    background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
     color: white;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.2), -3px -3px 8px rgba(255, 255, 255, 0.5);
 }
 
 .btn-export-pdf:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(255, 149, 0, 0.3);
+    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.25), 
+                -4px -4px 10px rgba(255, 255, 255, 0.6),
+                0 0 0 2px rgba(232, 154, 60, 0.3);
+}
+
+.btn-export-pdf:active {
+    transform: translateY(-1px);
+    box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.3), inset -2px -2px 4px rgba(255, 255, 255, 0.1);
 }
 
 .btn-export-pdf i {
-    color: #ff9500;
+    color: #f5a847;
 }
 
 /* ========================================
-   STATS SECTION
+   STATS SECTION - NEUMÓRFICO
    ======================================== */
 .stats-section {
     margin-top: 3rem;
@@ -409,12 +422,11 @@
 }
 
 .stat-card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(20px);
+    background: #ffeee2;
     border-radius: 20px;
     padding: 1.75rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(232, 154, 60, 0.1);
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -423,7 +435,7 @@
 
 .stat-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
+    box-shadow: 10px 10px 20px #e6d5c9, -10px -10px 20px rgba(255, 255, 255, 0.7);
 }
 
 .stat-card-icon {
@@ -436,10 +448,11 @@
     font-size: 1.5rem;
     color: white;
     flex-shrink: 0;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.15), -2px -2px 6px rgba(255, 255, 255, 0.5);
 }
 
 .stat-card-icon.orange {
-    background: linear-gradient(135deg, #ff9500, #ffaa33);
+    background: linear-gradient(135deg, #e89a3c, #f5a847);
 }
 
 .stat-card-icon.green {
@@ -474,7 +487,7 @@
 }
 
 /* ========================================
-   ALERTS - Modern Design
+   ALERTS - NEUMÓRFICO
    ======================================== */
 .alert {
     padding: 1.25rem 1.5rem;
@@ -484,10 +497,9 @@
     align-items: flex-start;
     gap: 1rem;
     font-weight: 500;
-    border: 2px solid transparent;
+    border: none;
     position: relative;
     overflow: hidden;
-    backdrop-filter: blur(10px);
 }
 
 .alert i {
@@ -497,13 +509,10 @@
 }
 
 .alert-success {
-    background: linear-gradient(
-        135deg,
-        rgba(16, 185, 129, 0.08),
-        rgba(16, 185, 129, 0.03)
-    );
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.08));
     color: #047857;
-    border-color: rgba(16, 185, 129, 0.2);
+    box-shadow: inset 2px 2px 4px rgba(16, 185, 129, 0.2), 
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .alert-success i {
@@ -511,13 +520,10 @@
 }
 
 .alert-error {
-    background: linear-gradient(
-        135deg,
-        rgba(239, 68, 68, 0.08),
-        rgba(239, 68, 68, 0.03)
-    );
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(239, 68, 68, 0.08));
     color: #b91c1c;
-    border-color: rgba(239, 68, 68, 0.2);
+    box-shadow: inset 2px 2px 4px rgba(239, 68, 68, 0.2), 
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .alert-error i {
@@ -525,17 +531,14 @@
 }
 
 .alert-info {
-    background: linear-gradient(
-        135deg,
-        rgba(255, 149, 0, 0.08),
-        rgba(255, 149, 0, 0.03)
-    );
+    background: linear-gradient(135deg, rgba(232, 154, 60, 0.12), rgba(245, 168, 71, 0.08));
     color: #92400e;
-    border-color: rgba(255, 149, 0, 0.2);
+    box-shadow: inset 2px 2px 4px rgba(232, 154, 60, 0.2), 
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .alert-info i {
-    color: #ff9500;
+    color: #e89a3c;
 }
 
 .alert-info strong {
@@ -543,7 +546,7 @@
 }
 
 /* ========================================
-   LOADING OVERLAY - Futuristic
+   LOADING OVERLAY - NEUMÓRFICO
    ======================================== */
 .loading-overlay {
     position: fixed;
@@ -551,7 +554,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 238, 226, 0.95);
     backdrop-filter: blur(10px);
     display: none;
     align-items: center;
@@ -568,11 +571,11 @@
 .loading-spinner {
     width: 60px;
     height: 60px;
-    border: 4px solid #f3f4f6;
-    border-top: 4px solid #ff9500;
+    border: 4px solid #e6d5c9;
+    border-top: 4px solid #e89a3c;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
-    box-shadow: 0 0 30px rgba(255, 149, 0, 0.2);
+    box-shadow: 0 0 30px rgba(232, 154, 60, 0.3);
 }
 
 .loading-overlay::after {
@@ -700,12 +703,12 @@
 /* Focus states for accessibility */
 .btn-export:focus-visible,
 .export-card input[type="date"]:focus-visible {
-    outline: 2px solid #ff9500;
+    outline: 2px solid #e89a3c;
     outline-offset: 2px;
 }
 
 /* Selection styling */
 ::selection {
-    background: rgba(255, 149, 0, 0.2);
+    background: rgba(232, 154, 60, 0.2);
     color: #1a1a1a;
 }
