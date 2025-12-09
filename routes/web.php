@@ -89,6 +89,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::resource('eventos', EventoController::class);
     Route::resource('users', UserController::class)->only(['index', 'edit', 'update', 'destroy']);
+    
+    // Rutas AJAX para validación de usuarios
+    Route::post('users/{user}/check-role-change', [UserController::class, 'checkRoleChange'])->name('users.check-role-change');
+    Route::get('users/{user}/check-delete', [UserController::class, 'checkDelete'])->name('users.check-delete');
+    Route::post('users/{user}/transfer-leadership', [UserController::class, 'transferLeadership'])->name('users.transfer-leadership');
+    
     Route::resource('equipos', AdminEquipoController::class)->except(['create', 'store']);
     
     // Excluir equipo de un evento específico (sin eliminarlo)

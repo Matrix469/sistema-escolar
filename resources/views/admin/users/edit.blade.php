@@ -88,13 +88,15 @@
                 <h3 class="section-header-editar-usuario">Rol del Sistema</h3>
                 <div>
                     <label for="id_rol_sistema" class="form-label">Rol</label>
-                    <select name="id_rol_sistema" id="id_rol_sistema" class="neuro-select">
+                    <select name="id_rol_sistema" id="id_rol_sistema" class="neuro-select" data-original-role="{{ $user->id_rol_sistema }}">
                         @foreach($roles as $rol)
                             <option value="{{ $rol->id_rol_sistema }}" {{ $user->id_rol_sistema == $rol->id_rol_sistema ? 'selected' : '' }}>
                                 {{ ucfirst($rol->nombre) }}
                             </option>
                         @endforeach
                     </select>
+                    <!-- Contenedor para alertas de validación de rol -->
+                    <div id="roleValidationAlert" class="role-validation-alert" style="display: none;"></div>
                 </div>
                 
                 @if($user->estudiante)
@@ -144,11 +146,85 @@
                 @endif
 
                 <div class="flex items-center justify-end mt-8">
-                    <button type="submit" class="submit-button">
+                    <button type="submit" class="submit-button" id="submitBtn">
                         Actualizar Usuario
                     </button>
                 </div>
             </form>
+
+            <!-- Sección de Acciones Peligrosas -->
+            <div class="danger-zone mt-8">
+                <h3 class="section-header-editar-usuario danger-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Zona de Peligro
+                </h3>
+                <div class="danger-content">
+                    <div class="danger-action">
+                        <div class="danger-info">
+                            <h4>Desactivar Usuario</h4>
+                            <p>El usuario será marcado como inactivo y no podrá acceder al sistema.</p>
+                        </div>
+                        <button type="button" id="deleteUserBtn" class="btn-danger">
+                            <i class="fas fa-user-slash"></i>
+                            Desactivar Usuario
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Validación de Rol -->
+<div id="roleValidationModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3><i class="fas fa-shield-alt"></i> Validación de Cambio de Rol</h3>
+            <button type="button" class="modal-close" onclick="closeModal('roleValidationModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="roleValidationBody">
+            <!-- Contenido dinámico -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeModal('roleValidationModal')">Entendido</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmación de Eliminación -->
+<div id="deleteConfirmModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header danger">
+            <h3><i class="fas fa-exclamation-triangle"></i> Desactivar Usuario</h3>
+            <button type="button" class="modal-close" onclick="closeModal('deleteConfirmModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="deleteValidationBody">
+            <!-- Contenido dinámico -->
+        </div>
+        <div class="modal-footer" id="deleteModalFooter">
+            <button type="button" class="btn-secondary" onclick="closeModal('deleteConfirmModal')">Cancelar</button>
+            <button type="button" class="btn-danger" id="confirmDeleteBtn" style="display: none;">
+                <i class="fas fa-user-slash"></i> Confirmar Desactivación
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Transferencia de Liderazgo -->
+<div id="leadershipModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content modal-lg">
+        <div class="modal-header warning">
+            <h3><i class="fas fa-crown"></i> Transferir Liderazgo</h3>
+            <button type="button" class="modal-close" onclick="closeModal('leadershipModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="leadershipBody">
+            <!-- Contenido dinámico de liderazgos -->
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeModal('leadershipModal')">Cancelar</button>
+            <button type="button" class="btn-primary" id="confirmTransferBtn">
+                <i class="fas fa-exchange-alt"></i> Transferir y Continuar
+            </button>
         </div>
     </div>
 </div>
@@ -550,7 +626,571 @@
                 }
             });
         }
+
+        // ============================================
+        // VALIDACIÓN DE CAMBIO DE ROL (AJAX)
+        // ============================================
+        const roleSelect = document.getElementById('id_rol_sistema');
+        const roleAlert = document.getElementById('roleValidationAlert');
+        const submitBtn = document.getElementById('submitBtn');
+        const originalRole = roleSelect ? roleSelect.dataset.originalRole : null;
+
+        if (roleSelect) {
+            roleSelect.addEventListener('change', async function() {
+                const newRoleId = this.value;
+                
+                if (newRoleId === originalRole) {
+                    roleAlert.style.display = 'none';
+                    submitBtn.disabled = false;
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`{{ route('admin.users.check-role-change', $user) }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ new_role_id: newRoleId })
+                    });
+
+                    const data = await response.json();
+
+                    if (!data.canChange && data.reasons && data.reasons.length > 0) {
+                        showRoleValidationAlert(data.reasons);
+                        submitBtn.disabled = true;
+                    } else {
+                        roleAlert.style.display = 'none';
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error validando cambio de rol:', error);
+                }
+            });
+        }
+
+        // ============================================
+        // ELIMINAR USUARIO
+        // ============================================
+        const deleteBtn = document.getElementById('deleteUserBtn');
+        
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', async function() {
+                try {
+                    const response = await fetch(`{{ route('admin.users.check-delete', $user) }}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.requiresLeadershipTransfer) {
+                        showLeadershipModal(data.leadershipInfo);
+                    } else if (!data.canDelete) {
+                        showDeleteValidationModal(data.reasons, false);
+                    } else {
+                        showDeleteValidationModal([], true);
+                    }
+                } catch (error) {
+                    console.error('Error validando eliminación:', error);
+                }
+            });
+        }
+
+        // Confirmar eliminación
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', async function() {
+                try {
+                    const response = await fetch(`{{ route('admin.users.destroy', $user) }}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        window.location.href = '{{ route('admin.users.index') }}';
+                    } else {
+                        alert(data.message || 'Error al desactivar usuario');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+        // Transferir liderazgo y eliminar
+        const confirmTransferBtn = document.getElementById('confirmTransferBtn');
+        if (confirmTransferBtn) {
+            confirmTransferBtn.addEventListener('click', async function() {
+                const transfers = [];
+                const selects = document.querySelectorAll('.leadership-select');
+                
+                selects.forEach(select => {
+                    if (select.value) {
+                        transfers.push({
+                            inscripcion_id: parseInt(select.dataset.inscripcionId),
+                            nuevo_lider_id: parseInt(select.value)
+                        });
+                    }
+                });
+
+                if (transfers.length !== selects.length) {
+                    alert('Por favor selecciona un nuevo líder para cada equipo.');
+                    return;
+                }
+
+                try {
+                    // Primero transferir liderazgos
+                    const transferResponse = await fetch(`{{ route('admin.users.transfer-leadership', $user) }}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({ transfers })
+                    });
+
+                    const transferData = await transferResponse.json();
+                    
+                    if (transferData.success) {
+                        // Luego eliminar usuario
+                        const deleteResponse = await fetch(`{{ route('admin.users.destroy', $user) }}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            }
+                        });
+
+                        const deleteData = await deleteResponse.json();
+                        
+                        if (deleteData.success) {
+                            window.location.href = '{{ route('admin.users.index') }}';
+                        }
+                    } else {
+                        alert(transferData.error || 'Error al transferir liderazgos');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    });
+
+    // ============================================
+    // FUNCIONES DE MODAL
+    // ============================================
+    function showRoleValidationAlert(reasons) {
+        const alert = document.getElementById('roleValidationAlert');
+        let html = '<div class="alert-items">';
+        
+        reasons.forEach(r => {
+            html += `
+                <div class="alert-item ${r.severity}">
+                    <i class="fas fa-${r.icon}"></i>
+                    <span>${r.message}</span>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        html += '<p class="alert-tip"><i class="fas fa-info-circle"></i> Resuelva estos conflictos antes de cambiar el rol.</p>';
+        
+        alert.innerHTML = html;
+        alert.style.display = 'block';
+    }
+
+    function showDeleteValidationModal(reasons, canDelete) {
+        const body = document.getElementById('deleteValidationBody');
+        const confirmBtn = document.getElementById('confirmDeleteBtn');
+        
+        if (canDelete) {
+            body.innerHTML = `
+                <div class="confirm-message">
+                    <i class="fas fa-user-slash" style="font-size: 3rem; color: #dc3545; margin-bottom: 1rem;"></i>
+                    <p>¿Está seguro de que desea desactivar a <strong>{{ $user->nombre_completo }}</strong>?</p>
+                    <p class="text-muted">El usuario no podrá acceder al sistema hasta que sea reactivado.</p>
+                </div>
+            `;
+            confirmBtn.style.display = 'inline-flex';
+        } else {
+            let html = '<div class="validation-reasons">';
+            html += '<p><strong>No se puede desactivar este usuario por las siguientes razones:</strong></p>';
+            html += '<div class="alert-items">';
+            
+            reasons.forEach(r => {
+                html += `
+                    <div class="alert-item ${r.severity}">
+                        <i class="fas fa-${r.icon}"></i>
+                        <span>${r.message}</span>
+                    </div>
+                `;
+            });
+            
+            html += '</div></div>';
+            body.innerHTML = html;
+            confirmBtn.style.display = 'none';
+        }
+        
+        document.getElementById('deleteConfirmModal').style.display = 'flex';
+    }
+
+    function showLeadershipModal(leadershipInfo) {
+        const body = document.getElementById('leadershipBody');
+        let html = '<p class="mb-4">Este usuario es líder de los siguientes equipos. Debe transferir el liderazgo antes de continuar:</p>';
+        
+        leadershipInfo.forEach(info => {
+            html += `
+                <div class="leadership-card">
+                    <div class="leadership-header">
+                        <i class="fas fa-users"></i>
+                        <div>
+                            <strong>${info.equipo_nombre}</strong>
+                            <small>${info.evento_nombre}</small>
+                        </div>
+                    </div>
+                    <div class="leadership-select-wrapper">
+                        <label>Nuevo líder:</label>
+                        <select class="leadership-select neuro-select" data-inscripcion-id="${info.inscripcion_id}">
+                            <option value="">Seleccionar...</option>
+                            ${info.miembros_disponibles.map(m => `<option value="${m.id_estudiante}">${m.nombre}</option>`).join('')}
+                        </select>
+                    </div>
+                </div>
+            `;
+        });
+        
+        body.innerHTML = html;
+        document.getElementById('leadershipModal').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
     });
 </script>
+
+<style>
+    /* Estilos para Modal */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    .modal-content {
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        border-radius: 20px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease;
+    }
+
+    .modal-content.modal-lg {
+        max-width: 600px;
+    }
+
+    @keyframes slideUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .modal-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px 20px 0 0;
+        color: white;
+    }
+
+    .modal-header.danger {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    }
+
+    .modal-header.warning {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        color: #1a1a1a;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: inherit;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+    }
+
+    .modal-close:hover {
+        opacity: 1;
+    }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .modal-footer {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+
+    /* Alerta de validación de rol */
+    .role-validation-alert {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: rgba(220, 53, 69, 0.1);
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        border-radius: 12px;
+        animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert-items {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .alert-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+    }
+
+    .alert-item.error {
+        background: rgba(220, 53, 69, 0.15);
+        color: #dc3545;
+    }
+
+    .alert-item.warning {
+        background: rgba(255, 193, 7, 0.15);
+        color: #856404;
+    }
+
+    .alert-item i {
+        font-size: 1rem;
+    }
+
+    .alert-tip {
+        margin-top: 1rem;
+        padding-top: 0.75rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        font-size: 0.85rem;
+        color: #6c757d;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    /* Zona de peligro */
+    .danger-zone {
+        border: 2px solid rgba(220, 53, 69, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        background: rgba(220, 53, 69, 0.05);
+    }
+
+    .danger-header {
+        color: #dc3545 !important;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .danger-action {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .danger-info h4 {
+        margin: 0 0 0.25rem 0;
+        font-size: 1rem;
+        color: #1a1a1a;
+    }
+
+    .danger-info p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .btn-danger {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Leadership cards */
+    .leadership-card {
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .leadership-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .leadership-header i {
+        font-size: 1.5rem;
+        color: #667eea;
+    }
+
+    .leadership-header strong {
+        display: block;
+        font-size: 1rem;
+    }
+
+    .leadership-header small {
+        color: #6c757d;
+        font-size: 0.8rem;
+    }
+
+    .leadership-select-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .leadership-select-wrapper label {
+        font-weight: 500;
+        white-space: nowrap;
+    }
+
+    .leadership-select {
+        flex: 1;
+    }
+
+    .confirm-message {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .text-muted {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    /* Submit button disabled state */
+    .submit-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+</style>
 
 @endsection

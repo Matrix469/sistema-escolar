@@ -5,10 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\CatRolSistema;
+use App\Models\Estudiante;
+use App\Models\Jurado;
+use App\Models\MiembroEquipo;
+use App\Services\UserValidationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
+    protected $validationService;
+
+    public function __construct(UserValidationService $validationService)
+    {
+        $this->validationService = $validationService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -81,7 +93,76 @@ class UserController extends Controller
     {
         $user->load('estudiante.carrera', 'jurado');
         $roles = CatRolSistema::all();
-        return view('admin.users.edit', compact('user', 'roles'));
+        
+        // Obtener tipo de rol actual
+        $currentRoleType = $this->validationService->getCurrentRoleType($user);
+        
+        return view('admin.users.edit', compact('user', 'roles', 'currentRoleType'));
+    }
+
+    /**
+     * Validar cambio de rol via AJAX
+     */
+    public function checkRoleChange(Request $request, User $user)
+    {
+        $newRoleId = $request->input('new_role_id');
+        $newRole = CatRolSistema::find($newRoleId);
+        
+        if (!$newRole) {
+            return response()->json(['error' => 'Rol no encontrado'], 404);
+        }
+
+        $currentRoleType = $this->validationService->getCurrentRoleType($user);
+        $newRoleType = strtolower($newRole->nombre);
+
+        // Si el rol no cambia, no hay problema
+        if ($user->id_rol_sistema == $newRoleId) {
+            return response()->json(['canChange' => true, 'reasons' => []]);
+        }
+
+        // Validar según el tipo de cambio
+        if ($currentRoleType === 'estudiante' && in_array($newRoleType, ['jurado', 'admin'])) {
+            $result = $this->validationService->canChangeStudentRole($user);
+        } elseif ($currentRoleType === 'jurado' && $newRoleType === 'estudiante') {
+            $result = $this->validationService->canChangeJuradoToStudent($user);
+        } else {
+            // Otros cambios permitidos sin restricción
+            $result = ['canChange' => true, 'reasons' => []];
+        }
+
+        return response()->json($result);
+    }
+
+    /**
+     * Validar eliminación de usuario via AJAX
+     */
+    public function checkDelete(User $user)
+    {
+        $currentRoleType = $this->validationService->getCurrentRoleType($user);
+
+        if ($currentRoleType === 'estudiante') {
+            $result = $this->validationService->canDeleteStudent($user);
+        } elseif ($currentRoleType === 'jurado') {
+            $result = $this->validationService->canDeleteJurado($user);
+        } else {
+            // Admin puede eliminarse si no es el último
+            $adminCount = User::where('id_rol_sistema', 1)->where('activo', true)->count();
+            if ($adminCount <= 1) {
+                $result = [
+                    'canDelete' => false,
+                    'reasons' => [[
+                        'type' => 'ultimo_admin',
+                        'message' => 'No se puede eliminar el único administrador del sistema',
+                        'icon' => 'shield-alt',
+                        'severity' => 'error'
+                    ]]
+                ];
+            } else {
+                $result = ['canDelete' => true, 'reasons' => []];
+            }
+        }
+
+        return response()->json($result);
     }
 
     /**
@@ -95,44 +176,148 @@ class UserController extends Controller
             'app_materno' => 'nullable|string|max:100',
             'email' => 'required|email|max:150|unique:users,email,' . $user->id_usuario . ',id_usuario',
             'id_rol_sistema' => 'required|exists:cat_roles_sistema,id_rol_sistema',
-            // Validar campos específicos del rol
             'numero_control' => 'nullable|string|max:20',
             'semestre' => 'nullable|integer|min:1',
             'especialidad' => 'nullable|string|max:100',
         ]);
 
-        // Actualizar el modelo User
-        $user->update([
-            'nombre' => $validated['nombre'],
-            'app_paterno' => $validated['app_paterno'],
-            'app_materno' => $validated['app_materno'],
-            'email' => $validated['email'],
-            'id_rol_sistema' => $validated['id_rol_sistema'],
-        ]);
+        $oldRoleId = $user->id_rol_sistema;
+        $newRoleId = $validated['id_rol_sistema'];
 
-        // Actualizar el modelo de sub-rol si existe
-        if ($user->estudiante && $request->filled('numero_control')) {
-            $user->estudiante->update([
-                'numero_control' => $validated['numero_control'],
-                'semestre' => $validated['semestre'],
-            ]);
-        } elseif ($user->jurado && $request->filled('especialidad')) {
-            $user->jurado->update([
-                'especialidad' => $validated['especialidad'],
-            ]);
+        // Validar cambio de rol si aplica
+        if ($oldRoleId != $newRoleId) {
+            $currentRoleType = $this->validationService->getCurrentRoleType($user);
+            $newRole = CatRolSistema::find($newRoleId);
+            $newRoleType = strtolower($newRole->nombre);
+
+            if ($currentRoleType === 'estudiante' && in_array($newRoleType, ['jurado', 'admin'])) {
+                $validation = $this->validationService->canChangeStudentRole($user);
+                if (!$validation['canChange']) {
+                    return back()->withErrors(['id_rol_sistema' => 'No se puede cambiar el rol. Revise las restricciones activas.']);
+                }
+            } elseif ($currentRoleType === 'jurado' && $newRoleType === 'estudiante') {
+                $validation = $this->validationService->canChangeJuradoToStudent($user);
+                if (!$validation['canChange']) {
+                    return back()->withErrors(['id_rol_sistema' => 'No se puede cambiar el rol. Revise las restricciones activas.']);
+                }
+            }
         }
-        
-        // TODO: Implementar la lógica para cuando un rol cambia (ej. de Estudiante a Jurado).
-        // Esto requeriría eliminar el registro antiguo y crear uno nuevo.
 
-        return redirect()->route('admin.users.edit', $user)->with('success', 'Usuario actualizado exitosamente.');
+        DB::beginTransaction();
+        try {
+            // Actualizar el modelo User
+            $user->update([
+                'nombre' => $validated['nombre'],
+                'app_paterno' => $validated['app_paterno'],
+                'app_materno' => $validated['app_materno'],
+                'email' => $validated['email'],
+                'id_rol_sistema' => $validated['id_rol_sistema'],
+            ]);
+
+            // Actualizar el modelo de sub-rol si existe
+            if ($user->estudiante && $request->filled('numero_control')) {
+                $user->estudiante->update([
+                    'numero_control' => $validated['numero_control'],
+                    'semestre' => $validated['semestre'],
+                ]);
+            } elseif ($user->jurado && $request->filled('especialidad')) {
+                $user->jurado->update([
+                    'especialidad' => $validated['especialidad'],
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->route('admin.users.edit', $user)->with('success', 'Usuario actualizado exitosamente.');
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['error' => 'Error al actualizar: ' . $e->getMessage()]);
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Transferir liderazgo antes de eliminar
+     */
+    public function transferLeadership(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'transfers' => 'required|array',
+            'transfers.*.inscripcion_id' => 'required|integer',
+            'transfers.*.nuevo_lider_id' => 'required|integer',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            foreach ($validated['transfers'] as $transfer) {
+                $this->validationService->transferLeadership(
+                    $transfer['inscripcion_id'],
+                    $transfer['nuevo_lider_id']
+                );
+            }
+            
+            DB::commit();
+            return response()->json(['success' => true, 'message' => 'Liderazgos transferidos correctamente.']);
+            
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage (Soft Delete).
      */
     public function destroy(User $user)
     {
-        //
+        $currentRoleType = $this->validationService->getCurrentRoleType($user);
+
+        // Validar antes de eliminar
+        if ($currentRoleType === 'estudiante') {
+            $validation = $this->validationService->canDeleteStudent($user);
+            if (!$validation['canDelete']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se puede eliminar el usuario.',
+                    'reasons' => $validation['reasons']
+                ], 422);
+            }
+            
+            // Si requiere transferencia y no se ha hecho, bloquear
+            if ($validation['requiresLeadershipTransfer']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Debe transferir los liderazgos antes de eliminar.',
+                    'requiresLeadershipTransfer' => true,
+                    'leadershipInfo' => $validation['leadershipInfo']
+                ], 422);
+            }
+        } elseif ($currentRoleType === 'jurado') {
+            $validation = $this->validationService->canDeleteJurado($user);
+            if (!$validation['canDelete']) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se puede eliminar el jurado.',
+                    'reasons' => $validation['reasons']
+                ], 422);
+            }
+        } else {
+            // Verificar que no sea el último admin
+            $adminCount = User::where('id_rol_sistema', 1)->where('activo', true)->count();
+            if ($adminCount <= 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se puede eliminar el único administrador.'
+                ], 422);
+            }
+        }
+
+        // Soft delete: marcar como inactivo
+        $user->update(['activo' => false]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario desactivado correctamente.'
+        ]);
     }
 }
+

@@ -568,48 +568,18 @@
             // Quitar espacios y convertir a mayúsculas
             numControl = numControl.trim().toUpperCase();
 
-            // Validar formato básico
-            if (!/^[CB]?\d{7,8}$/.test(numControl)) {
-                return { valid: false, message: 'Formato inválido. Ej: 24010001 ó C24010001' };
-            }
-
-            // Extraer solo los números
-            const numeros = numControl.replace(/[^\d]/, '');
-
-            if (numeros.length < 7 || numeros.length > 8) {
-                return { valid: false, message: 'Debe tener entre 7 y 8 dígitos numéricos' };
-            }
-
-            // Validar año
-            const añoInscripcion = parseInt(numeros.substring(0, 2));
-            const añoActual = parseInt(new Date().getFullYear().toString().substring(2));
-            const añoCompleto = añoInscripcion > añoActual ? 1900 + añoInscripcion : 2000 + añoInscripcion;
-            const añoCompletoActual = 2000 + añoActual;
-
-            if (añoCompleto > añoCompletoActual + 1) {
-                return { valid: false, message: 'El año de inscripción no puede ser futuro' };
-            }
-
-            if (añoCompleto < 2000) {
-                return { valid: false, message: 'El año mínimo es 2000' };
-            }
-
-            // Validar código de plantel
-            let codigoPlantel, esValido;
-            if (numeros.length === 8) {
-                codigoPlantel = numeros.substring(2, 5);
-                esValido = ['100', '101', '102', '103', '104', '105', '106', '107', '108', '109'].includes(codigoPlantel);
-            } else {
-                codigoPlantel = numeros.substring(2, 4);
-                esValido = ['10', '11', '12', '13', '14', '15', '16', '17', '18', '19'].includes(codigoPlantel);
-            }
-
-            if (!esValido) {
-                return { valid: false, message: 'Código de plantel no válido' };
+            // Validar formato: exactamente 8 dígitos, opcionalmente con B o C al inicio
+            if (!/^[BC]?\d{8}$/.test(numControl)) {
+                return { valid: false, message: 'Formato inválido. Ej: 22161210, B22161210 o C22161210' };
             }
 
             // Identificar tipo de estudiante
-            const tipo = numControl.startsWith('C') ? 'Convalidación' : (numControl.startsWith('B') ? 'Regular' : 'Regular');
+            let tipo = 'Regular';
+            if (numControl.startsWith('C')) {
+                tipo = 'Convalidación';
+            } else if (numControl.startsWith('B')) {
+                tipo = 'Transferencia';
+            }
 
             return { valid: true, message: `Válido (${tipo})` };
         }
@@ -982,9 +952,9 @@
                         type="text"
                         name="numero_control"
                         value="{{ old('numero_control') }}"
-                        placeholder="Ej: 24010001 ó C24010001"
-                        pattern="^[CB]?\d{7,8}$"
-                        title="Formato: Opcional C/B + 7-8 dígitos. Ej: 24010001"
+                        placeholder="Ej: 22161210 ó C22161210"
+                        pattern="^[BC]?\d{8}$"
+                        title="Formato: 8 dígitos, opcionalmente con B o C al inicio"
                         maxlength="9"
                     >
                     @error('numero_control')
