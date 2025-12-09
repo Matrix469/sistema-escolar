@@ -21,108 +21,168 @@ class EventoController extends Controller
         
         // Obtener parámetros de búsqueda
         $search = $request->input('search');
-        $statusFilter = $request->input('status');
+        $filtro = $request->input('filtro'); // Filtro unificado
 
         // Obtener IDs de todos los eventos donde el usuario está inscrito
         $eventosInscritosIds = Evento::whereHas('inscripciones.miembros', function ($query) use ($idUsuario) {
             $query->where('id_estudiante', $idUsuario);
         })->pluck('id_evento');
 
-        // Si hay filtro de estado, mostrar solo esa sección
-        if ($statusFilter) {
-            // Mis eventos inscritos con ese estado
-            $misEventosEnProgresoQuery = Evento::whereIn('id_evento', $eventosInscritosIds)
-                ->where('estado', $statusFilter);
-            
+        // Inicializar todas las colecciones
+        $misEventosEnProgreso = collect();
+        $misOtrosEventosInscritos = collect();
+        $eventosActivos = collect();
+        $eventosProximos = collect();
+        $eventosCerrados = collect();
+        $eventosFinalizados = collect();
+
+        // Determinar si aplicar filtro de estado o inscripción
+        $isEstadoFilter = in_array($filtro, ['En Progreso', 'Activo', 'Próximo', 'Cerrado', 'Finalizado']);
+        $isInscripcionFilter = in_array($filtro, ['inscrito', 'no_inscrito']);
+
+        // === MIS EVENTOS EN PROGRESO (Inscrito + En Progreso) ===
+        if (!$filtro || $filtro === 'En Progreso' || $filtro === 'inscrito') {
+            $query = Evento::whereIn('id_evento', $eventosInscritosIds)
+                ->where('estado', 'En Progreso');
             if ($search) {
-                $misEventosEnProgresoQuery->where('nombre', 'like', "%{$search}%");
+                $query->where('nombre', 'like', "%{$search}%");
             }
-            
-            $misEventosEnProgreso = $statusFilter === 'En Progreso' 
-                ? $misEventosEnProgresoQuery->orderBy('fecha_inicio', 'desc')->get() 
-                : collect();
-            
-            $misOtrosEventosInscritos = $statusFilter !== 'En Progreso' 
-                ? $misEventosEnProgresoQuery->orderBy('fecha_inicio', 'desc')->get() 
-                : collect();
-            
-            // Eventos disponibles con ese estado
-            $eventosActivosQuery = Evento::where('estado', $statusFilter)
+            if (!$isInscripcionFilter || $filtro === 'inscrito') {
+                $misEventosEnProgreso = $query->orderBy('fecha_inicio', 'desc')->get();
+            }
+        }
+
+        // === OTROS EVENTOS INSCRITOS (Inscrito + otros estados) ===
+        if (!$filtro || $isEstadoFilter || $filtro === 'inscrito') {
+            $query = Evento::whereIn('id_evento', $eventosInscritosIds)
+                ->where('estado', '!=', 'En Progreso');
+            if ($isEstadoFilter && $filtro !== 'En Progreso') {
+                $query->where('estado', $filtro);
+            }
+            if ($search) {
+                $query->where('nombre', 'like', "%{$search}%");
+            }
+            if (!$isInscripcionFilter || $filtro === 'inscrito') {
+                $misOtrosEventosInscritos = $query->orderBy('fecha_inicio', 'desc')->get();
+            }
+        }
+
+        // === EVENTOS ACTIVOS PARA INSCRIBIRSE ===
+        if (!$filtro || $filtro === 'Activo' || $filtro === 'no_inscrito') {
+            $query = Evento::where('estado', 'Activo')
                 ->whereNotIn('id_evento', $eventosInscritosIds)
                 ->with('jurados.user');
-            
             if ($search) {
-                $eventosActivosQuery->where('nombre', 'like', "%{$search}%");
+                $query->where('nombre', 'like', "%{$search}%");
             }
-            
-            $eventosActivos = $statusFilter === 'Activo' 
-                ? $eventosActivosQuery->orderBy('fecha_inicio', 'asc')->get() 
-                : collect();
-            
-            $eventosProximos = $statusFilter === 'Próximo' 
-                ? $eventosActivosQuery->orderBy('fecha_inicio', 'asc')->get() 
-                : collect();
-        } else {
-            // Sin filtro de estado - mostrar todo
-            $misEventosEnProgresoQuery = Evento::whereIn('id_evento', $eventosInscritosIds)
-                ->where('estado', 'En Progreso');
-            
-            if ($search) {
-                $misEventosEnProgresoQuery->where('nombre', 'like', "%{$search}%");
+            if (!$isInscripcionFilter || $filtro === 'no_inscrito') {
+                $eventosActivos = $query->orderBy('fecha_inicio', 'asc')->get();
             }
-            
-            $misEventosEnProgreso = $misEventosEnProgresoQuery->orderBy('fecha_inicio', 'desc')->get();
-
-            $misOtrosEventosInscritosQuery = Evento::whereIn('id_evento', $eventosInscritosIds)
-                ->where('estado', '!=', 'En Progreso');
-                
-            if ($search) {
-                $misOtrosEventosInscritosQuery->where('nombre', 'like', "%{$search}%");
-            }
-            
-            $misOtrosEventosInscritos = $misOtrosEventosInscritosQuery->orderBy('fecha_inicio', 'desc')->get();
-
-            $eventosActivosQuery = Evento::where('estado', 'Activo')
-                                     ->whereNotIn('id_evento', $eventosInscritosIds)
-                                     ->with('jurados.user');
-            
-            if ($search) {
-                $eventosActivosQuery->where('nombre', 'like', "%{$search}%");
-            }
-            
-            $eventosActivos = $eventosActivosQuery->orderBy('fecha_inicio', 'asc')->get();
-            
-            $eventosProximosQuery = Evento::where('estado', 'Próximo')
-                                     ->whereNotIn('id_evento', $eventosInscritosIds)
-                                     ->with('jurados.user');
-                                     
-            if ($search) {
-                $eventosProximosQuery->where('nombre', 'like', "%{$search}%");
-            }
-            
-            $eventosProximos = $eventosProximosQuery->orderBy('fecha_inicio', 'asc')->get();
         }
-        
-        // Aplicar filtro de inscripción
-        $inscripcionFilter = $request->input('inscripcion');
-        if ($inscripcionFilter === 'inscrito') {
-            // Solo eventos inscritos
+
+        // === PRÓXIMOS EVENTOS ===
+        if (!$filtro || $filtro === 'Próximo' || $filtro === 'no_inscrito') {
+            $query = Evento::where('estado', 'Próximo')
+                ->whereNotIn('id_evento', $eventosInscritosIds)
+                ->with('jurados.user');
+            if ($search) {
+                $query->where('nombre', 'like', "%{$search}%");
+            }
+            if (!$isInscripcionFilter || $filtro === 'no_inscrito') {
+                $eventosProximos = $query->orderBy('fecha_inicio', 'asc')->get();
+            }
+        }
+
+        // === EVENTOS CERRADOS ===
+        if (!$filtro || $filtro === 'Cerrado') {
+            // Eventos cerrados donde estoy inscrito
+            $queryCerradosInscritos = Evento::whereIn('id_evento', $eventosInscritosIds)
+                ->where('estado', 'Cerrado');
+            if ($search) {
+                $queryCerradosInscritos->where('nombre', 'like', "%{$search}%");
+            }
+            
+            // Eventos cerrados donde no estoy inscrito
+            $queryCerradosNoInscritos = Evento::where('estado', 'Cerrado')
+                ->whereNotIn('id_evento', $eventosInscritosIds);
+            if ($search) {
+                $queryCerradosNoInscritos->where('nombre', 'like', "%{$search}%");
+            }
+            
+            // Combinar ambos
+            $eventosCerrados = $queryCerradosInscritos->orderBy('fecha_fin', 'desc')->get()
+                ->merge($queryCerradosNoInscritos->orderBy('fecha_fin', 'desc')->get());
+        }
+
+        // === EVENTOS FINALIZADOS ===
+        if (!$filtro || $filtro === 'Finalizado') {
+            // Eventos finalizados donde estoy inscrito
+            $queryFinalizadosInscritos = Evento::whereIn('id_evento', $eventosInscritosIds)
+                ->where('estado', 'Finalizado');
+            if ($search) {
+                $queryFinalizadosInscritos->where('nombre', 'like', "%{$search}%");
+            }
+            
+            // Eventos finalizados donde no estoy inscrito
+            $queryFinalizadosNoInscritos = Evento::where('estado', 'Finalizado')
+                ->whereNotIn('id_evento', $eventosInscritosIds);
+            if ($search) {
+                $queryFinalizadosNoInscritos->where('nombre', 'like', "%{$search}%");
+            }
+            
+            // Combinar ambos
+            $eventosFinalizados = $queryFinalizadosInscritos->orderBy('fecha_fin', 'desc')->get()
+                ->merge($queryFinalizadosNoInscritos->orderBy('fecha_fin', 'desc')->get());
+        }
+
+        // Si es filtro de inscripción, ajustar las secciones
+        if ($filtro === 'inscrito') {
             $eventosActivos = collect();
             $eventosProximos = collect();
-        } elseif ($inscripcionFilter === 'no_inscrito') {
-            // Solo eventos no inscritos
+            $eventosCerrados = Evento::whereIn('id_evento', $eventosInscritosIds)
+                ->where('estado', 'Cerrado');
+            if ($search) {
+                $eventosCerrados->where('nombre', 'like', "%{$search}%");
+            }
+            $eventosCerrados = $eventosCerrados->orderBy('fecha_fin', 'desc')->get();
+            
+            $eventosFinalizados = Evento::whereIn('id_evento', $eventosInscritosIds)
+                ->where('estado', 'Finalizado');
+            if ($search) {
+                $eventosFinalizados->where('nombre', 'like', "%{$search}%");
+            }
+            $eventosFinalizados = $eventosFinalizados->orderBy('fecha_fin', 'desc')->get();
+        } elseif ($filtro === 'no_inscrito') {
             $misEventosEnProgreso = collect();
             $misOtrosEventosInscritos = collect();
+            $eventosCerrados = Evento::where('estado', 'Cerrado')
+                ->whereNotIn('id_evento', $eventosInscritosIds);
+            if ($search) {
+                $eventosCerrados->where('nombre', 'like', "%{$search}%");
+            }
+            $eventosCerrados = $eventosCerrados->orderBy('fecha_fin', 'desc')->get();
+            
+            $eventosFinalizados = Evento::where('estado', 'Finalizado')
+                ->whereNotIn('id_evento', $eventosInscritosIds);
+            if ($search) {
+                $eventosFinalizados->where('nombre', 'like', "%{$search}%");
+            }
+            $eventosFinalizados = $eventosFinalizados->orderBy('fecha_fin', 'desc')->get();
         }
+        
+        // Para mantener compatibilidad con variables antiguas
+        $eventosInscritosIds = $eventosInscritosIds;
                                  
         return view('estudiante.eventos.index', compact(
             'misEventosEnProgreso',
             'misOtrosEventosInscritos',
             'eventosActivos',
             'eventosProximos',
+            'eventosCerrados',
+            'eventosFinalizados',
+            'eventosInscritosIds',
             'search',
-            'statusFilter',
-            'inscripcionFilter'
+            'filtro'
         ));
     }
 
