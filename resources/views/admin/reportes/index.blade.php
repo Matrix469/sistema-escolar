@@ -154,11 +154,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     const loadingOverlay = document.getElementById('loadingOverlay');
 
-    // Mostrar loading al enviar formularios
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         form.addEventListener('submit', function() {
             loadingOverlay.classList.add('active');
+
+            setTimeout(() => {
+                loadingOverlay.classList.remove('active');
+            }, 5000); // 5 segundos como máximo
         });
     });
 });
