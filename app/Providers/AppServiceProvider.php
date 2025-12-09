@@ -6,6 +6,7 @@ use App\Models\Equipo;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('lider-equipo', function (User $user, Equipo $equipo) {
             return $equipo->miembros()->where('id_estudiante', $user->id_usuario)->where('es_lider', true)->exists();
         });
+        if($this->app->environment('production')) {
+        URL::forceScheme('https');
+        }
 
         // Registrar Observers
         \App\Models\Equipo::observe(\App\Observers\EquipoObserver::class);

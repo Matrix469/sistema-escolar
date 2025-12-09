@@ -73,7 +73,7 @@
     
     .status-activo {
         background: linear-gradient(135deg, #00ff7f, #00cc66);
-        color: #000000ff !important;
+        color: rgb(240, 237, 237) !important;
     }
     
     .status-en-progreso {

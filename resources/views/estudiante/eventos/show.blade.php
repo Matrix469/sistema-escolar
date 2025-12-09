@@ -40,7 +40,7 @@
                             @if ($evento->estado == 'Activo') status-activo
                             @elseif ($evento->estado == 'En Progreso') status-en-progreso
                             @elseif ($evento->estado == 'Próximo') status-proximo
-                            @else status-finalizado @endif">
+                            @else status-finalizado @endif" >
                             {{ $evento->estado }}
                         </span>
                     </div>
