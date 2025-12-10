@@ -115,12 +115,17 @@
                 <div class="form-group">
                     <label for="comentarios" class="form-label">
                         Comentarios (opcional)
+                        <span class="character-count">
+                            <span id="comentarios-count">{{ strlen(old('comentarios', isset($evaluacionExistente) && $evaluacionExistente ? $evaluacionExistente->comentarios : '')) }}</span>/500
+                        </span>
                     </label>
                     <textarea id="comentarios"
                               name="comentarios"
                               rows="4"
                               class="form-textarea"
-                              placeholder="Escribe tus comentarios sobre este avance...">{{ old('comentarios', isset($evaluacionExistente) && $evaluacionExistente ? $evaluacionExistente->comentarios : '') }}</textarea>
+                              placeholder="Escribe tus comentarios sobre este avance..."
+                              maxlength="500"
+                              oninput="updateCharCount('comentarios', 500)">{{ old('comentarios', isset($evaluacionExistente) && $evaluacionExistente ? $evaluacionExistente->comentarios : '') }}</textarea>
                     @error('comentarios')
                         <p class="error-message">{{ $message }}</p>
                     @enderror
@@ -234,6 +239,9 @@
         if (input && input.value) {
             actualizarBarra(input);
         }
+
+        // Inicializar contador de caracteres para comentarios
+        updateCharCount('comentarios', 500);
     });
 
     // Validar al enviar el formulario
@@ -247,6 +255,23 @@
             input.focus();
         }
     });
+
+    // Función para actualizar contador de caracteres
+    function updateCharCount(fieldId, maxLength) {
+        const field = document.getElementById(fieldId);
+        const countElement = document.getElementById(fieldId + '-count');
+        const currentLength = field.value.length;
+
+        countElement.textContent = currentLength;
+
+        if (currentLength > maxLength) {
+            countElement.style.color = '#dc2626';
+        } else if (currentLength > maxLength * 0.9) {
+            countElement.style.color = '#d97706';
+        } else {
+            countElement.style.color = '#9ca3af';
+        }
+    }
 </script>
 
 <style>
@@ -421,12 +446,25 @@
     }
 
     .form-label {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         font-size: 0.875rem;
         font-weight: 500;
         color: #2c2c2c;
         margin-bottom: 0.5rem;
         font-family: 'Poppins', sans-serif;
+    }
+
+    .character-count {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        font-weight: normal;
+    }
+
+    #comentarios-count {
+        font-weight: 600;
+        transition: color 0.2s ease;
     }
 
     .form-input,

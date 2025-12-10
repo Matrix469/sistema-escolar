@@ -4,131 +4,195 @@
 
 @section('content')
 
-<div class="avance-form-page py-12">
-    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+<div class="avance-create-page">
+    <div class="container-form">
+        
         <a href="{{ route('estudiante.avances.index-specific', $proyecto->id_proyecto) }}" class="back-link">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Volver a Avances
+            <i class="fas fa-arrow-left"></i> Volver a Avances
         </a>
 
-        <div class="mb-6">
-            <h2 class="font-semibold text-2xl">Registrar Nuevo Avance</h2>
-            <p class="mt-1">Documenta el progreso del proyecto</p>
+        {{-- Header --}}
+        <div class="page-header">
+            <div class="header-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="header-text">
+                <h1>Registrar Nuevo Avance</h1>
+                <p>Documenta el progreso de tu proyecto</p>
+            </div>
         </div>
 
-        <!-- Información del Proyecto -->
-        <div class="project-info">
-            <h4>
-                <i class="fas fa-project-diagram mr-2"></i>
-                Información del Proyecto
-            </h4>
-            <div class="project-details">
-                <div>
-                    <strong>Nombre del Proyecto</strong>
-                    <span>{{ $proyecto->nombre }}</span>
+        {{-- Información del Proyecto --}}
+        <div class="info-card">
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fas fa-project-diagram"></i>
+                    <div>
+                        <span class="info-label">Proyecto</span>
+                        <span class="info-value">{{ $proyecto->nombre }}</span>
+                    </div>
                 </div>
-                <div>
-                    <strong>Equipo</strong>
-                    <span>{{ $inscripcion->equipo->nombre }}</span>
+                <div class="info-item">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <span class="info-label">Equipo</span>
+                        <span class="info-value">{{ $inscripcion->equipo->nombre }}</span>
+                    </div>
                 </div>
                 @if($inscripcion->evento)
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
                     <div>
-                        <strong>Evento</strong>
-                        <span>{{ $inscripcion->evento->nombre }}</span>
+                        <span class="info-label">Evento</span>
+                        <span class="info-value">{{ $inscripcion->evento->nombre }}</span>
                     </div>
+                </div>
                 @endif
-                <div>
-                    <strong>Fecha</strong>
-                    <span>{{ now()->format('d/m/Y H:i') }}</span>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <span class="info-label">Fecha</span>
+                        <span class="info-value">{{ now()->format('d/m/Y H:i') }}</span>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Formulario -->
-        <div class="neuro-card-main">
-            <div class="p-6 sm:p-8">
-                <form action="{{ route('estudiante.avances.store-specific', $proyecto->id_proyecto) }}" method="POST" enctype="multipart/form-data">
-                    @csrf
+        {{-- Formulario --}}
+        <div class="form-card">
+            <form action="{{ route('estudiante.avances.store-specific', $proyecto->id_proyecto) }}" 
+                  method="POST" 
+                  enctype="multipart/form-data"
+                  id="avanceForm">
+                @csrf
 
-                    <!-- Título -->
-                    <div class="form-group">
-                        <label class="form-label">
-                            Título del Avance <span class="required">*</span>
-                        </label>
-                        <input type="text" name="titulo" required maxlength="200"
-                               class="neuro-input"
-                               placeholder="Ej: Implementación de módulo de autenticación"
-                               value="{{ old('titulo') }}">
-                        @error('titulo')
-                            <div class="help-text text-red-600">{{ $message }}</div>
-                        @enderror
+                {{-- Título --}}
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-heading"></i>
+                        Título del Avance <span class="required">*</span>
+                    </label>
+                    <input type="text" 
+                           name="titulo" 
+                           id="titulo"
+                           required 
+                           minlength="20"
+                           maxlength="200"
+                           class="form-input"
+                           placeholder="Describe brevemente qué lograste (mín. 20 caracteres)"
+                           value="{{ old('titulo') }}">
+                    <div class="input-footer">
+                        <span class="char-count" id="tituloCount">0/200</span>
+                        <span class="min-hint" id="tituloHint">Mínimo 20 caracteres</span>
                     </div>
+                    @error('titulo')
+                        <div class="error-msg"><i class="fas fa-exclamation-circle"></i> {{ $message }}</div>
+                    @enderror
+                </div>
 
-                    <!-- Descripción -->
-                    <div class="form-group">
-                        <label class="form-label">
-                            Descripción Detallada <span class="required">*</span>
-                        </label>
-                        <textarea name="descripcion" rows="6" required
-                                  class="neuro-textarea"
-                                  placeholder="Describe qué has logrado en este avance, los desafíos enfrentados, próximos pasos...">{{ old('descripcion') }}</textarea>
-                        @error('descripcion')
-                            <div class="help-text text-red-600">{{ $message }}</div>
-                        @enderror
-                        <div class="help-text">
-                            Sé lo más descriptivo posible para que los jurados puedan entender tu progreso
+                {{-- Descripción --}}
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-align-left"></i>
+                        Descripción Detallada <span class="required">*</span>
+                    </label>
+                    <textarea name="descripcion" 
+                              id="descripcion"
+                              rows="6" 
+                              required
+                              minlength="100"
+                              class="form-textarea"
+                              placeholder="Explica detalladamente: qué lograste, desafíos enfrentados, soluciones implementadas, próximos pasos... (mín. 100 caracteres)">{{ old('descripcion') }}</textarea>
+                    <div class="input-footer">
+                        <span class="char-count" id="descripcionCount">0 caracteres</span>
+                        <span class="min-hint" id="descripcionHint">Mínimo 100 caracteres</span>
+                    </div>
+                    @error('descripcion')
+                        <div class="error-msg"><i class="fas fa-exclamation-circle"></i> {{ $message }}</div>
+                    @enderror
+                    <div class="help-text">
+                        <i class="fas fa-lightbulb"></i>
+                        Sé descriptivo para que los jurados comprendan tu progreso
+                    </div>
+                </div>
+
+                {{-- Archivo Adjunto (sin cambios) --}}
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-paperclip"></i>
+                        Archivo Adjunto <span class="optional">(opcional)</span>
+                    </label>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <input type="file" name="archivo_adjunto" id="archivoAdjunto"
+                               class="neuro-file hidden"
+                               accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">
+                            Arrastra un archivo aquí o haz clic para seleccionar
+                        </div>
+                        <div class="upload-hint">
+                            PDF, Word, Excel, PowerPoint o imágenes (Máx: 10MB)
                         </div>
                     </div>
+                    @error('archivo_adjunto')
+                        <div class="error-msg"><i class="fas fa-exclamation-circle"></i> {{ $message }}</div>
+                    @enderror
+                </div>
 
-                    <!-- Archivo Adjunto -->
-                    <div class="form-group">
-                        <label class="form-label">
-                            Archivo Adjunto
-                        </label>
-                        <div class="file-upload-area" id="fileUploadArea">
-                            <input type="file" name="archivo_adjunto" id="archivoAdjunto"
-                                   class="neuro-file hidden"
-                                   accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png,.gif">
-                            <div class="upload-icon">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <div class="upload-text">
-                                Arrastra un archivo aquí o haz clic para seleccionar
-                            </div>
-                            <div class="upload-hint">
-                                PDF, Word, Excel, PowerPoint o imágenes (Máx: 10MB)
-                            </div>
-                        </div>
-                        @error('archivo_adjunto')
-                            <div class="help-text text-red-600 mt-2">{{ $message }}</div>
-                        @enderror
-                        <div class="help-text">
-                            Puedes subir capturas de pantalla, diagramas, documentos técnicos o cualquier evidencia de tu avance
-                        </div>
-                    </div>
-
-                    <!-- Botones -->
-                    <div class="button-group">
-                        <a href="{{ route('estudiante.avances.index-specific', $proyecto->id_proyecto) }}" class="action-button btn-secondary">
-                            Cancelar
-                        </a>
-                        <button type="submit" class="action-button btn-primary" id="submitBtn">
-                            <i class="fas fa-save"></i>
-                            <span id="btnText">Registrar Avance</span>
-                            <span class="loading" id="loadingIcon">
-                                <i class="fas fa-spinner fa-spin"></i> Registrando...
-                            </span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+                {{-- Botones --}}
+                <div class="button-group">
+                    <a href="{{ route('estudiante.avances.index-specific', $proyecto->id_proyecto) }}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-save" id="btnIcon"></i>
+                        <span id="btnText">Registrar Avance</span>
+                        <i class="fas fa-spinner fa-spin hidden" id="loadingIcon"></i>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
 
 <script>
+    // Character counters
+    const tituloInput = document.getElementById('titulo');
+    const tituloCount = document.getElementById('tituloCount');
+    const tituloHint = document.getElementById('tituloHint');
+    
+    const descripcionInput = document.getElementById('descripcion');
+    const descripcionCount = document.getElementById('descripcionCount');
+    const descripcionHint = document.getElementById('descripcionHint');
+
+    tituloInput.addEventListener('input', () => {
+        const len = tituloInput.value.length;
+        tituloCount.textContent = `${len}/200`;
+        
+        if (len >= 20) {
+            tituloHint.textContent = '✓ Longitud válida';
+            tituloHint.classList.add('valid');
+        } else {
+            tituloHint.textContent = `Faltan ${20 - len} caracteres`;
+            tituloHint.classList.remove('valid');
+        }
+    });
+
+    descripcionInput.addEventListener('input', () => {
+        const len = descripcionInput.value.length;
+        descripcionCount.textContent = `${len} caracteres`;
+        
+        if (len >= 100) {
+            descripcionHint.textContent = '✓ Longitud válida';
+            descripcionHint.classList.add('valid');
+        } else {
+            descripcionHint.textContent = `Faltan ${100 - len} caracteres`;
+            descripcionHint.classList.remove('valid');
+        }
+    });
+
     // File upload handling
     const fileUploadArea = document.getElementById('fileUploadArea');
     const archivoAdjunto = document.getElementById('archivoAdjunto');
@@ -137,7 +201,6 @@
         archivoAdjunto.click();
     });
 
-    // Drag and drop
     fileUploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
         fileUploadArea.classList.add('dragover');
@@ -150,7 +213,6 @@
     fileUploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
         fileUploadArea.classList.remove('dragover');
-
         const files = e.dataTransfer.files;
         if (files.length > 0) {
             archivoAdjunto.files = files;
@@ -166,21 +228,311 @@
 
     function updateFileName(fileName) {
         const uploadText = document.querySelector('.upload-text');
-        uploadText.textContent = `Archivo seleccionado: ${fileName}`;
+        uploadText.innerHTML = `<i class="fas fa-file"></i> ${fileName}`;
+        fileUploadArea.classList.add('has-file');
     }
 
     // Form submission
-    const form = document.querySelector('form');
+    const form = document.getElementById('avanceForm');
     const submitBtn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
+    const btnIcon = document.getElementById('btnIcon');
     const loadingIcon = document.getElementById('loadingIcon');
 
     form.addEventListener('submit', (e) => {
-        btnText.style.display = 'none';
-        loadingIcon.classList.add('show');
+        // Validate minimum lengths
+        if (tituloInput.value.length < 20) {
+            e.preventDefault();
+            tituloInput.focus();
+            alert('El título debe tener al menos 20 caracteres.');
+            return;
+        }
+        if (descripcionInput.value.length < 100) {
+            e.preventDefault();
+            descripcionInput.focus();
+            alert('La descripción debe tener al menos 100 caracteres.');
+            return;
+        }
+
+        btnText.textContent = 'Registrando...';
+        btnIcon.classList.add('hidden');
+        loadingIcon.classList.remove('hidden');
         submitBtn.disabled = true;
     });
+
+    // Init counters
+    if (tituloInput.value) tituloInput.dispatchEvent(new Event('input'));
+    if (descripcionInput.value) descripcionInput.dispatchEvent(new Event('input'));
 </script>
 
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.avance-create-page {
+    background: linear-gradient(180deg, #fefefe, #faf8f5);
+    min-height: 100vh;
+    padding: 1.5rem 1rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.container-form {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+/* Back Link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #6b7280;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+}
+.back-link:hover { color: #6366f1; }
+
+/* Page Header */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.header-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+.header-text h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+.header-text p {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+}
+
+/* Info Card */
+.info-card {
+    background: linear-gradient(135deg, #ede9fe, #e0e7ff);
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #c7d2fe;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.info-item i {
+    color: #6366f1;
+    font-size: 1rem;
+}
+.info-item div { display: flex; flex-direction: column; }
+.info-label { font-size: 0.65rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+.info-value { font-size: 0.85rem; font-weight: 600; color: #111827; }
+
+/* Form Card */
+.form-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 10px 15px -3px rgba(0,0,0,0.08);
+    border: 1px solid #f3f4f6;
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+.form-label i { color: #6366f1; font-size: 0.8rem; }
+.required { color: #ef4444; }
+.optional { color: #9ca3af; font-weight: 400; font-size: 0.75rem; }
+
+.form-input, .form-textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    background: #fafafa;
+}
+.form-input:focus, .form-textarea:focus {
+    outline: none;
+    border-color: #6366f1;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+.form-input::placeholder, .form-textarea::placeholder {
+    color: #9ca3af;
+}
+.form-textarea {
+    resize: vertical;
+    min-height: 140px;
+}
+
+.input-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.4rem;
+    font-size: 0.7rem;
+}
+.char-count { color: #9ca3af; }
+.min-hint { color: #f59e0b; font-weight: 500; }
+.min-hint.valid { color: #10b981; }
+
+.error-msg {
+    color: #ef4444;
+    font-size: 0.8rem;
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.help-text {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.help-text i { color: #f59e0b; }
+
+/* File Upload Area (mantenido igual) */
+.file-upload-area {
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #fafafa;
+}
+.file-upload-area:hover {
+    border-color: #6366f1;
+    background: #f5f3ff;
+}
+.file-upload-area.dragover {
+    border-color: #6366f1;
+    background: #ede9fe;
+    transform: scale(1.01);
+}
+.file-upload-area.has-file {
+    border-color: #10b981;
+    background: #ecfdf5;
+}
+.upload-icon {
+    font-size: 2.5rem;
+    color: #9ca3af;
+    margin-bottom: 0.75rem;
+}
+.file-upload-area:hover .upload-icon { color: #6366f1; }
+.file-upload-area.has-file .upload-icon { color: #10b981; }
+.upload-text {
+    font-size: 0.9rem;
+    color: #374151;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+.upload-hint {
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+.hidden { display: none !important; }
+
+/* Buttons */
+.button-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+}
+.btn-secondary:hover {
+    background: #e5e7eb;
+    color: #111827;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+}
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .page-header { flex-direction: column; text-align: center; }
+    .header-icon { margin: 0 auto; }
+    .info-grid { grid-template-columns: 1fr 1fr; }
+    .button-group { flex-direction: column-reverse; }
+}
+</style>
 
 @endsection

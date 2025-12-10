@@ -101,20 +101,41 @@
 
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
             color: white;
-            padding: 15px 40px;
+            padding: 18px 45px;
             text-decoration: none;
             border-radius: 50px;
-            font-weight: bold;
-            font-size: 16px;
+            font-weight: 700;
+            font-size: 18px;
             margin: 30px 0;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
         }
 
         .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .cta-button:hover:before {
+            left: 100%;
         }
 
         .info-box {
@@ -188,8 +209,9 @@
             }
 
             .cta-button {
-                padding: 12px 30px;
-                font-size: 14px;
+                padding: 15px 35px;
+                font-size: 16px;
+                font-weight: 600;
             }
         }
     </style>
@@ -275,9 +297,9 @@
                 <h4>📋 Pasos para Registrarse:</h4>
                 <ol>
                     <li>Haga clic en el botón "Completar Registro"</li>
-                    <li>Complete el formulario con sus datos</li>
-                    <li>Ingrese su token de acceso</li>
-                    <li>Configure su contraseña y perfil profesional</li>
+                    <li>Sus datos (nombre, email y token) se precargarán automáticamente</li>
+                    <li>Complete los campos adicionales (especialidad, empresa)</li>
+                    <li>Configure su contraseña</li>
                     <li>¡Listo! Podrá comenzar a evaluar proyectos</li>
                 </ol>
             </div>

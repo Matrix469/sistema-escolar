@@ -1,444 +1,724 @@
-@extends('layouts.app')
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 
-@section('content')
+.hidden {
+    display: none !important;
+}
 
+.evento-modern-page {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    min-height: 100vh;
+    padding: 1.5rem 1rem;
+    font-family: "Inter", -apple-system, sans-serif;
+}
 
-<div class="evento-detail-page py-12">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <a href="{{ route('admin.eventos.index') }}" class="back-link">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Volver al Eventos
-        </a>
-        <div class="flex items-center mb-6">
-            <h2 class="font-semibold text-xl ml-2">
-                Detalle del Evento
-            </h2>
-        </div>
-        
-        <div class="main-card">
-            @if ($evento->ruta_imagen)
-                <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento: {{ $evento->nombre }}">
-            @endif
-            
-            <div class="p-6 sm:p-8">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h1 class="font-bold text-3xl">{{ $evento->nombre }}</h1>
-                        <p class="text-sm mt-1">
-                            Del {{ $evento->fecha_inicio->format('d/m/Y') }} al {{ $evento->fecha_fin->format('d/m/Y') }}
-                        </p>
-                    </div>
-                    <span class="status-badge 
-                        @if ($evento->estado == 'Activo') status-activo
-                        @elseif ($evento->estado == 'En Progreso') status-activo
-                        @elseif ($evento->estado == 'Próximo') status-proximo
-                        @elseif ($evento->estado == 'Cerrado') status-cerrado
-                        @else status-finalizado @endif">
-                        {{ $evento->estado }}
-                    </span>
-                </div>
+.container-evento {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-                <div class="section-divider">
-                    <h3 class="text-lg font-medium">Descripción del Evento</h3>
-                    <p class="mt-2">
-                        {{ $evento->descripcion ?: 'No hay descripción disponible.' }}
-                    </p>
-                </div>
+/* Back Link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+}
+.back-link:hover {
+    color: #2563eb;
+}
 
-                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Columna de Jurados -->
-                    <div>
-                        <h3 class="text-lg font-medium">
-                            Jurados Asignados ({{ $evento->jurados->count() }})
-                        </h3>
-                        <div class="list-box">
-                            <ul class="space-y-3">
-                                @forelse($evento->jurados as $jurado)
-                                    <li class="flex items-center space-x-3">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                        <a href="{{ route('admin.users.edit', $jurado->user) }}">
-                                            {{ $jurado->user->nombre }} {{ $jurado->user->app_paterno }}
-                                        </a>
-                                    </li>
-                                @empty
-                                    <li style="color: #6b6b6b; font-size: 0.875rem;">No hay jurados asignados a este evento.</li>
-                                @endforelse
-                            </ul>
-                        </div>
-                    </div>
+/* Hero Section - Negro con degradado azul */
+.event-hero {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    min-height: 180px;
+    background: linear-gradient(135deg, #0f172a, #1e3a5f, #1e40af);
+}
 
-                    <!-- Columna de Equipos -->
-                    <div>
-                        <h3 class="text-lg font-medium">
-                            Equipos Inscritos ({{ $evento->inscripciones->count() }} / {{ $evento->cupo_max_equipos }})
-                        </h3>
-                        <div class="list-box">
-                            <ul class="space-y-3">
-                                @forelse($evento->inscripciones as $inscripcion)
-                                    <li class="flex items-center space-x-3">
-                                        <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                                        <a href="{{ route('admin.equipos.show', $inscripcion->equipo) }}">
-                                            <span class="{{ $inscripcion->puesto_ganador ? 'font-bold' : '' }}">
-                                                @if($inscripcion->puesto_ganador == 1) 🥇 @endif
-                                                @if($inscripcion->puesto_ganador == 2) 🥈 @endif
-                                                @if($inscripcion->puesto_ganador == 3) 🥉 @endif
-                                                {{ $inscripcion->equipo->nombre }}
-                                            </span>
-                                        </a>
-                                    </li>
-                                @empty
-                                    <li style="color: #6b6b6b; font-size: 0.875rem;">No hay equipos inscritos en este evento.</li>
-                                @endforelse
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+.hero-image {
+    position: absolute;
+    inset: 0;
+}
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(15, 23, 42, 0.9),
+        rgba(30, 64, 175, 0.4)
+    );
+}
 
-  {{-- Proyecto del Evento (si está publicado) --}}
-                @if($evento->tipo_proyecto && ($evento->tipo_proyecto === 'general' && $evento->proyectoGeneral && $evento->proyectoGeneral->publicado))
-                    <div class="section-divider">
-                        <div class="flex justify-between items-start mb-4">
-                            <h3 class="text-lg font-medium">📋 Proyecto del Evento</h3>
-                            <span class="project-published-badge">
-                                ✓ Publicado
-                            </span>
-                        </div>
-                        <div class="project-box">
-                            <h4 class="mb-3">{{ $evento->proyectoGeneral->titulo }}</h4>
-                            
-                            @if($evento->proyectoGeneral->descripcion_completa)
-                                <div class="mb-4">
-                                    <h5>Descripción:</h5>
-                                    <p style="white-space: pre-line;">{{ Str::limit($evento->proyectoGeneral->descripcion_completa, 300) }}</p>
-                                </div>
-                            @endif
+.hero-content {
+    position: relative;
+    padding: 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 180px;
+    color: white;
+}
+.hero-content.no-image {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f, #1e40af);
+}
 
-                            @if($evento->proyectoGeneral->objetivo)
-                                <div class="mb-4">
-                                    <h5>🎯 Objetivo:</h5>
-                                    <p>{{ $evento->proyectoGeneral->objetivo }}</p>
-                                </div>
-                            @endif
+.hero-main h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin: 0.75rem 0 0 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-                            <div class="mt-4 flex flex-wrap gap-3">
-                                @if($evento->proyectoGeneral->archivo_bases)
-                                    <a href="{{ Storage::url($evento->proyectoGeneral->archivo_bases) }}" 
-                                       target="_blank"
-                                       class="download-button download-indigo inline-flex items-center">
-                                        📄 Descargar Bases
-                                    </a>
-                                @endif
-                                @if($evento->proyectoGeneral->archivo_recursos)
-                                    <a href="{{ Storage::url($evento->proyectoGeneral->archivo_recursos) }}" 
-                                       target="_blank"
-                                       class="download-button download-purple inline-flex items-center">
-                                        📦 Descargar Recursos
-                                    </a>
-                                @endif
-                                @if($evento->proyectoGeneral->url_externa)
-                                    <a href="{{ $evento->proyectoGeneral->url_externa }}" 
-                                       target="_blank"
-                                       class="download-button download-blue inline-flex items-center">
-                                        🔗 Recursos Externos
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-                @elseif($evento->tipo_proyecto === 'individual')
-                    <div class="section-divider">
-                        <h3 class="text-lg font-medium">📝 Proyectos Individuales</h3>
-                        <div class="info-box-individual mt-4">
-                            <p>
-                                Este evento usa <strong>proyectos individuales</strong>. Cada equipo puede tener un proyecto diferente.
-                            </p>
-                            <a href="{{ route('admin.proyectos-evento.asignar', $evento) }}" 
-                               class="inline-block mt-3">
-                                Ver estado de asignaciones →
-                            </a>
-                        </div>
-                    </div>
-                @endif
+.estado-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.estado-badge i {
+    font-size: 0.5rem;
+}
+.estado-activo {
+    background: rgba(16, 185, 129, 0.9);
+    color: white;
+}
+.estado-próximo {
+    background: rgba(59, 130, 246, 0.9);
+    color: white;
+}
+.estado-cerrado {
+    background: rgba(107, 114, 128, 0.9);
+    color: white;
+}
+.estado-finalizado {
+    background: rgba(30, 64, 175, 0.9);
+    color: white;
+}
+.estado-en {
+    background: rgba(245, 158, 11, 0.9);
+    color: white;
+}
 
-                <!-- Acciones de Administrador -->
-                <div class="section-divider">
-                    <h3 class="text-lg font-medium">Acciones de Administrador</h3>
-                    <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="{{ route('admin.eventos.asignar', $evento) }}" class="action-button btn-indigo">
-                            Gestionar Jurados
-                        </a>
+/* Dates Showcase */
+.dates-showcase {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
 
-                        @if($evento->estado === 'Próximo')
-                            <form action="{{ route('admin.eventos.activar', $evento) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres activar este evento? Los usuarios podrán inscribirse.');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-green">
-                                    Activar Evento
-                                </button>
-                            </form>
-                        @elseif($evento->estado === 'Activo')
-                            <form action="{{ route('admin.eventos.cerrar', $evento) }}" method="POST" onsubmit="return confirm('¿Cerrar inscripciones? Los equipos no podrán unirse.');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-yellow">
-                                    🔒 Cerrar Inscripciones
-                                </button>
-                            </form>
-                            <form action="{{ route('admin.eventos.finalizar', $evento) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres finalizar este evento?');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-blue">
-                                    Finalizar Evento
-                                </button>
-                            </form>
-                            <form action="{{ route('admin.eventos.desactivar', $evento) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres mover este evento a Próximos? Se cerrarán las inscripciones.');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-gray">
-                                    Mover a Próximos
-                                </button>
-                            </form>
-                        @elseif($evento->estado === 'En Progreso')
-                            {{-- Estado En Progreso: Evento activo con proyectos publicados --}}
-                            <form action="{{ route('admin.eventos.finalizar', $evento) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres finalizar este evento? Asegúrate de que los jurados hayan completado las evaluaciones.');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-blue">
-                                    🏁 Finalizar Evento
-                                </button>
-                            </form>
-                            <form action="{{ route('admin.eventos.cerrar', $evento) }}" method="POST" onsubmit="return confirm('¿Cerrar el evento? Los equipos ya no podrán subir avances.');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-yellow">
-                                    🔒 Cerrar Evento
-                                </button>
-                            </form>
-                            @if($evento->tipo_proyecto === 'general' && $evento->proyectoGeneral)
-                                <a href="{{ route('admin.proyectos-evento.edit', $evento->proyectoGeneral) }}" 
-                                   class="action-button btn-purple">
-                                    ✏️ Editar Proyecto
-                                </a>
-                            @elseif($evento->tipo_proyecto === 'individual')
-                                <a href="{{ route('admin.proyectos-evento.asignar', $evento) }}" 
-                                   class="action-button btn-purple">
-                                    📝 Ver Proyectos
-                                </a>
-                            @endif
-                        @elseif($evento->estado === 'Cerrado')
-                            <!-- Configuración de Proyectos del Evento -->
-                            @if(!$evento->tipo_proyecto)
-                                <button onclick="document.getElementById('modalTipoProyecto').classList.remove('hidden')" 
-                                        class="action-button btn-purple">
-                                    📋 Configurar Tipo de Proyecto
-                                </button>
-                            @else
-                                @if($evento->tipo_proyecto === 'general')
-                                    @if($evento->proyectoGeneral)
-                                        <a href="{{ route('admin.proyectos-evento.edit', $evento->proyectoGeneral) }}" 
-                                           class="action-button btn-blue">
-                                            ✏️ Editar Proyecto General
-                                        </a>
-                                        @if($evento->proyectoGeneral->publicado)
-                                            <form action="{{ route('admin.proyectos-evento.despublicar', $evento->proyectoGeneral) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="action-button btn-gray">
-                                                    👁️‍🗨️ Despublicar
-                                                </button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('admin.proyectos-evento.publicar', $evento->proyectoGeneral) }}" method="POST">
-                                                @csrf
-                                                <button type="submit" class="action-button btn-green">
-                                                    🚀 Publicar Proyecto
-                                                </button>
-                                            </form>
-                                        @endif
-                                    @else
-                                        <a href="{{ route('admin.proyectos-evento.create', $evento) }}" 
-                                           class="action-button btn-green">
-                                            ➕ Crear Proyecto General
-                                        </a>
-                                    @endif
-                                @else
-                                    <a href="{{ route('admin.proyectos-evento.asignar', $evento) }}" 
-                                       class="action-button btn-green">
-                                        📝 Asignar Proyectos Individuales
-                                    </a>
-                                @endif
+.date-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem 1.75rem;
+    border-radius: 14px;
+    min-width: 220px;
+}
+.date-card.start {
+    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+    border: 2px solid #a7f3d0;
+}
+.date-card.end {
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border: 2px solid #fecaca;
+}
 
-                                {{-- Botón para cambiar tipo de proyecto --}}
-                                @if($evento->tipo_proyecto === 'general')
-                                    <button onclick="document.getElementById('modalTipoProyecto').classList.remove('hidden')" 
-                                            class="action-button btn-gray">
-                                        🔄 Cambiar a Individual
-                                    </button>
-                                @endif
-                            @endif
+.date-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+.date-card.start .date-icon {
+    background: #10b981;
+    color: white;
+}
+.date-card.end .date-icon {
+    background: #ef4444;
+    color: white;
+}
 
-                            <form action="{{ route('admin.eventos.reactivar', $evento) }}" method="POST" onsubmit="return confirm('¿Reabrir inscripciones?');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-orange">
-                                    🔓 Reabrir Inscripciones
-                                </button>
-                            </form>
+.date-info {
+    display: flex;
+    flex-direction: column;
+}
+.date-label {
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #6b7280;
+    letter-spacing: 1px;
+}
+.date-main {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+}
+.date-card.start .date-main {
+    color: #059669;
+}
+.date-card.end .date-main {
+    color: #dc2626;
+}
+.date-secondary {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: capitalize;
+}
+.date-full {
+    font-size: 0.7rem;
+    color: #6b7280;
+    text-transform: capitalize;
+}
 
-                            <form action="{{ route('admin.eventos.finalizar', $evento) }}" method="POST" onsubmit="return confirm('¿Finalizar evento?');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-blue">
-                                    Finalizar Evento
-                                </button>
-                            </form>
-                        @elseif($evento->estado === 'Finalizado')
-                            <a href="{{ route('admin.eventos.resultados', $evento) }}" 
-                               class="action-button btn-indigo">
-                                🏆 Ver Resultados
-                            </a>
-                            <form action="{{ route('admin.eventos.reactivar', $evento) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres reactivar este evento?');">
-                                @csrf
-                                @method('PATCH')
-                                <button type="submit" class="action-button btn-red">
-                                    Reactivar Evento
-                                </button>
-                            </form>
-                        @endif
+.date-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+.connector-line {
+    width: 2px;
+    height: 20px;
+    background: #e5e7eb;
+}
+.connector-days {
+    background: #f3f4f6;
+    padding: 0.4rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+}
 
-                        <a href="{{ route('admin.eventos.edit', $evento) }}" class="action-button btn-gray">
-                            Editar Evento
-                        </a>
-                    </div>
-                </div>
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
 
-                <!-- Modal Tipo de Proyecto -->
-                <div id="modalTipoProyecto" class="hidden fixed inset-0 modal-overlay overflow-y-auto h-full w-full z-50">
-                    <div class="relative top-20 mx-auto p-5 w-96 modal-content">
-                        <h3 class="text-lg mb-4">
-                            {{ $evento->tipo_proyecto ? 'Cambiar Tipo de Proyecto' : 'Configurar Tipo de Proyecto' }}
-                        </h3>
-                        
-                        @if($evento->tipo_proyecto === 'general')
-                            <div class="alert-warning">
-                                <p>
-                                    ⚠️ <strong>Nota:</strong> Cambiar a proyectos individuales mantendrá el proyecto general creado, pero ya no será visible para los equipos.
-                                </p>
-                            </div>
-                        @elseif($evento->tipo_proyecto === 'individual')
-                            <div class="alert-danger">
-                                <p>
-                                    🚫 <strong>No se puede cambiar:</strong> Ya tienes proyectos individuales asignados. Cambiar a proyecto general eliminaría los archivos de cada equipo.
-                                </p>
-                            </div>
-                        @else
-                            <p class="mb-4">Elige cómo se asignarán los proyectos a los equipos:</p>
-                        @endif
-                        
-                        <form action="{{ route('admin.eventos.configurar-proyectos', $evento) }}" method="POST">
-                            @csrf
-                            <div class="space-y-3">
-                                <label class="radio-option {{ $evento->tipo_proyecto === 'general' ? 'radio-option-selected' : '' }}">
-                                    <input type="radio" name="tipo_proyecto" value="general" 
-                                           {{ $evento->tipo_proyecto === 'general' ? 'checked' : '' }}
-                                           {{ $evento->tipo_proyecto === 'individual' ? 'disabled' : 'required' }}>
-                                    <div class="ml-3">
-                                        <div class="font-semibold" style="color: #2c2c2c;">📋 Proyecto General</div>
-                                        <div class="text-sm" style="color: #6b6b6b;">Un solo proyecto para todos los equipos</div>
-                                        @if($evento->tipo_proyecto === 'general')
-                                            <div class="text-xs mt-1" style="color: #6366f1;">✓ Tipo actual</div>
-                                        @elseif($evento->tipo_proyecto === 'individual')
-                                            <div class="text-xs mt-1" style="color: #ef4444;">⚠️ No disponible</div>
-                                        @endif
-                                    </div>
-                                </label>
-                                <label class="radio-option {{ $evento->tipo_proyecto === 'individual' ? 'radio-option-selected' : '' }}">
-                                    <input type="radio" name="tipo_proyecto" value="individual" 
-                                           {{ $evento->tipo_proyecto === 'individual' ? 'checked' : '' }}
-                                           {{ !$evento->tipo_proyecto || $evento->tipo_proyecto === 'general' ? 'required' : '' }}>
-                                    <div class="ml-3">
-                                        <div class="font-semibold" style="color: #2c2c2c;">📝 Proyectos Individuales</div>
-                                        <div class="text-sm" style="color: #6b6b6b;">Proyectos diferentes por equipo</div>
-                                        @if($evento->tipo_proyecto === 'individual')
-                                            <div class="text-xs mt-1" style="color: #a855f7;">✓ Tipo actual</div>
-                                        @endif
-                                    </div>
-                                </label>
-                            </div>
-                            <div class="mt-6 flex justify-end space-x-3">
-                                <button type="button" onclick="document.getElementById('modalTipoProyecto').classList.add('hidden')" 
-                                        class="action-button" style="background: rgba(255, 255, 255, 0.5); color: #2c2c2c; box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;">
-                                    Cancelar
-                                </button>
-                                @if($evento->tipo_proyecto !== 'individual')
-                                    <button type="submit" class="action-button btn-indigo">
-                                        {{ $evento->tipo_proyecto ? 'Cambiar Tipo' : 'Confirmar' }}
-                                    </button>
-                                @endif
-                            </div>
-                        </form>
-                    </div>
-                </div>
+.stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e2e8f0;
+}
 
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+.stat-card.teams .stat-icon {
+    background: #dbeafe;
+    color: #2563eb;
+}
+.stat-card.judges .stat-icon {
+    background: #e0e7ff;
+    color: #4f46e5;
+}
+.stat-card.criteria .stat-icon {
+    background: #f1f5f9;
+    color: #334155;
+}
 
-                {{-- Criterios de Evaluación --}}
-                <div class="section-divider">
-                    <h3 class="text-lg font-medium" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <svg class="w-5 h-5" style="color: #e89a3c;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
-                        </svg>
-                        Criterios de Evaluación ({{ $evento->criteriosEvaluacion->count() }})
-                    </h3>
-                    
-                    @if($evento->criteriosEvaluacion->isNotEmpty())
-                        <div class="mt-3">
-                            {{-- Barra de progreso compacta --}}
-                            @php $totalPonderacion = $evento->criteriosEvaluacion->sum('ponderacion'); @endphp
-                            <div class="ponderacion-bar">
-                                <span class="ponderacion-label">Ponderación Total:</span>
-                                <div class="ponderacion-track">
-                                    <div class="ponderacion-fill {{ $totalPonderacion == 100 ? 'complete' : 'incomplete' }}" style="width: {{ min($totalPonderacion, 100) }}%;"></div>
-                                </div>
-                                <span class="ponderacion-value {{ $totalPonderacion == 100 ? 'complete' : 'incomplete' }}">
-                                    {{ $totalPonderacion }}%
-                                    @if($totalPonderacion == 100)✓@else⚠@endif
-                                </span>
-                            </div>
+.stat-data {
+    display: flex;
+    flex-direction: column;
+}
+.stat-number {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #111827;
+}
+.stat-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+}
+.stat-sublabel {
+    font-size: 0.7rem;
+    color: #9ca3af;
+}
 
-                            {{-- Grid de criterios compacto --}}
-                            <div class="criterios-grid">
-                                @foreach($evento->criteriosEvaluacion as $criterio)
-                                    <div class="criterio-card">
-                                        <div class="criterio-info">
-                                            <p class="criterio-nombre" title="{{ $criterio->nombre }}">{{ $criterio->nombre }}</p>
-                                            @if($criterio->descripcion)
-                                                <p class="criterio-desc" title="{{ $criterio->descripcion }}">{{ $criterio->descripcion }}</p>
-                                            @endif
-                                        </div>
-                                        <span class="criterio-peso">{{ $criterio->ponderacion }}%</span>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @else
-                        <div style="margin-top: 1rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.5); border-radius: 12px; text-align: center;">
-                            <svg class="mx-auto w-12 h-12" style="color: #d1d5db;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
-                            <p style="color: #9ca3af; margin-top: 0.75rem; font-size: 0.875rem;">
-                                No se han definido criterios de evaluación para este evento.
-                            </p>
-                            <a href="{{ route('admin.eventos.edit', $evento) }}" style="display: inline-block; margin-top: 1rem; padding: 0.5rem 1rem; background: linear-gradient(135deg, #2c2c2c, #1a1a1a); color: white; border-radius: 8px; font-size: 0.875rem; font-weight: 500; text-decoration: none;">
-                                + Agregar Criterios
-                            </a>
-                        </div>
-                    @endif
-                </div>
+/* Content Cards */
+.content-card {
+    background: white;
+    border-radius: 16px;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
 
-              
-            </div>
-        </div>
-    </div>
-</div>
-@endsection
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+}
+.card-header i {
+    color: #2563eb;
+    font-size: 1rem;
+}
+.card-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+    flex: 1;
+}
+
+.card-header.dark {
+    background: linear-gradient(135deg, #0f172a, #1e3a5f);
+}
+.card-header.dark h3 {
+    color: white;
+}
+.card-header.dark i {
+    color: #60a5fa;
+}
+
+.count-badge {
+    background: #dbeafe;
+    color: #1e40af;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.count-badge.success {
+    background: #d1fae5;
+    color: #059669;
+}
+.count-badge.warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.published-badge {
+    background: #d1fae5;
+    color: #059669;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.card-body {
+    padding: 1.25rem 1.5rem;
+}
+
+.description-text {
+    color: #4b5563;
+    line-height: 1.7;
+    font-size: 0.95rem;
+}
+
+/* Two Columns */
+.two-columns {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+}
+
+.person-row {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    padding: 0.75rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.2s;
+    margin-bottom: 0.35rem;
+}
+.person-row:hover {
+    background: #f1f5f9;
+}
+
+.person-avatar,
+.team-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #dbeafe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2563eb;
+}
+
+.medal {
+    font-size: 1.75rem;
+}
+
+.person-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.person-name {
+    font-weight: 600;
+    color: #111827;
+    font-size: 0.9rem;
+}
+.person-name.winner {
+    color: #d97706;
+}
+.person-detail {
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+.person-row i.fa-chevron-right {
+    color: #cbd5e1;
+    font-size: 0.75rem;
+}
+
+.empty-list {
+    text-align: center;
+    padding: 2rem;
+    color: #9ca3af;
+}
+.empty-list i {
+    font-size: 2rem;
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+}
+.empty-list p {
+    margin: 0;
+    font-size: 0.875rem;
+}
+
+/* Project Card */
+.project-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 0.75rem 0;
+}
+.project-desc {
+    color: #4b5563;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+.project-objective {
+    background: #f8fafc;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+}
+.project-objective strong {
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+.project-objective p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+}
+
+.project-files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+.file-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.file-btn.bases {
+    background: #fee2e2;
+    color: #dc2626;
+}
+.file-btn.recursos {
+    background: #dbeafe;
+    color: #2563eb;
+}
+.file-btn.external {
+    background: #e0e7ff;
+    color: #4f46e5;
+}
+.file-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Criteria Grid */
+.criteria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+}
+.criteria-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.875rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+.criteria-weight {
+    background: linear-gradient(135deg, #0f172a, #1e40af);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+.criteria-info {
+    display: flex;
+    flex-direction: column;
+}
+.criteria-name {
+    font-weight: 600;
+    color: #111827;
+    font-size: 0.85rem;
+}
+.criteria-desc {
+    font-size: 0.7rem;
+    color: #6b7280;
+}
+
+/* Actions Grid - Colores Negro/Azul */
+.actions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+}
+
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 1.25rem 2.5rem;
+    border-radius: 14px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.action-btn i {
+    font-size: 1.4rem;
+}
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+/* Botones con esquema Negro/Azul */
+.action-btn.primary {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    color: white;
+}
+.action-btn.success {
+    background: linear-gradient(135deg, #059669, #10b981);
+    color: white;
+}
+.action-btn.warning {
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    color: white;
+}
+.action-btn.info {
+    background: linear-gradient(135deg, #0284c7, #0ea5e9);
+    color: white;
+}
+.action-btn.danger {
+    background: linear-gradient(135deg, #b91c1c, #ef4444);
+    color: white;
+}
+.action-btn.secondary {
+    background: linear-gradient(135deg, #334155, #475569);
+    color: white;
+}
+.action-btn.neutral {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+/* Modal */
+.modal-overlay {
+    background: rgba(15, 23, 42, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.modal-container {
+    max-width: 480px;
+    width: 100%;
+    padding: 1rem;
+}
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+.modal-content h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 1.25rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.modal-content h3 i {
+    color: #2563eb;
+}
+
+.modal-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+.option-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.option-card:has(input:checked) {
+    border-color: #2563eb;
+    background: #eff6ff;
+}
+.option-card input {
+    margin-top: 0.25rem;
+}
+.option-content {
+    display: flex;
+    flex-direction: column;
+}
+.option-content i {
+    font-size: 1.25rem;
+    color: #2563eb;
+    margin-bottom: 0.35rem;
+}
+.option-content strong {
+    font-size: 0.95rem;
+    color: #111827;
+}
+.option-content p {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+.modal-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.modal-btn.cancel {
+    background: #e2e8f0;
+    color: #334155;
+}
+.modal-btn.confirm {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .two-columns {
+        grid-template-columns: 1fr;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .dates-showcase {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .date-connector {
+        flex-direction: row;
+    }
+    .connector-line {
+        width: 30px;
+        height: 2px;
+    }
+}
+@media (max-width: 640px) {
+    .hero-main h1 {
+        font-size: 1.5rem;
+    }
+    .date-card {
+        min-width: auto;
+        width: 100%;
+    }
+    .actions-grid {
+        flex-direction: column;
+    }
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

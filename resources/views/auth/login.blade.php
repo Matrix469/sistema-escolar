@@ -295,6 +295,77 @@
             transform: scale(1.1);
         }
 
+        /* CHECKBOX RECORDAR CONTRASEÑA */
+        .remember-me {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 15px;
+            margin-left: 5px;
+            animation: rememberSlideIn 0.8s ease-out 0.9s backwards;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            margin-bottom: 0;
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.7);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            appearance: none;
+            position: relative;
+        }
+
+        .remember-me input[type="checkbox"]:checked {
+            background-color: #e67e22;
+            border-color: #e67e22;
+            box-shadow: 0 0 10px rgba(230, 126, 34, 0.3);
+        }
+
+        .remember-me input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .remember-me input[type="checkbox"]:hover {
+            border-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .remember-me label {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .remember-me label:hover {
+            color: white;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes rememberSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         /* MENSAJES DE ERROR */
         .error-message {
             color: #ffcccb;
@@ -376,17 +447,35 @@
             <!-- Password -->
             <div class="input-group">
                 <label for="password">Contraseña</label>
-                <input 
-                    id="password" 
-                    type="password" 
-                    name="password" 
-                    placeholder="Ingresa tu contraseña" 
-                    required 
-                    autocomplete="current-password"
-                >
+                <div style="position: relative; width: 90%;">
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        placeholder="Ingresa tu contraseña"
+                        required
+                        autocomplete="current-password"
+                        style="width: 100%; padding-right: 45px;"
+                    >
+                    <button type="button" id="togglePassword" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: rgba(255, 255, 255, 0.7); cursor: pointer; padding: 5px;">
+                        <i class="fas fa-eye" id="eyeIcon"></i>
+                    </button>
+                </div>
                 @error('password')
                     <div class="input-error">{{ $message }}</div>
                 @enderror
+            </div>
+
+            <!-- Remember Me -->
+            <div class="remember-me">
+                <input
+                    id="remember"
+                    type="checkbox"
+                    name="remember"
+                >
+                <label for="remember">
+                    Recordar contraseña
+                </label>
             </div>
 
             <!-- Mostrar errores generales -->
@@ -416,5 +505,25 @@
         </div>
     </div>
 
+    <script>
+        // Toggle password visibility
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Change icon
+            if (type === 'password') {
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            } else {
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            }
+        });
+    </script>
 </body>
 </html>

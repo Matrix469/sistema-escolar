@@ -1,464 +1,349 @@
-@extends('jurado.layouts.app')
+@extends('layouts.app')
+
 @section('content')
 
-<div class="evento-detail-page">
-    <div class="evento-detail-container">
-        
-        <!-- Botón volver a eventos -->
-        <a href="{{ route('jurado.eventos.index') }}" class="back-btn">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                <path d="M15 6L9 12L15 18" stroke="#e89a3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<div class="evento-detail-page py-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <a href="{{ route('estudiante.eventos.index') }}" class="back-link">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
             </svg>
-            Volver a Eventos
+            Volver Eventos
         </a>
-
-        <!-- Header con imagen y descripción -->
-        <div class="evento-header">
-            <!-- Imagen del evento -->
-            <div class="evento-imagen">
-                @if($evento->ruta_imagen)
-                    <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="{{ $evento->nombre }}">
-                @else
-                    <div style="height: 220px; background: linear-gradient(135deg, #2c2c2c, #1a1a1a); display: flex; align-items: center; justify-content: center;">
-                        <svg style="width: 4rem; height: 4rem; color: rgba(232, 154, 60, 0.3);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                        </svg>
+        <div class="flex items-center mb-6">
+            <h2 class="font-semibold text-xl ml-2">
+                Detalle del Evento
+            </h2>
+        </div>
+        
+        <div class="neuro-card-main">
+            @if ($evento->ruta_imagen)
+                <img class="h-64 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento: {{ $evento->nombre }}">
+            @endif
+            
+            <div class="p-6 sm:p-8">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h1 class="font-bold text-3xl">{{ $evento->nombre }}</h1>
+                        <p class="text-sm mt-1">
+                            Del {{ $evento->fecha_inicio->format('d/m/Y') }} al {{ $evento->fecha_fin->format('d/m/Y') }}
+                        </p>
                     </div>
-                @endif
-                @if($eventoActivo)
-                    <div class="status-badge-large">Ya esta aqui!</div>
-                @else
-                    <div class="status-badge-large proximo">Proximamente</div>
-                @endif
-            </div>
-
-            <!-- Descripción -->
-            <div class="descripcion-section">
-                <h3 class="descripcion-title">Descripción</h3>
-                <div class="descripcion-card">
-                    <div class="descripcion-header">
-                        {{ $evento->nombre }} - {{ date('Y') }}
-                    </div>
-                    <div class="descripcion-body">
-                        {{ $evento->descripcion ?? 'Aquí debe de existir una descripción del evento' }}
+                    <div class="flex items-center gap-3">
+                        @if($evento->estado == 'Finalizado' && $evento->inscripciones()->whereNotNull('puesto_ganador')->exists())
+                            <a href="{{ route('estudiante.eventos.posiciones', $evento) }}" class="btn-positions">
+                                <i class="fas fa-trophy"></i>
+                                Ver Posiciones
+                            </a>
+                        @endif
+                        <span class="status-badge
+                            @if ($evento->estado == 'Activo') status-activo
+                            @elseif ($evento->estado == 'En Progreso') status-en-progreso
+                            @elseif ($evento->estado == 'Próximo') status-proximo
+                            @else status-finalizado @endif" >
+                            {{ $evento->estado }}
+                        </span>
                     </div>
                 </div>
-                
-                {{-- Estado del jurado --}}
-                @if($esJuradoDelEvento)
-                    <div class="jurado-status asignado">
-                        ✓ Estás asignado como jurado en este evento
-                    </div>
-                @else
-                    <div class="jurado-status no-asignado">
-                        ⚠ No estás asignado como jurado en este evento
+
+                <div class="section-divider">
+                    <h3 class="text-lg font-medium">Descripción del Evento</h3>
+                    <p class="mt-2">
+                        {{ $evento->descripcion ?: 'No hay descripción disponible.' }}
+                    </p>
+                </div>
+
+                {{-- Sección de Jurados --}}
+                @if($evento->jurados->isNotEmpty())
+                    <div class="section-divider">
+                        <h3 class="text-lg font-medium">
+                            <i class="fas fa-gavel" style="color: #e89a3c; margin-right: 0.5rem;"></i>
+                            Jurados del Evento ({{ $evento->jurados->count() }})
+                        </h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+                            @foreach($evento->jurados as $jurado)
+                                <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; background: rgba(255, 255, 255, 0.7); border-radius: 12px; box-shadow: 2px 2px 6px rgba(0,0,0,0.05);">
+                                    <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(135deg, #e89a3c, #f5b76c); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1rem; box-shadow: 0 2px 8px rgba(232, 154, 60, 0.3);">
+                                        {{ strtoupper(substr($jurado->user->nombre ?? 'J', 0, 1)) }}{{ strtoupper(substr($jurado->user->app_paterno ?? '', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <p style="font-weight: 600; color: #2c2c2c; margin: 0; font-size: 0.9rem;">
+                                            {{ $jurado->user->nombre ?? 'Jurado' }} {{ $jurado->user->app_paterno ?? '' }}
+                                        </p>
+                                        @if($jurado->especialidad)
+                                            <p style="font-size: 0.75rem; color: #9ca3af; margin: 0;">
+                                                {{ $jurado->especialidad }}
+                                            </p>
+                                        @endif
+                                        @if($jurado->empresa_institucion)
+                                            <p style="font-size: 0.7rem; color: #6b6b6b; margin: 0;">
+                                                <i class="fas fa-building" style="margin-right: 0.25rem;"></i>{{ $jurado->empresa_institucion }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 @endif
-            </div>
-        </div>
 
-        <!-- Sección de Equipos -->
-        <div class="equipos-section">
-            <div class="section-header">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                </svg>
-                <h2>Equipos Inscritos</h2>
-                <span class="section-badge">
-                    {{ $evento->inscripciones->count() }} equipo(s)
-                </span>
-            </div>
-            
-            <div class="equipos-grid">
-                @if($evento->inscripciones->isNotEmpty())
-                    @foreach($evento->inscripciones as $inscripcion)
-                        @if($inscripcion->equipo)
-                            <div class="equipo-item">
-                                <div class="equipo-field">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                    </svg>
-                                    <span class="equipo-nombre">{{ $inscripcion->equipo->nombre ?? 'Nombre del equipo' }}</span>
+                {{-- Criterios de Evaluación --}}
+                @if($evento->criteriosEvaluacion->isNotEmpty())
+                    <div class="section-divider">
+                        <h3 class="text-lg font-medium" style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-clipboard-check" style="color: #e89a3c;"></i>
+                            Criterios de Evaluación ({{ $evento->criteriosEvaluacion->count() }})
+                        </h3>
+                        
+                        <div class="mt-3">
+                            {{-- Barra de progreso compacta --}}
+                            @php $totalPonderacion = $evento->criteriosEvaluacion->sum('ponderacion'); @endphp
+                            <div class="ponderacion-bar">
+                                <span class="ponderacion-label">Ponderación Total:</span>
+                                <div class="ponderacion-track">
+                                    <div class="ponderacion-fill {{ $totalPonderacion == 100 ? 'complete' : 'incomplete' }}" style="width: {{ min($totalPonderacion, 100) }}%;"></div>
                                 </div>
-                                
-                                <div class="equipo-field">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                                    </svg>
-                                    <span>Líder: {{ $inscripcion->equipo->lider_nombre }}</span>
-                                </div>
-
-                                <div class="equipo-field">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                    </svg>
-                                    <span>{{ $inscripcion->equipo->nombre_proyecto }}</span>
-                                </div>
-
-                                <a href="{{ route('jurado.eventos.equipo_evento', ['evento' => $evento->id_evento, 'equipo' => $inscripcion->equipo->id_equipo]) }}" class="btn-explorar">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                    Explorar
-                                </a>
+                                <span class="ponderacion-value {{ $totalPonderacion == 100 ? 'complete' : 'incomplete' }}">
+                                    {{ $totalPonderacion }}% @if($totalPonderacion == 100)✓@endif
+                                </span>
                             </div>
-                        @endif
-                    @endforeach
+
+                            {{-- Grid de criterios compacto --}}
+                            <div class="criterios-grid">
+                                @foreach($evento->criteriosEvaluacion as $criterio)
+                                    <div class="criterio-card">
+                                        <div class="criterio-info">
+                                            <p class="criterio-nombre" title="{{ $criterio->nombre }}">{{ $criterio->nombre }}</p>
+                                            @if($criterio->descripcion)
+                                                <p class="criterio-desc" title="{{ $criterio->descripcion }}">{{ $criterio->descripcion }}</p>
+                                            @endif
+                                        </div>
+                                        <span class="criterio-peso">{{ $criterio->ponderacion }}%</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Proyecto del Evento (si está publicado y es general) --}}
+                @if($evento->tipo_proyecto === 'general' && $evento->proyectoGeneral && $evento->proyectoGeneral->publicado)
+                    <div class="section-divider">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-lg font-medium">📋 Proyecto del Evento</h3>
+                            <span class="publicado-badge">
+                                ✓ Publicado
+                            </span>
+                        </div>
+                        <div class="proyecto-box">
+                            <h4 class="mb-3">{{ $evento->proyectoGeneral->titulo }}</h4>
+                            
+                            @if($evento->proyectoGeneral->descripcion_completa)
+                                <div class="mb-4">
+                                    <h5 class="mb-2">Descripción:</h5>
+                                    <div class="whitespace-pre-line" style="color: #6b6b6b;">{{ $evento->proyectoGeneral->descripcion_completa }}</div>
+                                </div>
+                            @endif
+
+                            @if($evento->proyectoGeneral->objetivo)
+                                <div class="mb-4">
+                                    <h5 class="mb-2">🎯 Objetivo:</h5>
+                                    <p>{{ $evento->proyectoGeneral->objetivo }}</p>
+                                </div>
+                            @endif
+
+                            @if($evento->proyectoGeneral->requisitos)
+                                <div class="mb-4">
+                                    <h5 class="mb-2">📝 Requisitos Técnicos:</h5>
+                                    <div class="whitespace-pre-line" style="color: #6b6b6b;">{{ $evento->proyectoGeneral->requisitos }}</div>
+                                </div>
+                            @endif
+
+                            @if($evento->proyectoGeneral->premios)
+                                <div class="mb-4">
+                                    <h5 class="mb-2">🏆 Premios:</h5>
+                                    <p>{{ $evento->proyectoGeneral->premios }}</p>
+                                </div>
+                            @endif
+
+                            <div class="mt-6 flex flex-wrap gap-3">
+                                @if($evento->proyectoGeneral->archivo_bases)
+                                    <a href="{{ Storage::url($evento->proyectoGeneral->archivo_bases) }}" 
+                                       target="_blank" download
+                                       class="download-button btn-indigo">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        Descargar Bases
+                                    </a>
+                                @endif
+                                @if($evento->proyectoGeneral->archivo_recursos)
+                                    <a href="{{ Storage::url($evento->proyectoGeneral->archivo_recursos) }}" 
+                                       target="_blank" download
+                                       class="download-button btn-purple">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"/>
+                                        </svg>
+                                        Descargar Recursos
+                                    </a>
+                                @endif
+                                @if($evento->proyectoGeneral->url_externa)
+                                    <a href="{{ $evento->proyectoGeneral->url_externa }}" 
+                                       target="_blank"
+                                       class="download-button btn-blue">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                        </svg>
+                                        Ver Recursos Externos
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
+                <div class="section-divider">
+                    <h3 class="text-lg font-medium">
+                        Equipos Inscritos ({{ $evento->inscripciones->count() }} / {{ $evento->cupo_max_equipos }})
+                    </h3>
+                    <div class="equipos-list mt-4">
+                        <ul class="space-y-3">
+                            @forelse($evento->inscripciones as $inscripcion)
+                                <li class="equipo-item flex items-center justify-between p-2">
+                                    <div class="flex items-center space-x-3">
+                                        <svg class="w-6 h-6" style="color: #6b6b6b;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                        <span>{{ $inscripcion->equipo->nombre }}</span>
+                                    </div>
+                                </li>
+                            @empty
+                                <li style="color: #6b6b6b; font-size: 0.875rem;">Aún no hay equipos inscritos.</li>
+                            @endforelse
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Acciones de Estudiante -->
+                <div class="section-divider">
+                    <h3 class="text-lg font-medium">Actividades</h3>
+                    <div class="mt-4 flex flex-wrap items-center gap-4">
+
+        @if ($yaTieneEquipo)
+            {{-- USUARIO YA INSCRITO --}}
+            <div class="flex flex-wrap items-center gap-4">
+                
+                @if($evento->estado === 'En Progreso')
+                    {{-- Evento en progreso: puede ver proyecto --}}
+                    <a href="{{ route('estudiante.proyecto-evento.especifico', $evento->id_evento) }}"
+                       class="action-button-primary inline-flex items-center justify-center px-6 py-3 rounded-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Ver Mi Proyecto
+                    </a>
+                    <div class="inscrito-badge inline-flex items-center px-6 py-3 rounded-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ✓ Inscrito - Evento en progreso
+                    </div>
+                
+                @elseif($evento->estado === 'Activo')
+                    {{-- Evento activo pero inscrito: esperando a que se llene --}}
+                    <div class="info-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; border: 2px solid #3b82f6;">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ✓ Inscrito - Esperando a que se llene el evento ({{ $equiposFaltantes }} {{ $equiposFaltantes == 1 ? 'equipo faltante' : 'equipos faltantes' }})
+                    </div>
+                
+                @elseif($evento->estado === 'Cerrado')
+                    {{-- Evento cerrado: esperando asignación de proyectos --}}
+                    <div class="info-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; border: 2px solid #f59e0b;">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ✓ Inscrito - Esperando asignación de proyectos
+                    </div>
+                
+                @elseif($evento->estado === 'Finalizado')
+                    {{-- Evento finalizado --}}
+                    <div class="inscrito-badge inline-flex items-center px-6 py-3 rounded-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ✓ Participaste en este evento
+                    </div>
+                
                 @else
-                    <div class="empty-state">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        <h3>Sin equipos inscritos</h3>
-                        <p>Aún no hay equipos registrados en este evento.</p>
+                    {{-- Otro estado (Próximo inscrito?) --}}
+                    <div class="inscrito-badge inline-flex items-center px-6 py-3 rounded-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Ya estás inscrito en este evento
                     </div>
                 @endif
             </div>
-        </div>
 
+        @elseif ($hayConflictoFechas)
+            {{-- CONFLICTO DE FECHAS: NO PUEDE INSCRIBIRSE --}}
+            <div class="conflict-alert" style="background: linear-gradient(135deg, #fee2e2, #fecaca); border: 2px solid #ef4444; border-radius: 12px; padding: 1rem 1.5rem; width: 100%;">
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                    <div style="background: #dc2626; border-radius: 50%; padding: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                        <svg style="width: 24px; height: 24px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p style="font-weight: 700; color: #991b1b; margin: 0 0 0.5rem 0; font-size: 1rem;">
+                            ⚠️ No puedes inscribirte a este evento
+                        </p>
+                        <p style="color: #b91c1c; margin: 0; font-size: 0.9rem;">
+                            Las fechas de este evento ({{ $evento->fecha_inicio->format('d/m/Y') }} - {{ $evento->fecha_fin->format('d/m/Y') }}) 
+                            se cruzan con el evento <strong>"{{ $eventoConflicto->nombre }}"</strong> 
+                            ({{ $eventoConflicto->fecha_inicio->format('d/m/Y') }} - {{ $eventoConflicto->fecha_fin->format('d/m/Y') }}) 
+                            donde ya estás inscrito.
+                        </p>
+                        <p style="color: #7f1d1d; margin: 0.5rem 0 0 0; font-size: 0.8rem; font-style: italic;">
+                            Un estudiante no puede participar en dos eventos con fechas superpuestas.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        @elseif ($evento->estado === 'Activo')
+            {{-- USUARIO NO INSCRITO + EVENTO ACTIVO --}}
+            @if($eventoLleno)
+                <div class="info-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; border: 2px solid #f59e0b;">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    El evento está lleno - No hay cupos disponibles
+                </div>
+            @else
+                <a href="{{ route('estudiante.eventos.equipos.index', $evento) }}"
+                   class="action-button-primary inline-flex items-center justify-center px-6 py-3 rounded-md">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Ver Equipos / Crear Equipo
+                </a>
+                <a href="{{ route('estudiante.eventos.select-equipo-existente', $evento) }}"
+                   class="action-button-secondary inline-flex items-center justify-center px-6 py-3 rounded-md">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Registrar Equipo Existente
+                </a>
+            @endif
+
+        @elseif ($evento->estado === 'Cerrado')
+            {{-- EVENTO CERRADO + NO INSCRITO --}}
+            <div class="closed-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #e5e7eb, #d1d5db); color: #374151; border: 2px solid #9ca3af;">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                Inscripciones cerradas para este evento
+            </div>
+
+        @elseif ($evento->estado === 'Próximo')
+            {{-- EVENTO PRÓXIMO + NO INSCRITO --}}
+            <div class="info-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; border: 2px solid #3b82f6;">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Las inscripciones aún no están abiertas. Inician el {{ $evento->fecha_inicio->format('d/m/Y') }}
+            </div>
+
+        @else
+            {{-- CUALQUIER OTRO CASO --}}
+            <p style="color: #6b7280;">Las inscripciones no están disponibles para este evento.</p>
+        @endif
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
-
-    .evento-detail-page {
-        min-height: 100vh;
-        background: linear-gradient(to bottom, #FFFDF4, #FFEEE2);
-        padding: 2rem;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .evento-detail-container {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-
-    /* Botón volver neuromórfico */
-    .back-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(255, 253, 244, 0.9);
-        color: #e89a3c;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        font-size: 0.9rem;
-        padding: 0.75rem 1.25rem;
-        border-radius: 10px;
-        text-decoration: none;
-        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
-        transition: all 0.3s ease;
-        margin-bottom: 1.5rem;
-    }
-
-    .back-btn:hover {
-        color: #d98a2c;
-        transform: translateY(-2px);
-        box-shadow: 6px 6px 12px #e6d5c9, -6px -6px 12px #ffffff;
-    }
-
-    .back-btn svg path {
-        stroke: #e89a3c;
-        transition: all 0.3s ease;
-    }
-
-    .back-btn:hover svg path {
-        stroke: #d98a2c;
-    }
-
-    /* Header con imagen del evento */
-    .evento-header {
-        display: flex;
-        gap: 2rem;
-        margin-bottom: 2rem;
-        align-items: stretch;
-    }
-
-    .evento-imagen {
-        position: relative;
-        border-radius: 20px;
-        overflow: hidden;
-        flex-shrink: 0;
-        width: 380px;
-        background: #FFEEE2;
-        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
-    }
-
-    .evento-imagen img {
-        width: 100%;
-        height: 220px;
-        object-fit: cover;
-        display: block;
-    }
-
-    .status-badge-large {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: linear-gradient(135deg, #e89a3c, #f5a847);
-        color: white;
-        padding: 12px 20px;
-        text-align: center;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        font-size: 0.95rem;
-        box-shadow: 0 -4px 8px rgba(232, 154, 60, 0.2);
-    }
-
-    .status-badge-large.proximo {
-        background: linear-gradient(135deg, #6366f1, #818cf8);
-    }
-
-    /* Descripción del evento */
-    .descripcion-section {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .descripcion-title {
-        font-family: 'Poppins', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: #2c2c2c;
-        margin-bottom: 1rem;
-    }
-
-    .descripcion-card {
-        background: #FFEEE2;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
-        flex: 1;
-    }
-
-    .descripcion-header {
-        background: linear-gradient(135deg, #e89a3c, #f5a847);
-        color: white;
-        padding: 1rem 1.5rem;
-        text-align: center;
-        font-family: 'Poppins', sans-serif;
-        font-weight: 600;
-        font-size: 1.1rem;
-    }
-
-    .descripcion-body {
-        padding: 1.5rem;
-        color: #6b6b6b;
-        line-height: 1.7;
-        font-family: 'Poppins', sans-serif;
-        font-size: 0.95rem;
-    }
-
-    /* Estado del jurado */
-    .jurado-status {
-        margin-top: 1rem;
-        padding: 0.75rem 1rem;
-        border-radius: 12px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        box-shadow: 4px 4px 8px #e6d5c9, -4px -4px 8px #ffffff;
-    }
-
-    .jurado-status.no-asignado {
-        background: linear-gradient(135deg, rgba(254, 240, 138, 0.8), rgba(252, 211, 77, 0.8));
-        color: #92400e;
-    }
-
-    .jurado-status.asignado {
-        background: linear-gradient(135deg, rgba(209, 250, 229, 0.8), rgba(167, 243, 208, 0.8));
-        color: #065f46;
-    }
-
-    /* Sección de equipos */
-    .equipos-section {
-        margin-top: 1.5rem;
-    }
-
-    .section-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-        padding: 1rem 1.5rem;
-        background: linear-gradient(135deg, #e89a3c, #f5a847);
-        border-radius: 15px;
-        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
-    }
-
-    .section-header svg {
-        width: 2rem;
-        height: 2rem;
-        color: white;
-    }
-
-    .section-header h2 {
-        font-family: 'Poppins', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: white;
-        margin: 0;
-    }
-
-    .section-badge {
-        margin-left: auto;
-        padding: 0.35rem 0.85rem;
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #e89a3c;
-        box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .equipos-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    /* Lista de equipos neuromórfica */
-    .equipo-item {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr auto;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem 1.5rem;
-        background: #FFEEE2;
-        border-radius: 20px;
-        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
-        transition: all 0.3s ease;
-    }
-
-    .equipo-item:hover {
-        transform: translateY(-3px);
-        box-shadow: 12px 12px 24px #e6d5c9, -12px -12px 24px #ffffff;
-    }
-
-    .equipo-field {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        padding: 0.75rem 1rem;
-        background: rgba(255, 255, 255, 0.4);
-        border-radius: 10px;
-        box-shadow: inset 2px 2px 4px #e6d5c9, inset -2px -2px 4px #ffffff;
-    }
-
-    .equipo-field svg {
-        width: 1.25rem;
-        height: 1.25rem;
-        color: #e89a3c;
-        flex-shrink: 0;
-    }
-
-    .equipo-field span {
-        font-family: 'Poppins', sans-serif;
-        font-size: 0.9rem;
-        color: #6b6b6b;
-        font-weight: 500;
-    }
-
-    .equipo-nombre {
-        font-weight: 600;
-        color: #2c2c2c;
-    }
-
-    .btn-explorar {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.25rem;
-        background: linear-gradient(135deg, #e89a3c, #f5a847);
-        color: white;
-        border-radius: 10px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 600;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3);
-        white-space: nowrap;
-    }
-
-    .btn-explorar:hover {
-        transform: translateY(-2px);
-        box-shadow: 6px 6px 12px rgba(232, 154, 60, 0.4);
-        color: white;
-    }
-
-    .btn-explorar svg {
-        width: 1rem;
-        height: 1rem;
-    }
-
-    /* Empty state neuromórfico */
-    .empty-state {
-        text-align: center;
-        padding: 3rem 2rem;
-        background: #FFEEE2;
-        border-radius: 20px;
-        margin-top: 1rem;
-        box-shadow: 8px 8px 16px #e6d5c9, -8px -8px 16px #ffffff;
-    }
-
-    .empty-state svg {
-        width: 4rem;
-        height: 4rem;
-        color: #e89a3c;
-        margin-bottom: 1rem;
-        opacity: 0.4;
-    }
-
-    .empty-state h3 {
-        font-family: 'Poppins', sans-serif;
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #2c2c2c;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state p {
-        color: #9ca3af;
-        font-size: 0.9rem;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    /* Responsive */
-    @media (max-width: 900px) {
-        .evento-header {
-            flex-direction: column;
-        }
-        
-        .evento-imagen {
-            width: 100%;
-            max-width: 400px;
-        }
-        
-        .equipo-item {
-            grid-template-columns: 1fr;
-            text-align: center;
-        }
-
-        .equipo-field {
-            justify-content: center;
-        }
-        
-        .btn-explorar {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .evento-detail-page {
-            padding: 1rem;
-        }
-    }
-</style>
 @endsection

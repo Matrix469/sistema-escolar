@@ -297,14 +297,14 @@
                                 </div>
                             </div>
                             <div class="progress-circle">
-                                <svg width="100" height="100" viewBox="0 0 100 100">
+                                <svg width="120" height="120" viewBox="0 0 100 100">
                                     <defs>
                                         <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                                            <stop offset="0%" style="stop-color:#e89a3c"/>
-                                            <stop offset="100%" style="stop-color:#f5b76c"/>
+                                            <stop offset="0%" style="stop-color:#6366f1"/>
+                                            <stop offset="100%" style="stop-color:#8b5cf6"/>
                                         </linearGradient>
                                     </defs>
-                                    <circle class="progress-circle-bg" cx="50" cy="50" r="40"/>
+                                    <circle class="progress-circle-bg" cx="50" cy="50" r="40" stroke="#e5e7eb" fill="none"/>
                                     <circle class="progress-circle-fill" cx="50" cy="50" r="40" style="stroke-dashoffset: {{ 251.2 - (251.2 * $progreso / 100) }}"/>
                                 </svg>
                                 <div class="progress-circle-text">

@@ -224,43 +224,119 @@
 
                 <!-- Acciones de Estudiante -->
                 <div class="section-divider">
-                    <h3 class="text-lg font-medium">Acciones</h3>
+                    <h3 class="text-lg font-medium">Actividades</h3>
                     <div class="mt-4 flex flex-wrap items-center gap-4">
 
         @if ($yaTieneEquipo)
+            {{-- USUARIO YA INSCRITO --}}
             <div class="flex flex-wrap items-center gap-4">
-                {{-- If student is in a team, show the "Ver Mi Proyecto" button only if the event is "En Progreso" --}}
+                
                 @if($evento->estado === 'En Progreso')
+                    {{-- Evento en progreso: puede ver proyecto --}}
                     <a href="{{ route('estudiante.proyecto-evento.especifico', $evento->id_evento) }}"
                        class="action-button-primary inline-flex items-center justify-center px-6 py-3 rounded-md">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Ver Mi Proyecto
                     </a>
+                    <div class="inscrito-badge inline-flex items-center px-6 py-3 rounded-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ✓ Inscrito - Evento en progreso
+                    </div>
+                
+                @elseif($evento->estado === 'Activo')
+                    {{-- Evento activo pero inscrito: esperando a que se llene --}}
+                    <div class="info-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; border: 2px solid #3b82f6;">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ✓ Inscrito - Esperando a que se llene el evento ({{ $equiposFaltantes }} {{ $equiposFaltantes == 1 ? 'equipo faltante' : 'equipos faltantes' }})
+                    </div>
+                
+                @elseif($evento->estado === 'Cerrado')
+                    {{-- Evento cerrado: esperando asignación de proyectos --}}
+                    <div class="info-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; border: 2px solid #f59e0b;">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ✓ Inscrito - Esperando asignación de proyectos
+                    </div>
+                
+                @elseif($evento->estado === 'Finalizado')
+                    {{-- Evento finalizado --}}
+                    <div class="inscrito-badge inline-flex items-center px-6 py-3 rounded-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        ✓ Participaste en este evento
+                    </div>
+                
+                @else
+                    {{-- Otro estado (Próximo inscrito?) --}}
+                    <div class="inscrito-badge inline-flex items-center px-6 py-3 rounded-md">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        Ya estás inscrito en este evento
+                    </div>
                 @endif
+            </div>
 
-                {{-- Also show a badge confirming their enrollment --}}
-                <div class="inscrito-badge inline-flex items-center px-6 py-3 rounded-md">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    Ya estás inscrito en este evento
+        @elseif ($hayConflictoFechas)
+            {{-- CONFLICTO DE FECHAS: NO PUEDE INSCRIBIRSE --}}
+            <div class="conflict-alert" style="background: linear-gradient(135deg, #fee2e2, #fecaca); border: 2px solid #ef4444; border-radius: 12px; padding: 1rem 1.5rem; width: 100%;">
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                    <div style="background: #dc2626; border-radius: 50%; padding: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                        <svg style="width: 24px; height: 24px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p style="font-weight: 700; color: #991b1b; margin: 0 0 0.5rem 0; font-size: 1rem;">
+                            ⚠️ No puedes inscribirte a este evento
+                        </p>
+                        <p style="color: #b91c1c; margin: 0; font-size: 0.9rem;">
+                            Las fechas de este evento ({{ $evento->fecha_inicio->format('d/m/Y') }} - {{ $evento->fecha_fin->format('d/m/Y') }}) 
+                            se cruzan con el evento <strong>"{{ $eventoConflicto->nombre }}"</strong> 
+                            ({{ $eventoConflicto->fecha_inicio->format('d/m/Y') }} - {{ $eventoConflicto->fecha_fin->format('d/m/Y') }}) 
+                            donde ya estás inscrito.
+                        </p>
+                        <p style="color: #7f1d1d; margin: 0.5rem 0 0 0; font-size: 0.8rem; font-style: italic;">
+                            Un estudiante no puede participar en dos eventos con fechas superpuestas.
+                        </p>
+                    </div>
                 </div>
             </div>
 
-                        @elseif ($evento->estado === 'Activo')
-                            {{-- If student is NOT in a team AND event is active, show inscription buttons --}}
-                            <a href="{{ route('estudiante.eventos.equipos.index', $evento) }}"
-                               class="action-button-primary inline-flex items-center justify-center px-6 py-3 rounded-md">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                                Ver Equipos / Crear Equipo
-                            </a>
-                            <a href="{{ route('estudiante.eventos.select-equipo-existente', $evento) }}"
-                               class="action-button-secondary inline-flex items-center justify-center px-6 py-3 rounded-md">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                Registrar Equipo Existente
-                            </a>
-                        @else
-                            {{-- For all other cases (not in team, event not active), show a message --}}
-                            <p>Las inscripciones no están abiertas para este evento.</p>
-                        @endif
+        @elseif ($evento->estado === 'Activo')
+            {{-- USUARIO NO INSCRITO + EVENTO ACTIVO --}}
+            @if($eventoLleno)
+                <div class="info-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; border: 2px solid #f59e0b;">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    El evento está lleno - No hay cupos disponibles
+                </div>
+            @else
+                <a href="{{ route('estudiante.eventos.equipos.index', $evento) }}"
+                   class="action-button-primary inline-flex items-center justify-center px-6 py-3 rounded-md">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    Ver Equipos / Crear Equipo
+                </a>
+                <a href="{{ route('estudiante.eventos.select-equipo-existente', $evento) }}"
+                   class="action-button-secondary inline-flex items-center justify-center px-6 py-3 rounded-md">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    Registrar Equipo Existente
+                </a>
+            @endif
+
+        @elseif ($evento->estado === 'Cerrado')
+            {{-- EVENTO CERRADO + NO INSCRITO --}}
+            <div class="closed-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #e5e7eb, #d1d5db); color: #374151; border: 2px solid #9ca3af;">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                Inscripciones cerradas para este evento
+            </div>
+
+        @elseif ($evento->estado === 'Próximo')
+            {{-- EVENTO PRÓXIMO + NO INSCRITO --}}
+            <div class="info-badge inline-flex items-center px-6 py-3 rounded-md" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; border: 2px solid #3b82f6;">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                Las inscripciones aún no están abiertas. Inician el {{ $evento->fecha_inicio->format('d/m/Y') }}
+            </div>
+
+        @else
+            {{-- CUALQUIER OTRO CASO --}}
+            <p style="color: #6b7280;">Las inscripciones no están disponibles para este evento.</p>
+        @endif
 
                     </div>
                 </div>

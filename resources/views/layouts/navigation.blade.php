@@ -24,7 +24,7 @@
                         MI PROGRESO
                     @elseif(request()->routeIs('estudiante.habilidades.*'))
                         MIS HABILIDADES
-                    @elseif(request()->routeIs('estudiante.eventos.*')||request()->routeIs('jurado.eventos.*'))
+                    @elseif(request()->routeIs('estudiante.eventos.*')||request()->routeIs('jurado.eventos.*')||request()->routeIs('admin.eventos.*'))
                         EVENTOS
                     @elseif(request()->routeIs('estudiante.equipo.*'))
                         MI EQUIPO
@@ -52,13 +52,13 @@
                         ACTIVIDADES
                     @elseif(request()->routeIs('estudiante.avances.*'))
                         AVANCES
-                    @elseif(request()->routeIs('estudiante.proyecto-evento.*')||request()->routeIs('jurado.proyectos.*')||(request()->routeIs('estudiante.proyectos.*')))
+                    @elseif(request()->routeIs('estudiante.proyecto-evento.*')||request()->routeIs('jurado.proyectos.*'))
                         PROYECTOS
                     @elseif(request()->routeIs('estudiante.proyecto.avances.*'))
                         AVANCES DE PROYECTO
                     @elseif(request()->routeIs('estudiante.recursos.*'))
                         RECURSOS
-                    @elseif(request()->routeIs('estudiante.tareas.*'))
+                    @elseif(request()->routeIs('estudiante.tarea.*'))
                         TAREAS
                     @else
                         @yield('page-title', 'INICIO')
@@ -219,6 +219,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
                     Mis Proyectos
+                </a>
+
+                <a href="{{ route('estudiante.constancias.index') }}" class="menu-item-nav {{ request()->routeIs('estudiante.constancias.*') ? 'active' : '' }}">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                    </svg>
+                    Constancias
                 </a>
             @endif
         </div>

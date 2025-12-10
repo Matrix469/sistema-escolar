@@ -845,7 +845,7 @@
         <div class="social-btn go"><i class="fab fa-google"></i></div>
     </div>
 
-    <div class="register-card" x-data="{ role: 'estudiante' }">
+    <div class="register-card" x-data="{ role: '{{ request('tipo', 'estudiante') }}' }">
         <div class="logo">
             <img src="{{ asset('images/logito.png') }}" alt="Logo ITO">
         </div>
@@ -875,7 +875,7 @@
                     id="nombre"
                     type="text"
                     name="nombre"
-                    value="{{ old('nombre') }}"
+                    value="{{ old('nombre', request('nombre', '')) }}"
                     placeholder="Ej: Juan Carlos"
                     required
                     autofocus
@@ -896,7 +896,7 @@
                         id="app_paterno"
                         type="text"
                         name="app_paterno"
-                        value="{{ old('app_paterno') }}"
+                        value="{{ old('app_paterno', request('app_paterno', '')) }}"
                         placeholder="Ej: Pérez"
                         required
                         pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+"
@@ -913,7 +913,7 @@
                         id="app_materno"
                         type="text"
                         name="app_materno"
-                        value="{{ old('app_materno') }}"
+                        value="{{ old('app_materno', request('app_materno', '')) }}"
                         placeholder="Ej: López (opcional)"
                         pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]*"
                         title="Solo se permiten letras y espacios"
@@ -932,10 +932,14 @@
                     id="email" 
                     type="email" 
                     name="email" 
-                    value="{{ old('email') }}" 
+                    value="{{ old('email', request('email', '')) }}" 
                     placeholder="correo@ejemplo.com" 
                     required
+                    {{ request('email') && request('tipo') === 'jurado' ? 'readonly style=background:rgba(255,255,255,0.1);cursor:not-allowed;' : '' }}
                 >
+                @if(request('email') && request('tipo') === 'jurado')
+                    <small class="input-help" style="color: #ffc107;"><i class="fas fa-lock"></i> Email vinculado a la invitación</small>
+                @endif
                 @error('email')
                     <div class="input-error">{{ $message }}</div>
                 @enderror
@@ -1005,10 +1009,14 @@
                         id="token_acceso" 
                         type="text" 
                         name="token_acceso" 
-                        value="{{ old('token_acceso') }}" 
-                        placeholder="XXXX-XXXX"
+                        value="{{ old('token_acceso', request('token', '')) }}" 
+                        placeholder="JUR-XXXXXXXXXXXX"
                         style="font-family: monospace; letter-spacing: 2px; text-transform: uppercase;"
+                        {{ request('token') ? 'readonly' : '' }}
                     >
+                    @if(request('token'))
+                        <small class="input-help" style="color: #28a745;"><i class="fas fa-check-circle"></i> Token prellenado desde invitación</small>
+                    @endif
                     @error('token_acceso')
                         <div class="input-error">{{ $message }}</div>
                     @enderror
