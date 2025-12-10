@@ -5,10 +5,9 @@
    Diseño Premium con colores cálidos
    ======================================== */
 
-.hidden {
+.evento-detail-page .hidden {
     display: none !important;
 }
-
 /* Page Background - Cálido */
 .evento-detail-page {
     background: linear-gradient(
