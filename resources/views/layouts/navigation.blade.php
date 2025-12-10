@@ -45,7 +45,7 @@
                     @elseif(request()->routeIs('estudiante.constancias.*'))
                         CONSTANCIAS
                     @else
-                        @yield('page-title', 'DASHBOARD')
+                        @yield('page-title', 'INICIO')
                     @endif
                 </h1>
             </div>
