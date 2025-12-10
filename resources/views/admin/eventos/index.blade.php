@@ -86,7 +86,8 @@
                                         @elseif ($evento->estado == 'En Progreso') status-en-progreso
                                         @elseif ($evento->estado == 'Cerrado') status-cerrado
                                         @elseif ($evento->estado == 'Próximo') status-proximo
-                                        @else status-finalizado @endif">
+                                        @else status-finalizado @endif"
+                                        style="color: white !important;">
                                         @if ($evento->estado == 'Activo')
                                             <span class="dot"></span>
                                         @endif
