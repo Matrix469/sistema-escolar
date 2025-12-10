@@ -24,7 +24,7 @@
                         MI PROGRESO
                     @elseif(request()->routeIs('estudiante.habilidades.*'))
                         MIS HABILIDADES
-                    @elseif(request()->routeIs('estudiante.eventos.*')||request()->routeIs('jurado.eventos.*')||request()->routeIs('admin.eventos.*'))
+                    @elseif(request()->routeIs('estudiante.eventos.*')||request()->routeIs('jurado.eventos.*'))
                         EVENTOS
                     @elseif(request()->routeIs('estudiante.equipo.*'))
                         MI EQUIPO
@@ -52,13 +52,13 @@
                         ACTIVIDADES
                     @elseif(request()->routeIs('estudiante.avances.*'))
                         AVANCES
-                    @elseif(request()->routeIs('estudiante.proyecto-evento.*')||request()->routeIs('jurado.proyectos.*'))
+                    @elseif(request()->routeIs('estudiante.proyecto-evento.*')||request()->routeIs('jurado.proyectos.*')||(request()->routeIs('estudiante.proyectos.*')))
                         PROYECTOS
                     @elseif(request()->routeIs('estudiante.proyecto.avances.*'))
                         AVANCES DE PROYECTO
                     @elseif(request()->routeIs('estudiante.recursos.*'))
                         RECURSOS
-                    @elseif(request()->routeIs('estudiante.tarea.*'))
+                    @elseif(request()->routeIs('estudiante.tareas.*'))
                         TAREAS
                     @else
                         @yield('page-title', 'INICIO')
