@@ -140,7 +140,7 @@
 
         {{-- ACCIONES DE ADMINISTRADOR (MOVIDO ARRIBA) --}}
         <div class="content-card actions-card">
-            <div class="card-header dark">
+            <div class="card-header neuro-card">
                 <i class="fas fa-cogs"></i>
                 <h3>Acciones de Administrador</h3>
             </div>
@@ -249,7 +249,7 @@
         {{-- Descripción --}}
         @if($evento->descripcion)
         <div class="content-card">
-            <div class="card-header">
+            <div class="card-header neuro-card">
                 <i class="fas fa-info-circle"></i>
                 <h3>Descripción del Evento</h3>
             </div>
@@ -263,14 +263,14 @@
         <div class="two-columns">
             {{-- Jurados --}}
             <div class="content-card">
-                <div class="card-header">
+                <div class="card-header neuro-card">
                     <i class="fas fa-user-tie"></i>
                     <h3>Jurados Asignados</h3>
                     <span class="count-badge">{{ $evento->jurados->count() }}</span>
                 </div>
                 <div class="card-body">
                     @forelse($evento->jurados as $jurado)
-                        <a href="{{ route('admin.users.edit', $jurado->user) }}" class="person-row">
+                        <a href="{{ route('admin.users.edit', $jurado->user) }}" class="person-row neuro-card">
                             <div class="person-avatar">
                                 <i class="fas fa-user"></i>
                             </div>
@@ -291,14 +291,14 @@
 
             {{-- Equipos --}}
             <div class="content-card">
-                <div class="card-header">
+                <div class="card-header neuro-card">
                     <i class="fas fa-users"></i>
                     <h3>Equipos Inscritos</h3>
                     <span class="count-badge">{{ $evento->inscripciones->count() }}/{{ $evento->cupo_max_equipos }}</span>
                 </div>
                 <div class="card-body">
                     @forelse($evento->inscripciones as $inscripcion)
-                        <a href="{{ route('admin.equipos.show', $inscripcion->equipo) }}" class="person-row team-row">
+                        <a href="{{ route('admin.equipos.show', $inscripcion->equipo) }}" class="person-row team-row neuro-card">
                             <div class="team-rank">
                                 @if($inscripcion->puesto_ganador == 1)
                                     <span class="medal gold">🥇</span>
@@ -331,7 +331,7 @@
         {{-- Proyecto del Evento --}}
         @if($evento->tipo_proyecto && $evento->tipo_proyecto === 'general' && $evento->proyectoGeneral && $evento->proyectoGeneral->publicado)
         <div class="content-card project-card">
-            <div class="card-header">
+            <div class="card-header neuro-card">
                 <i class="fas fa-project-diagram"></i>
                 <h3>Proyecto del Evento</h3>
                 <span class="published-badge"><i class="fas fa-check-circle"></i> Publicado</span>
@@ -368,7 +368,7 @@
         </div>
         @elseif($evento->tipo_proyecto === 'individual')
         <div class="content-card">
-            <div class="card-header">
+            <div class="card-header neuro-card">
                 <i class="fas fa-project-diagram"></i>
                 <h3>Proyectos Individuales</h3>
             </div>
@@ -384,7 +384,7 @@
         {{-- Criterios de Evaluación --}}
         @if($evento->criteriosEvaluacion->isNotEmpty())
         <div class="content-card">
-            <div class="card-header">
+            <div class="card-header neuro-card">
                 <i class="fas fa-clipboard-list"></i>
                 <h3>Criterios de Evaluación</h3>
                 @php $totalPonderacion = $evento->criteriosEvaluacion->sum('ponderacion'); @endphp
@@ -395,7 +395,7 @@
             <div class="card-body">
                 <div class="criteria-grid">
                     @foreach($evento->criteriosEvaluacion as $criterio)
-                        <div class="criteria-item">
+                        <div class="criteria-item neuro-card">
                             <div class="criteria-weight">{{ $criterio->ponderacion }}%</div>
                             <div class="criteria-info">
                                 <span class="criteria-name">{{ $criterio->nombre }}</span>
