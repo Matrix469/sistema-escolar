@@ -17,7 +17,7 @@
             <div class="hidden sm:block">
                 <h1 class="page-title-nav">
                     @if(request()->routeIs('dashboard'))
-                        DASHBOARD
+                        INICIO
                     @elseif(request()->routeIs('estudiante.dashboard'))
                         INICIO
                     @elseif(request()->routeIs('estudiante.stats.*'))
