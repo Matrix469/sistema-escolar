@@ -133,7 +133,7 @@
                                                 <span
                                                     class="score-value">{{ round($avance->evaluaciones->avg('calificacion'), 1) }}</span>
                                             </div>
-                                            <span class="eval-label">Calificación</span>
+                                            <span class="eval-label">Calificación Promedio de los evaluadores</span>
                                         </div>
                                     @endif
                                 </div>
