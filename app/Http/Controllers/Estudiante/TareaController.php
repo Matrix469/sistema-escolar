@@ -167,13 +167,15 @@ class TareaController extends Controller
         $esLider = $this->esLider($inscripcion);
         $tareas = $proyecto->tareas()->with(['asignadoA.user', 'completadaPor'])->orderBy('completada')->orderBy('created_at', 'desc')->get();
         $miembros = $inscripcion->miembros;
+        $evento = $inscripcion->evento;
 
         return view('estudiante.tarea.index-specific', compact(
             'proyecto',
             'tareas',
             'miembros',
             'esLider',
-            'inscripcion'
+            'inscripcion',
+            'evento'
         ));
     }
 
@@ -189,11 +191,28 @@ class TareaController extends Controller
             return back()->with('error', 'Solo el líder puede crear tareas.');
         }
 
-        $request->validate([
-            'nombre' => 'required|string|max:200',
-            'descripcion' => 'nullable|string',
+        // Obtener fecha límite del evento
+        $evento = $inscripcion->evento;
+        $fechaMaxima = $evento ? $evento->fecha_fin->format('Y-m-d') : null;
+
+        $rules = [
+            'nombre' => 'required|string|max:100',
+            'descripcion' => 'nullable|string|max:1000',
             'asignado_a' => 'nullable|exists:users,id_usuario',
-            'fecha_vencimiento' => 'nullable|date|after_or_equal:today',
+            'fecha_limite' => 'nullable|date',
+            'prioridad' => 'nullable|in:Alta,Media,Baja',
+        ];
+
+        // Agregar validación de fecha dentro del rango del evento
+        if ($evento) {
+            $rules['fecha_limite'] .= '|after_or_equal:' . $evento->fecha_inicio->format('Y-m-d') . '|before_or_equal:' . $evento->fecha_fin->format('Y-m-d');
+        }
+
+        $request->validate($rules, [
+            'nombre.max' => 'El nombre debe tener al maximo 100 caracteres.',
+            'descripcion.max' => 'La descripción no puede exceder 1000 caracteres.',
+            'fecha_limite.after_or_equal' => 'La fecha debe estar dentro del período del evento.',
+            'fecha_limite.before_or_equal' => 'La fecha debe estar dentro del período del evento.',
         ]);
 
         TareaProyecto::create([
@@ -201,8 +220,8 @@ class TareaController extends Controller
             'nombre' => $request->nombre,
             'descripcion' => $request->descripcion,
             'asignado_a' => $request->asignado_a,
-            'fecha_vencimiento' => $request->fecha_vencimiento,
-            'creado_por' => Auth::id(),
+            'fecha_limite' => $request->fecha_limite,
+            'prioridad' => $request->prioridad ?? 'Media',
         ]);
 
         return redirect()->route('estudiante.tareas.index-specific', $proyecto->id_proyecto)

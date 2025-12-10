@@ -72,7 +72,9 @@
     color: white;
     position: relative;
     overflow: hidden;
-    box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.2), -12px -12px 24px rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(232, 154, 60, 0.3);
+    box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.2),
+        -12px -12px 24px rgba(255, 255, 255, 0.05),
+        inset 0 0 0 1px rgba(232, 154, 60, 0.3);
     border: 2px solid rgba(232, 154, 60, 0.4);
 }
 
@@ -83,13 +85,18 @@
     right: -20%;
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, rgba(232, 154, 60, 0.15) 0%, transparent 70%);
+    background: radial-gradient(
+        circle,
+        rgba(232, 154, 60, 0.15) 0%,
+        transparent 70%
+    );
     border-radius: 50%;
     animation: pulse 4s ease-in-out infinite;
 }
 
 @keyframes pulse {
-    0%, 100% {
+    0%,
+    100% {
         transform: scale(1);
         opacity: 0.3;
     }
@@ -106,7 +113,13 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, transparent, #e89a3c, #f5a847, transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #e89a3c,
+        #f5a847,
+        transparent
+    );
 }
 
 .welcome-banner-dbshdE .welcome-svg-dbshdE {
@@ -315,8 +328,8 @@
     background-color: #ffffff95;
 }
 
-.event-image img{
-    border-radius: 12px 12px 0 0!important;
+.event-image img {
+    border-radius: 12px 12px 0 0 !important;
 }
 
 .event-card:hover {
@@ -365,8 +378,8 @@
     margin-bottom: 0.25rem;
     padding-right: 80px;
     background: linear-gradient(135deg, #e89a3c, #f5a847);
-    text-align: center; 
-    border-radius: 0 0 12px 12px; 
+    text-align: center;
+    border-radius: 0 0 12px 12px;
 }
 
 .event-card-body-dbshdE {
@@ -487,20 +500,20 @@
 
 .progress-circle {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
 }
 
 .progress-circle-bg {
     fill: none;
-    stroke: #f3f4f6;
-    stroke-width: 8;
+    stroke: #e5e7eb;
+    stroke-width: 6;
 }
 
 .progress-circle-fill {
     fill: none;
     stroke: url(#progressGradient);
-    stroke-width: 8;
+    stroke-width: 6;
     stroke-linecap: round;
     stroke-dasharray: 251.2;
     stroke-dashoffset: 251.2;
@@ -730,7 +743,7 @@
 /* =============================================== */
 /* CAROUSEL STYLES - ESTILO NEUMÓRFICO */
 /* =============================================== */
-#cardEv{
+#cardEv {
     box-shadow: 0 8px 32px rgba(232, 154, 60, 0.1);
 }
 
@@ -739,12 +752,16 @@
     width: 100%;
     overflow: hidden;
     border-radius: 20px;
-    background: linear-gradient(135deg, rgba(207, 181, 163, 0.6), rgba(209, 209, 209, 0.7));
+    background: linear-gradient(
+        135deg,
+        rgba(207, 181, 163, 0.6),
+        rgba(209, 209, 209, 0.7)
+    );
     backdrop-filter: blur(32px);
     -webkit-backdrop-filter: blur(32px);
     border: 1px solid rgba(232, 154, 60, 0.2);
     box-shadow: 0 8px 32px rgba(232, 154, 60, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .carousel-track-container-dbshdE {
@@ -869,7 +886,7 @@
 
 .team-card-dbshdE:hover {
     transform: translateY(-6px);
-    box-shadow: 12px 12px 24px #e6d5c9, -6px -6px 24px  #e5b79b;
+    box-shadow: 12px 12px 24px #e6d5c9, -6px -6px 24px #e5b79b;
 }
 
 .team-header-dbshdE {
@@ -944,7 +961,8 @@
     font-size: 0.85rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05), inset -2px -2px 4px rgba(255, 255, 255, 0.5);
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.05),
+        inset -2px -2px 4px rgba(255, 255, 255, 0.5);
 }
 
 .team-status-dbshdE svg {
@@ -954,13 +972,21 @@
 }
 
 .team-status-dbshdE.incompleto {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.1));
+    background: linear-gradient(
+        135deg,
+        rgba(16, 185, 129, 0.15),
+        rgba(16, 185, 129, 0.1)
+    );
     color: #059669;
     border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .team-status-dbshdE.completo {
-    background: linear-gradient(135deg, rgba(107, 114, 128, 0.15), rgba(107, 114, 128, 0.1));
+    background: linear-gradient(
+        135deg,
+        rgba(107, 114, 128, 0.15),
+        rgba(107, 114, 128, 0.1)
+    );
     color: #4b5563;
     border: 1px solid rgba(107, 114, 128, 0.2);
 }
@@ -981,18 +1007,21 @@
     transition: all 0.3s ease;
     cursor: pointer;
     margin-top: 1rem;
-    box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3), -2px -2px 6px rgba(255, 255, 255, 0.5);
+    box-shadow: 4px 4px 8px rgba(232, 154, 60, 0.3),
+        -2px -2px 6px rgba(255, 255, 255, 0.5);
 }
 
 .team-view-btn-dbshdE:hover {
     transform: translateY(-3px);
-    box-shadow: 6px 6px 12px rgba(232, 154, 60, 0.4), -3px -3px 8px rgba(255, 255, 255, 0.6);
+    box-shadow: 6px 6px 12px rgba(232, 154, 60, 0.4),
+        -3px -3px 8px rgba(255, 255, 255, 0.6);
     background: linear-gradient(135deg, #f5a847, #e89a3c);
 }
 
 .team-view-btn-dbshdE:active {
     transform: translateY(-1px);
-    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2), inset -2px -2px 4px rgba(255, 255, 255, 0.2);
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.2),
+        inset -2px -2px 4px rgba(255, 255, 255, 0.2);
 }
 
 .team-view-btn-dbshdE i {
@@ -1337,4 +1366,149 @@
 .card-action-btn-team:hover {
     background: linear-gradient(135deg, #10b981, #059669);
     box-shadow: 4px 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* GRÁFICAS CIRCULARES DE PROGRESO */
+.progress-charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.progress-chart-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.08),
+        -3px -3px 10px rgba(255, 255, 255, 0.8);
+    transition: transform 0.2s ease;
+}
+
+.progress-chart-card:hover {
+    transform: translateY(-2px);
+}
+
+.circular-progress {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+}
+
+.circular-progress .percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.circular-progress .percentage span {
+    display: block;
+}
+
+.progress-chart-card h5 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 0.5rem 0;
+}
+
+.progress-value {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Círculos de SVG */
+.progress-chart-card .bg {
+    stroke: #e5e7eb;
+    stroke-width: 6;
+    fill: none;
+}
+
+.progress-chart-card .progress {
+    stroke-width: 6;
+    fill: none;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 251.2;
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.progress-chart-card .progress.orange {
+    stroke: url(#gradientOrange);
+}
+
+.progress-chart-card .progress.green {
+    stroke: url(#gradientGreen);
+}
+
+.progress-chart-card .progress.purple {
+    stroke: url(#gradientPurple);
+}
+
+.progress-chart-card .progress.blue {
+    stroke: url(#gradientBlue);
+}
+
+/* Círculo de progreso principal */
+.progress-circle-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 2rem auto;
+}
+
+.progress-ring {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.progress-ring-bg {
+    stroke-width: 6;
+    fill: none;
+    transform: rotate(-90deg);
+    transform-origin: center;
+}
+
+.progress-ring-fill {
+    stroke-width: 6;
+    fill: none;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 251.2;
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.progress-text span {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.progress-text strong {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #10b981;
 }

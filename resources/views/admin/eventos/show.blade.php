@@ -1,724 +1,455 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@extends('layouts.app')
 
-.hidden {
-    display: none !important;
-}
+@section('title', 'Detalle del Evento')
 
-.evento-modern-page {
-    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
-    min-height: 100vh;
-    padding: 1.5rem 1rem;
-    font-family: "Inter", -apple-system, sans-serif;
-}
+@section('content')
 
-.container-evento {
-    max-width: 1200px;
-    margin: 0 auto;
-}
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/eventos/show.css') }}">
+@endpush
 
-/* Back Link */
-.back-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #64748b;
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-decoration: none;
-    margin-bottom: 1.5rem;
-    transition: color 0.2s;
-}
-.back-link:hover {
-    color: #2563eb;
-}
+<div class="evento-modern-page">
+    <div class="container-evento">
+        
+        {{-- Back Link --}}
+        <a href="{{ route('admin.eventos.index') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Volver a Eventos
+        </a>
 
-/* Hero Section - Negro con degradado azul */
-.event-hero {
-    position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-    min-height: 180px;
-    background: linear-gradient(135deg, #0f172a, #1e3a5f, #1e40af);
-}
+        {{-- Mensajes de Sesión --}}
+        @if(session('success'))
+            <div style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); border: 2px solid #10b981; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; color: #065f46;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+            </div>
+        @endif
 
-.hero-image {
-    position: absolute;
-    inset: 0;
-}
-.hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.hero-gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        to top,
-        rgba(15, 23, 42, 0.9),
-        rgba(30, 64, 175, 0.4)
-    );
-}
+        @if(session('warning'))
+            <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); border: 2px solid #f59e0b; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                    <div style="background: #f59e0b; border-radius: 50%; padding: 0.5rem; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-exclamation-triangle" style="color: white; font-size: 1.1rem;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <p style="font-weight: 600; color: #92400e; margin: 0 0 0.5rem 0;">{{ session('warning') }}</p>
+                        
+                        @if(session('confirm_close'))
+                            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                                <form action="{{ route('admin.eventos.cerrar-forzado', $evento) }}" method="POST">
+                                    @csrf @method('PATCH')
+                                    <button type="submit" style="background: #dc2626; color: white; border: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s;" onmouseover="this.style.background='#b91c1c'" onmouseout="this.style.background='#dc2626'">
+                                        <i class="fas fa-lock"></i>
+                                        Cerrar de todas formas
+                                    </button>
+                                </form>
+                                <a href="{{ route('admin.eventos.asignar', $evento) }}" style="background: #3b82f6; color: white; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: 8px; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='#3b82f6'">
+                                    <i class="fas fa-user-tie"></i>
+                                    Asignar Jurados Primero
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
 
-.hero-content {
-    position: relative;
-    padding: 2rem 2.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    min-height: 180px;
-    color: white;
-}
-.hero-content.no-image {
-    background: linear-gradient(135deg, #0f172a, #1e3a5f, #1e40af);
-}
+        @if(session('error'))
+            <div style="background: linear-gradient(135deg, #fee2e2, #fecaca); border: 2px solid #ef4444; border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 1.5rem; color: #991b1b;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-times-circle" style="color: #ef4444;"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            </div>
+        @endif
 
-.hero-main h1 {
-    font-size: 2.25rem;
-    font-weight: 800;
-    margin: 0.75rem 0 0 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-}
+        {{-- Hero Section con Imagen --}}
+        <div class="event-hero" style="min-height: 220px;">
+            @if ($evento->ruta_imagen)
+                <div class="hero-image">
+                    <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="{{ $evento->nombre }}">
+                    <div class="hero-gradient"></div>
+                </div>
+            @endif
+            <div class="hero-content {{ !$evento->ruta_imagen ? 'no-image' : '' }}" style="min-height: 220px;">
+                <div class="hero-main">
+                    <span class="estado-badge estado-{{ strtolower($evento->estado) }}">
+                        <i class="fas fa-circle"></i>
+                        {{ $evento->estado }}
+                    </span>
+                    <h1>{{ $evento->nombre }}</h1>
+                </div>
+            </div>
+        </div>
 
-.estado-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-.estado-badge i {
-    font-size: 0.5rem;
-}
-.estado-activo {
-    background: rgba(16, 185, 129, 0.9);
-    color: white;
-}
-.estado-próximo {
-    background: rgba(59, 130, 246, 0.9);
-    color: white;
-}
-.estado-cerrado {
-    background: rgba(107, 114, 128, 0.9);
-    color: white;
-}
-.estado-finalizado {
-    background: rgba(30, 64, 175, 0.9);
-    color: white;
-}
-.estado-en {
-    background: rgba(245, 158, 11, 0.9);
-    color: white;
-}
+        {{-- Fechas Destacadas --}}
+        <div class="dates-showcase">
+            <div class="date-card start">
+                <div class="date-info">
+                    <span class="date-label">FECHA DE INICIO</span>
+                    <span class="date-main">{{ $evento->fecha_inicio->format('d') }}</span>
+                    <span class="date-secondary">{{ $evento->fecha_inicio->translatedFormat('F Y') }}</span>
+                    <span class="date-full">{{ $evento->fecha_inicio->translatedFormat('l, j \d\e F') }}</span>
+                </div>
+            </div>
+            <div class="date-connector">
+                <div class="connector-line"></div>
+                <span class="connector-days">
+                    {{ $evento->fecha_inicio->diffInDays($evento->fecha_fin) }} días
+                </span>
+                <div class="connector-line"></div>
+            </div>
+            <div class="date-card end">
+                <div class="date-info">
+                    <span class="date-label">FECHA DE CIERRE</span>
+                    <span class="date-main">{{ $evento->fecha_fin->format('d') }}</span>
+                    <span class="date-secondary">{{ $evento->fecha_fin->translatedFormat('F Y') }}</span>
+                    <span class="date-full">{{ $evento->fecha_fin->translatedFormat('l, j \d\e F') }}</span>
+                </div>
+            </div>
+        </div>
 
-/* Dates Showcase */
-.dates-showcase {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding: 1.5rem;
-    background: white;
-    border-radius: 18px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-}
+        {{-- Stats Cards --}}
+        <div class="stats-grid">
+            <div class="stat-card teams">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-data">
+                    <span class="stat-number">{{ $evento->inscripciones->count() }}</span>
+                    <span class="stat-label">Equipos Inscritos</span>
+                    <span class="stat-sublabel">de {{ $evento->cupo_max_equipos }} máx.</span>
+                </div>
+            </div>
+            <div class="stat-card judges">
+                <div class="stat-icon"><i class="fas fa-user-tie"></i></div>
+                <div class="stat-data">
+                    <span class="stat-number">{{ $evento->jurados->count() }}</span>
+                    <span class="stat-label">Jurados</span>
+                    <span class="stat-sublabel">asignados</span>
+                </div>
+            </div>
+            <div class="stat-card criteria">
+                <div class="stat-icon"><i class="fas fa-clipboard-check"></i></div>
+                <div class="stat-data">
+                    <span class="stat-number">{{ $evento->criteriosEvaluacion->count() }}</span>
+                    <span class="stat-label">Criterios</span>
+                    <span class="stat-sublabel">de evaluación</span>
+                </div>
+            </div>
+        </div>
 
-.date-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem 1.75rem;
-    border-radius: 14px;
-    min-width: 220px;
-}
-.date-card.start {
-    background: linear-gradient(135deg, #ecfdf5, #d1fae5);
-    border: 2px solid #a7f3d0;
-}
-.date-card.end {
-    background: linear-gradient(135deg, #fef2f2, #fee2e2);
-    border: 2px solid #fecaca;
-}
+        {{-- ACCIONES DE ADMINISTRADOR (MOVIDO ARRIBA) --}}
+        <div class="content-card actions-card">
+            <div class="card-header dark">
+                <i class="fas fa-cogs"></i>
+                <h3>Acciones de Administrador</h3>
+            </div>
+            <div class="card-body">
+                <div class="actions-grid">
+                    <a href="{{ route('admin.eventos.asignar', $evento) }}" class="action-btn primary">
+                        <i class="fas fa-user-tie"></i>
+                        <span>Gestionar Jurados</span>
+                    </a>
 
-.date-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-.date-card.start .date-icon {
-    background: #10b981;
-    color: white;
-}
-.date-card.end .date-icon {
-    background: #ef4444;
-    color: white;
-}
+                    @if($evento->estado === 'Próximo')
+                        <form action="{{ route('admin.eventos.activar', $evento) }}" method="POST" onsubmit="return confirm('¿Activar este evento?');">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="action-btn success">
+                                <i class="fas fa-play"></i>
+                                <span>Activar Evento</span>
+                            </button>
+                        </form>
+                    @elseif($evento->estado === 'Activo')
+                        <form action="{{ route('admin.eventos.cerrar', $evento) }}" method="POST" onsubmit="return confirm('¿Cerrar inscripciones?');">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="action-btn warning">
+                                <i class="fas fa-lock"></i>
+                                <span>Cerrar Inscripciones</span>
+                            </button>
+                        </form>
+                        <form action="{{ route('admin.eventos.finalizar', $evento) }}" method="POST" onsubmit="return confirm('¿Finalizar evento?');">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="action-btn info">
+                                <i class="fas fa-flag-checkered"></i>
+                                <span>Finalizar</span>
+                            </button>
+                        </form>
+                    @elseif($evento->estado === 'En Progreso')
+                        <form action="{{ route('admin.eventos.finalizar', $evento) }}" method="POST" onsubmit="return confirm('¿Finalizar evento?');">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="action-btn info">
+                                <i class="fas fa-flag-checkered"></i>
+                                <span>Finalizar Evento</span>
+                            </button>
+                        </form>
+                    @elseif($evento->estado === 'Cerrado')
+                        @if(!$evento->tipo_proyecto)
+                            <button onclick="document.getElementById('modalTipoProyecto').classList.remove('hidden')" class="action-btn secondary">
+                                <i class="fas fa-project-diagram"></i>
+                                <span>Configurar Proyecto</span>
+                            </button>
+                        @else
+                            @if($evento->tipo_proyecto === 'general')
+                                @if($evento->proyectoGeneral)
+                                    <a href="{{ route('admin.proyectos-evento.edit', $evento->proyectoGeneral) }}" class="action-btn info">
+                                        <i class="fas fa-edit"></i>
+                                        <span>Editar Proyecto</span>
+                                    </a>
+                                    @if(!$evento->proyectoGeneral->publicado)
+                                        <form action="{{ route('admin.proyectos-evento.publicar', $evento->proyectoGeneral) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="action-btn success">
+                                                <i class="fas fa-rocket"></i>
+                                                <span>Publicar</span>
+                                            </button>
+                                        </form>
+                                    @endif
+                                @else
+                                    <a href="{{ route('admin.proyectos-evento.create', $evento) }}" class="action-btn success">
+                                        <i class="fas fa-plus"></i>
+                                        <span>Crear Proyecto</span>
+                                    </a>
+                                @endif
+                            @else
+                                <a href="{{ route('admin.proyectos-evento.asignar', $evento) }}" class="action-btn success">
+                                    <i class="fas fa-tasks"></i>
+                                    <span>Asignar Proyectos</span>
+                                </a>
+                            @endif
+                        @endif
+                        <form action="{{ route('admin.eventos.reactivar', $evento) }}" method="POST" onsubmit="return confirm('¿Reabrir inscripciones?');">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="action-btn warning">
+                                <i class="fas fa-unlock"></i>
+                                <span>Reabrir</span>
+                            </button>
+                        </form>
+                    @elseif($evento->estado === 'Finalizado')
+                        <a href="{{ route('admin.eventos.resultados', $evento) }}" class="action-btn primary">
+                            <i class="fas fa-trophy"></i>
+                            <span>Ver Resultados</span>
+                        </a>
+                        <form action="{{ route('admin.eventos.reactivar', $evento) }}" method="POST" onsubmit="return confirm('¿Reactivar evento?');">
+                            @csrf @method('PATCH')
+                            <button type="submit" class="action-btn danger">
+                                <i class="fas fa-redo"></i>
+                                <span>Reactivar</span>
+                            </button>
+                        </form>
+                    @endif
 
-.date-info {
-    display: flex;
-    flex-direction: column;
-}
-.date-label {
-    font-size: 0.6rem;
-    font-weight: 700;
-    color: #6b7280;
-    letter-spacing: 1px;
-}
-.date-main {
-    font-size: 2.5rem;
-    font-weight: 800;
-    line-height: 1;
-}
-.date-card.start .date-main {
-    color: #059669;
-}
-.date-card.end .date-main {
-    color: #dc2626;
-}
-.date-secondary {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #374151;
-    text-transform: capitalize;
-}
-.date-full {
-    font-size: 0.7rem;
-    color: #6b7280;
-    text-transform: capitalize;
-}
+                    <a href="{{ route('admin.eventos.edit', $evento) }}" class="action-btn neutral">
+                        <i class="fas fa-edit"></i>
+                        <span>Editar Evento</span>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-.date-connector {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-.connector-line {
-    width: 2px;
-    height: 20px;
-    background: #e5e7eb;
-}
-.connector-days {
-    background: #f3f4f6;
-    padding: 0.4rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #6b7280;
-}
+        {{-- Descripción --}}
+        @if($evento->descripcion)
+        <div class="content-card">
+            <div class="card-header">
+                <i class="fas fa-info-circle"></i>
+                <h3>Descripción del Evento</h3>
+            </div>
+            <div class="card-body">
+                <p class="description-text">{{ $evento->descripcion }}</p>
+            </div>
+        </div>
+        @endif
 
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
+        {{-- Dos columnas: Jurados y Equipos --}}
+        <div class="two-columns">
+            {{-- Jurados --}}
+            <div class="content-card">
+                <div class="card-header">
+                    <i class="fas fa-user-tie"></i>
+                    <h3>Jurados Asignados</h3>
+                    <span class="count-badge">{{ $evento->jurados->count() }}</span>
+                </div>
+                <div class="card-body">
+                    @forelse($evento->jurados as $jurado)
+                        <a href="{{ route('admin.users.edit', $jurado->user) }}" class="person-row">
+                            <div class="person-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="person-info">
+                                <span class="person-name">{{ $jurado->user->nombre }} {{ $jurado->user->app_paterno }}</span>
+                                <span class="person-detail">{{ $jurado->especialidad ?? 'Jurado' }}</span>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    @empty
+                        <div class="empty-list">
+                            <i class="fas fa-user-slash"></i>
+                            <p>Sin jurados asignados</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
 
-.stat-card {
-    background: white;
-    border-radius: 14px;
-    padding: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    border: 1px solid #e2e8f0;
-}
+            {{-- Equipos --}}
+            <div class="content-card">
+                <div class="card-header">
+                    <i class="fas fa-users"></i>
+                    <h3>Equipos Inscritos</h3>
+                    <span class="count-badge">{{ $evento->inscripciones->count() }}/{{ $evento->cupo_max_equipos }}</span>
+                </div>
+                <div class="card-body">
+                    @forelse($evento->inscripciones as $inscripcion)
+                        <a href="{{ route('admin.equipos.show', $inscripcion->equipo) }}" class="person-row team-row">
+                            <div class="team-rank">
+                                @if($inscripcion->puesto_ganador == 1)
+                                    <span class="medal gold">🥇</span>
+                                @elseif($inscripcion->puesto_ganador == 2)
+                                    <span class="medal silver">🥈</span>
+                                @elseif($inscripcion->puesto_ganador == 3)
+                                    <span class="medal bronze">🥉</span>
+                                @else
+                                    <div class="team-avatar"><i class="fas fa-users"></i></div>
+                                @endif
+                            </div>
+                            <div class="person-info">
+                                <span class="person-name {{ $inscripcion->puesto_ganador ? 'winner' : '' }}">
+                                    {{ $inscripcion->equipo->nombre }}
+                                </span>
+                                <span class="person-detail">{{ $inscripcion->miembros->count() }} miembros</span>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    @empty
+                        <div class="empty-list">
+                            <i class="fas fa-users-slash"></i>
+                            <p>Sin equipos inscritos</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
 
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.25rem;
-}
-.stat-card.teams .stat-icon {
-    background: #dbeafe;
-    color: #2563eb;
-}
-.stat-card.judges .stat-icon {
-    background: #e0e7ff;
-    color: #4f46e5;
-}
-.stat-card.criteria .stat-icon {
-    background: #f1f5f9;
-    color: #334155;
-}
+        {{-- Proyecto del Evento --}}
+        @if($evento->tipo_proyecto && $evento->tipo_proyecto === 'general' && $evento->proyectoGeneral && $evento->proyectoGeneral->publicado)
+        <div class="content-card project-card">
+            <div class="card-header">
+                <i class="fas fa-project-diagram"></i>
+                <h3>Proyecto del Evento</h3>
+                <span class="published-badge"><i class="fas fa-check-circle"></i> Publicado</span>
+            </div>
+            <div class="card-body">
+                <h4 class="project-title">{{ $evento->proyectoGeneral->titulo }}</h4>
+                @if($evento->proyectoGeneral->descripcion_completa)
+                    <p class="project-desc">{{ Str::limit($evento->proyectoGeneral->descripcion_completa, 300) }}</p>
+                @endif
+                @if($evento->proyectoGeneral->objetivo)
+                    <div class="project-objective">
+                        <strong><i class="fas fa-bullseye"></i> Objetivo:</strong>
+                        <p>{{ $evento->proyectoGeneral->objetivo }}</p>
+                    </div>
+                @endif
+                <div class="project-files">
+                    @if($evento->proyectoGeneral->archivo_bases)
+                        <a href="{{ Storage::url($evento->proyectoGeneral->archivo_bases) }}" target="_blank" class="file-btn bases">
+                            <i class="fas fa-file-pdf"></i> Descargar Bases
+                        </a>
+                    @endif
+                    @if($evento->proyectoGeneral->archivo_recursos)
+                        <a href="{{ Storage::url($evento->proyectoGeneral->archivo_recursos) }}" target="_blank" class="file-btn recursos">
+                            <i class="fas fa-folder-open"></i> Recursos
+                        </a>
+                    @endif
+                    @if($evento->proyectoGeneral->url_externa)
+                        <a href="{{ $evento->proyectoGeneral->url_externa }}" target="_blank" class="file-btn external">
+                            <i class="fas fa-external-link-alt"></i> Link Externo
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </div>
+        @elseif($evento->tipo_proyecto === 'individual')
+        <div class="content-card">
+            <div class="card-header">
+                <i class="fas fa-project-diagram"></i>
+                <h3>Proyectos Individuales</h3>
+            </div>
+            <div class="card-body">
+                <p class="info-text">Este evento usa <strong>proyectos individuales</strong>. Cada equipo puede tener un proyecto diferente.</p>
+                <a href="{{ route('admin.proyectos-evento.asignar', $evento) }}" class="inline-link">
+                    Ver estado de asignaciones <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        @endif
 
-.stat-data {
-    display: flex;
-    flex-direction: column;
-}
-.stat-number {
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: #111827;
-}
-.stat-label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: #374151;
-}
-.stat-sublabel {
-    font-size: 0.7rem;
-    color: #9ca3af;
-}
+        {{-- Criterios de Evaluación --}}
+        @if($evento->criteriosEvaluacion->isNotEmpty())
+        <div class="content-card">
+            <div class="card-header">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>Criterios de Evaluación</h3>
+                @php $totalPonderacion = $evento->criteriosEvaluacion->sum('ponderacion'); @endphp
+                <span class="count-badge {{ $totalPonderacion == 100 ? 'success' : 'warning' }}">
+                    {{ $totalPonderacion }}%
+                </span>
+            </div>
+            <div class="card-body">
+                <div class="criteria-grid">
+                    @foreach($evento->criteriosEvaluacion as $criterio)
+                        <div class="criteria-item">
+                            <div class="criteria-weight">{{ $criterio->ponderacion }}%</div>
+                            <div class="criteria-info">
+                                <span class="criteria-name">{{ $criterio->nombre }}</span>
+                                @if($criterio->descripcion)
+                                    <span class="criteria-desc">{{ Str::limit($criterio->descripcion, 60) }}</span>
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
 
-/* Content Cards */
-.content-card {
-    background: white;
-    border-radius: 16px;
-    margin-bottom: 1.25rem;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-    border: 1px solid #e2e8f0;
-    overflow: hidden;
-}
+        {{-- Modal Tipo de Proyecto --}}
+        <div id="modalTipoProyecto" class="hidden fixed inset-0 modal-overlay z-50">
+            <div class="modal-container">
+                <div class="modal-content">
+                    <h3><i class="fas fa-project-diagram"></i> Configurar Tipo de Proyecto</h3>
+                    <form action="{{ route('admin.eventos.configurar-proyectos', $evento) }}" method="POST">
+                        @csrf
+                        <div class="modal-options">
+                            <label class="option-card">
+                                <input type="radio" name="tipo_proyecto" value="general" required>
+                                <div class="option-content">
+                                    <i class="fas fa-globe"></i>
+                                    <strong>Proyecto General</strong>
+                                    <p>Un solo proyecto para todos los equipos</p>
+                                </div>
+                            </label>
+                            <label class="option-card">
+                                <input type="radio" name="tipo_proyecto" value="individual">
+                                <div class="option-content">
+                                    <i class="fas fa-user-edit"></i>
+                                    <strong>Proyectos Individuales</strong>
+                                    <p>Proyectos diferentes por equipo</p>
+                                </div>
+                            </label>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" onclick="document.getElementById('modalTipoProyecto').classList.add('hidden')" class="modal-btn cancel">
+                                Cancelar
+                            </button>
+                            <button type="submit" class="modal-btn confirm">
+                                Confirmar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-.card-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid #e2e8f0;
-    background: #f8fafc;
-}
-.card-header i {
-    color: #2563eb;
-    font-size: 1rem;
-}
-.card-header h3 {
-    font-size: 1rem;
-    font-weight: 700;
-    color: #111827;
-    margin: 0;
-    flex: 1;
-}
 
-.card-header.dark {
-    background: linear-gradient(135deg, #0f172a, #1e3a5f);
-}
-.card-header.dark h3 {
-    color: white;
-}
-.card-header.dark i {
-    color: #60a5fa;
-}
 
-.count-badge {
-    background: #dbeafe;
-    color: #1e40af;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-.count-badge.success {
-    background: #d1fae5;
-    color: #059669;
-}
-.count-badge.warning {
-    background: #fef3c7;
-    color: #d97706;
-}
-
-.published-badge {
-    background: #d1fae5;
-    color: #059669;
-    padding: 0.3rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.card-body {
-    padding: 1.25rem 1.5rem;
-}
-
-.description-text {
-    color: #4b5563;
-    line-height: 1.7;
-    font-size: 0.95rem;
-}
-
-/* Two Columns */
-.two-columns {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
-}
-
-.person-row {
-    display: flex;
-    align-items: center;
-    gap: 0.875rem;
-    padding: 0.75rem;
-    border-radius: 10px;
-    text-decoration: none;
-    color: inherit;
-    transition: background 0.2s;
-    margin-bottom: 0.35rem;
-}
-.person-row:hover {
-    background: #f1f5f9;
-}
-
-.person-avatar,
-.team-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #dbeafe;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #2563eb;
-}
-
-.medal {
-    font-size: 1.75rem;
-}
-
-.person-info {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-.person-name {
-    font-weight: 600;
-    color: #111827;
-    font-size: 0.9rem;
-}
-.person-name.winner {
-    color: #d97706;
-}
-.person-detail {
-    font-size: 0.75rem;
-    color: #6b7280;
-}
-
-.person-row i.fa-chevron-right {
-    color: #cbd5e1;
-    font-size: 0.75rem;
-}
-
-.empty-list {
-    text-align: center;
-    padding: 2rem;
-    color: #9ca3af;
-}
-.empty-list i {
-    font-size: 2rem;
-    opacity: 0.5;
-    margin-bottom: 0.5rem;
-}
-.empty-list p {
-    margin: 0;
-    font-size: 0.875rem;
-}
-
-/* Project Card */
-.project-title {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 0.75rem 0;
-}
-.project-desc {
-    color: #4b5563;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-}
-.project-objective {
-    background: #f8fafc;
-    padding: 1rem;
-    border-radius: 10px;
-    margin-bottom: 1rem;
-    border: 1px solid #e2e8f0;
-}
-.project-objective strong {
-    color: #374151;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-bottom: 0.5rem;
-}
-.project-objective p {
-    margin: 0;
-    color: #6b7280;
-    font-size: 0.9rem;
-}
-
-.project-files {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
-.file-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.6rem 1.25rem;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s;
-}
-.file-btn.bases {
-    background: #fee2e2;
-    color: #dc2626;
-}
-.file-btn.recursos {
-    background: #dbeafe;
-    color: #2563eb;
-}
-.file-btn.external {
-    background: #e0e7ff;
-    color: #4f46e5;
-}
-.file-btn:hover {
-    transform: translateY(-2px);
-}
-
-/* Criteria Grid */
-.criteria-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0.75rem;
-}
-.criteria-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.875rem;
-    background: #f8fafc;
-    border-radius: 10px;
-    border: 1px solid #e2e8f0;
-}
-.criteria-weight {
-    background: linear-gradient(135deg, #0f172a, #1e40af);
-    color: white;
-    padding: 0.5rem 0.75rem;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.9rem;
-}
-.criteria-info {
-    display: flex;
-    flex-direction: column;
-}
-.criteria-name {
-    font-weight: 600;
-    color: #111827;
-    font-size: 0.85rem;
-}
-.criteria-desc {
-    font-size: 0.7rem;
-    color: #6b7280;
-}
-
-/* Actions Grid - Colores Negro/Azul */
-.actions-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
-}
-
-.action-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.85rem;
-    padding: 1.25rem 2.5rem;
-    border-radius: 14px;
-    font-size: 1.5rem;
-    font-weight: 600;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.action-btn i {
-    font-size: 1.4rem;
-}
-.action-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
-}
-
-/* Botones con esquema Negro/Azul */
-.action-btn.primary {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
-    color: white;
-}
-.action-btn.success {
-    background: linear-gradient(135deg, #059669, #10b981);
-    color: white;
-}
-.action-btn.warning {
-    background: linear-gradient(135deg, #d97706, #f59e0b);
-    color: white;
-}
-.action-btn.info {
-    background: linear-gradient(135deg, #0284c7, #0ea5e9);
-    color: white;
-}
-.action-btn.danger {
-    background: linear-gradient(135deg, #b91c1c, #ef4444);
-    color: white;
-}
-.action-btn.secondary {
-    background: linear-gradient(135deg, #334155, #475569);
-    color: white;
-}
-.action-btn.neutral {
-    background: #e2e8f0;
-    color: #334155;
-}
-
-/* Modal */
-.modal-overlay {
-    background: rgba(15, 23, 42, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.modal-container {
-    max-width: 480px;
-    width: 100%;
-    padding: 1rem;
-}
-.modal-content {
-    background: white;
-    border-radius: 16px;
-    padding: 1.5rem;
-}
-.modal-content h3 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #111827;
-    margin: 0 0 1.25rem 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.modal-content h3 i {
-    color: #2563eb;
-}
-
-.modal-options {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1.5rem;
-}
-.option-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.75rem;
-    padding: 1rem;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.option-card:has(input:checked) {
-    border-color: #2563eb;
-    background: #eff6ff;
-}
-.option-card input {
-    margin-top: 0.25rem;
-}
-.option-content {
-    display: flex;
-    flex-direction: column;
-}
-.option-content i {
-    font-size: 1.25rem;
-    color: #2563eb;
-    margin-bottom: 0.35rem;
-}
-.option-content strong {
-    font-size: 0.95rem;
-    color: #111827;
-}
-.option-content p {
-    font-size: 0.8rem;
-    color: #6b7280;
-    margin: 0.25rem 0 0 0;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-}
-.modal-btn {
-    padding: 0.75rem 1.5rem;
-    border-radius: 10px;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-.modal-btn.cancel {
-    background: #e2e8f0;
-    color: #334155;
-}
-.modal-btn.confirm {
-    background: linear-gradient(135deg, #1e40af, #3b82f6);
-    color: white;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-    .two-columns {
-        grid-template-columns: 1fr;
-    }
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    .dates-showcase {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    .date-connector {
-        flex-direction: row;
-    }
-    .connector-line {
-        width: 30px;
-        height: 2px;
-    }
-}
-@media (max-width: 640px) {
-    .hero-main h1 {
-        font-size: 1.5rem;
-    }
-    .date-card {
-        min-width: auto;
-        width: 100%;
-    }
-    .actions-grid {
-        flex-direction: column;
-    }
-    .action-btn {
-        width: 100%;
-        justify-content: center;
-    }
-}
+@endsection

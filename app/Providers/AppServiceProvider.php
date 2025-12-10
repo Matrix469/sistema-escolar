@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +24,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Configurar Carbon para español
+        Carbon::setLocale('es');
+        setlocale(LC_TIME, 'es_ES.UTF-8', 'es_ES', 'Spanish_Spain', 'Spanish');
+        
         Gate::define('lider-equipo', function (User $user, Equipo $equipo) {
             return $equipo->miembros()->where('id_estudiante', $user->id_usuario)->where('es_lider', true)->exists();
         });

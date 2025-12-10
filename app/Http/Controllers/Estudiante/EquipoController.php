@@ -181,7 +181,7 @@ class EquipoController extends Controller
         $miembro = MiembroEquipo::where('id_estudiante', $user->id_usuario)
             ->where('es_lider', true)
             ->whereHas('inscripcion.evento', function ($query) {
-                $query->where('estado', 'Activo');
+                $query->whereIn('estado', ['Activo', 'Cerrado', 'En Progreso']);
             })
             ->with('inscripcion.equipo')
             ->firstOrFail(); 
@@ -195,7 +195,7 @@ class EquipoController extends Controller
         $miembro = MiembroEquipo::where('id_estudiante', $user->id_usuario)
             ->where('es_lider', true)
             ->whereHas('inscripcion.evento', function ($query) {
-                $query->where('estado', 'Activo');
+                $query->whereIn('estado', ['Activo', 'Cerrado', 'En Progreso']);
             })
             ->with('inscripcion.equipo')
             ->firstOrFail();

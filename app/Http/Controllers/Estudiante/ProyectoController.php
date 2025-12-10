@@ -392,9 +392,17 @@ class ProyectoController extends Controller
             );
         }
 
-        // Cargar tareas y avances
-        $tareas = $proyecto->tareas()->orderBy('created_at', 'desc')->get();
-        $avances = $proyecto->avances()->orderBy('created_at', 'desc')->get();
+        // Cargar tareas con quien la completó
+        $tareas = $proyecto->tareas()
+            ->with('completadaPor')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        // Cargar avances con evaluaciones y jurado
+        $avances = $proyecto->avances()
+            ->with(['evaluaciones.jurado.user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         // Calcular estadísticas
         $totalTareas = $tareas->count();

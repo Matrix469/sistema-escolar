@@ -282,9 +282,36 @@ class EventoController extends Controller
 
     public function cerrar(Evento $evento)
     {
+        // Verificar si hay jurados asignados
+        $juradosCount = $evento->jurados()->count();
+        
+        if ($juradosCount === 0) {
+            return redirect()->route('admin.eventos.show', $evento)
+                ->with('warning', '⚠️ ADVERTENCIA: Este evento no tiene jurados asignados. Se recomienda asignar entre 3 y 5 jurados antes de cerrar las inscripciones.')
+                ->with('confirm_close', true); // Flag para mostrar confirmación
+        }
+        
+        if ($juradosCount < 3) {
+            return redirect()->route('admin.eventos.show', $evento)
+                ->with('warning', "⚠️ ADVERTENCIA: Este evento solo tiene {$juradosCount} jurado(s). Se recomienda tener entre 3 y 5 jurados.")
+                ->with('confirm_close', true);
+        }
+
         $evento->estado = 'Cerrado';
         $evento->save();
-        return redirect()->route('admin.eventos.show', $evento)->with('success', 'El evento ha sido cerrado. Las inscripciones están bloqueadas.');
+        return redirect()->route('admin.eventos.show', $evento)
+            ->with('success', 'El evento ha sido cerrado. Las inscripciones están bloqueadas.');
+    }
+
+    /**
+     * Forzar cierre del evento aunque no tenga suficientes jurados
+     */
+    public function cerrarForzado(Evento $evento)
+    {
+        $evento->estado = 'Cerrado';
+        $evento->save();
+        return redirect()->route('admin.eventos.show', $evento)
+            ->with('success', 'El evento ha sido cerrado (sin verificar jurados). Las inscripciones están bloqueadas.');
     }
 
     public function reactivar(Evento $evento)

@@ -97,6 +97,17 @@ class JuradoTokenController extends Controller
             // Preparar datos para el correo
             $nombreCompleto = trim($request->nombre_destinatario . ' ' . $request->apellido_paterno . ' ' . $request->apellido_materno);
             $nombreCorto = trim($request->nombre_destinatario . ' ' . $request->apellido_paterno);
+            
+            // Construir URL con parámetros para prellenar el formulario de registro
+            $urlParams = http_build_query([
+                'tipo' => 'jurado',
+                'token' => $token,
+                'nombre' => $request->nombre_destinatario,
+                'app_paterno' => $request->apellido_paterno,
+                'app_materno' => $request->apellido_materno ?? '',
+                'email' => $request->email,
+            ]);
+            
             $datosCorreo = [
                 'nombre_completo' => $nombreCompleto,
                 'nombre_corto' => $nombreCorto,
@@ -108,7 +119,7 @@ class JuradoTokenController extends Controller
                 'fecha_expiracion' => $fechaExpiracion->format('d/m/Y'),
                 'dias_vigencia' => $request->dias_vigencia,
                 'eventos' => '',
-                'url_registro' => route('register') . '?tipo=jurado&token=' . $token
+                'url_registro' => route('register') . '?' . $urlParams
             ];
 
             // Enviar correo
@@ -229,17 +240,28 @@ class JuradoTokenController extends Controller
         }
 
         try {
+            // Construir URL con parámetros para prellenar el formulario
+            $urlParams = http_build_query([
+                'tipo' => 'jurado',
+                'token' => $token->token,
+                'nombre' => $token->nombre_destinatario,
+                'app_paterno' => $token->apellido_paterno,
+                'app_materno' => $token->apellido_materno ?? '',
+                'email' => $token->email_invitado,
+            ]);
+
             $datosCorreo = [
                 'nombre_completo' => trim($token->nombre_destinatario . ' ' . $token->apellido_paterno . ' ' . $token->apellido_materno),
-                'email' => $token->email_destinatario,
-                'especialidad' => $token->especialidad_sugerida,
-                'empresa' => $token->empresa_institucion,
-                'mensaje' => $token->mensaje_personalizado,
+                'nombre_corto' => trim($token->nombre_destinatario . ' ' . $token->apellido_paterno),
+                'email' => $token->email_invitado,
+                'especialidad' => $token->especialidad_sugerida ?? 'Por definir',
+                'empresa' => $token->empresa_institucion ?? 'Por definir',
+                'mensaje' => $token->mensaje_personalizado ?? 'Bienvenido al sistema de evaluación.',
                 'token' => $token->token,
                 'fecha_expiracion' => $token->fecha_expiracion->format('d/m/Y'),
                 'dias_vigencia' => now()->diffInDays($token->fecha_expiracion),
-                'eventos' => $token->eventos_asignar,
-                'url_registro' => route('register') . '?tipo=jurado&token=' . $token->token
+                'eventos' => $token->eventos_asignar ?? '',
+                'url_registro' => route('register') . '?' . $urlParams
             ];
 
             Mail::to($token->email_invitado)
