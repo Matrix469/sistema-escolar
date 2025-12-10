@@ -24,7 +24,7 @@
                         MI PROGRESO
                     @elseif(request()->routeIs('estudiante.habilidades.*'))
                         MIS HABILIDADES
-                    @elseif(request()->routeIs('estudiante.eventos.*')||request()->routeIs('jurado.eventos.*')||request()->routeIs('admin.eventos.*'))
+                    @elseif(request()->routeIs('estudiante.eventos.*')||request()->routeIs('jurado.eventos.*'))
                         EVENTOS
                     @elseif(request()->routeIs('estudiante.equipo.*'))
                         MI EQUIPO
