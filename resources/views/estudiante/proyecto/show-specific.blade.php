@@ -5,246 +5,613 @@
 @section('content')
 
 <div class="proyecto-page">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="container-compact">
         
         <a href="{{ route('estudiante.proyectos.index') }}" class="back-link">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Volver a Mis Proyectos
+            <i class="fas fa-arrow-left"></i> Mis Proyectos
         </a>
 
-        <!-- ========== HERO CARD ========== -->
-        <div class="hero-card">
-            <div class="hero-content">
-                <div class="hero-badges">
-                    @if($evento)
-                        <span class="hero-badge badge-event">
-                            <i class="fas fa-calendar-alt"></i>
-                            {{ $evento->nombre }}
-                        </span>
-                    @endif
-                    @if($esLider)
-                        <span class="hero-badge badge-leader">
-                            <i class="fas fa-crown"></i>
-                            Líder del Equipo
-                        </span>
-                    @endif
-                </div>
-
-                <h1 class="hero-title">{{ $proyecto->nombre }}</h1>
-                <p class="hero-subtitle">{{ Str::limit($proyecto->descripcion_tecnica ?? 'Proyecto de desarrollo', 120) }}</p>
-
-                <div class="hero-meta">
-                    <div class="hero-meta-item">
-                        <span class="hero-meta-label">Equipo</span>
-                        <span class="hero-meta-value">{{ $inscripcion->equipo->nombre }}</span>
-                    </div>
-                    @if($evento)
-                        <div class="hero-meta-item">
-                            <span class="hero-meta-label">Estado Evento</span>
-                            <span class="hero-meta-value">{{ $evento->estado }}</span>
-                        </div>
-                    @endif
-                    @if($proyecto->repositorio_url)
-                        <div class="hero-meta-item">
-                            <span class="hero-meta-label">Repositorio</span>
-                            <a href="{{ $proyecto->repositorio_url }}" target="_blank" class="hero-meta-value" style="color: #60a5fa;">
-                                <i class="fab fa-github"></i> Ver en GitHub
-                            </a>
-                        </div>
-                    @endif
-                </div>
-
+        {{-- ========== HERO SECTION ========== --}}
+        <div class="hero-section">
+            <div class="hero-badges">
+                @if($evento)
+                    <span class="badge badge-event">
+                        <i class="fas fa-calendar"></i> {{ $evento->nombre }}
+                    </span>
+                @endif
                 @if($esLider)
-                    <div class="hero-actions">
-                        <a href="{{ route('estudiante.proyecto.edit-specific', $proyecto->id_proyecto) }}" class="btn btn-primary">
-                            <i class="fas fa-edit"></i>
-                            Editar Proyecto
-                        </a>
+                    <span class="badge badge-leader">
+                        <i class="fas fa-crown"></i> Líder
+                    </span>
+                @endif
+            </div>
+
+            <h1 class="hero-title">{{ $proyecto->nombre }}</h1>
+            
+            @if($proyecto->descripcion_tecnica)
+                <p class="hero-desc">{{ Str::limit($proyecto->descripcion_tecnica, 100) }}</p>
+            @endif
+
+            <div class="hero-meta">
+                <div class="meta-item">
+                    <i class="fas fa-users"></i>
+                    <span>{{ $inscripcion->equipo->nombre }}</span>
+                </div>
+                @if($proyecto->repositorio_url)
+                    <a href="{{ $proyecto->repositorio_url }}" target="_blank" class="meta-item meta-link">
+                        <i class="fab fa-github"></i>
+                        <span>Repositorio</span>
+                    </a>
+                @endif
+                @if($evento)
+                    <div class="meta-item">
+                        <i class="fas fa-flag"></i>
+                        <span>{{ $evento->estado }}</span>
                     </div>
                 @endif
             </div>
+
+            @if($esLider)
+                <a href="{{ route('estudiante.proyecto.edit-specific', $proyecto->id_proyecto) }}" class="btn-edit">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            @endif
         </div>
 
-        <!-- ========== STATS GRID ========== -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon purple">
-                    <i class="fas fa-tasks"></i>
+        {{-- ========== STATS ROW ========== --}}
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-icon purple"><i class="fas fa-tasks"></i></div>
+                <div class="stat-info">
+                    <span class="stat-num">{{ $tareasCompletadas }}/{{ $totalTareas }}</span>
+                    <span class="stat-label">Tareas</span>
                 </div>
-                <div class="stat-value">{{ $tareasCompletadas }}/{{ $totalTareas }}</div>
-                <div class="stat-label">Tareas Completadas</div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: {{ $porcentajeTareas }}%;"></div>
+                <div class="stat-bar"><div class="stat-fill" style="width: {{ $porcentajeTareas }}%"></div></div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-icon green"><i class="fas fa-chart-line"></i></div>
+                <div class="stat-info">
+                    <span class="stat-num">{{ $avances->count() }}</span>
+                    <span class="stat-label">Avances</span>
                 </div>
             </div>
-
-            <div class="stat-card">
-                <div class="stat-icon green">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="stat-value">{{ $avances->count() }}</div>
-                <div class="stat-label">Avances Registrados</div>
-            </div>
-
             @if($evaluacionesFinalizadas > 0)
-                <div class="stat-card">
-                    <div class="stat-icon orange">
-                        <i class="fas fa-star"></i>
+                <div class="stat-box">
+                    <div class="stat-icon orange"><i class="fas fa-star"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-num">{{ $promedioGeneral }}</span>
+                        <span class="stat-label">Promedio</span>
                     </div>
-                    <div class="stat-value">{{ $promedioGeneral }}/100</div>
-                    <div class="stat-label">Calificación Promedio</div>
                 </div>
             @endif
         </div>
 
-        <!-- ========== DESCRIPCIÓN ========== -->
-        @if($proyecto->descripcion_tecnica)
-            <div class="content-section">
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <i class="fas fa-file-alt"></i>
-                        Descripción Técnica
-                    </h3>
-                </div>
-                <div class="description-box">
-                    <p>{{ $proyecto->descripcion_tecnica }}</p>
-                </div>
-            </div>
-        @endif
-
-        <!-- ========== TAREAS ========== -->
-        <div class="content-section">
-            <div class="section-header">
-                <h3 class="section-title">
-                    <i class="fas fa-tasks"></i>
-                    Tareas del Proyecto
-                </h3>
+        {{-- ========== TAREAS ========== --}}
+        <div class="section-card">
+            <div class="section-head">
+                <h3><i class="fas fa-tasks"></i> Tareas del Proyecto</h3>
                 @if($esLider)
-                    <a href="{{ route('estudiante.tareas.index-specific', $proyecto->id_proyecto) }}" class="btn btn-purple">
-                        <i class="fas fa-cog"></i>
-                        Gestionar Tareas
+                    <a href="{{ route('estudiante.tareas.index-specific', $proyecto->id_proyecto) }}" class="btn-sm btn-purple">
+                        <i class="fas fa-cog"></i> Gestionar
                     </a>
                 @endif
             </div>
 
             @if($tareas->isNotEmpty())
-                <div class="item-grid">
-                    @foreach($tareas->take(5) as $tarea)
-                        <div class="item-card {{ $tarea->completada ? 'completed' : 'pending' }}">
-                            <div class="item-title">{{ $tarea->nombre }}</div>
-                            @if($tarea->descripcion)
-                                <div class="item-description">{{ Str::limit($tarea->descripcion, 100) }}</div>
-                            @endif
-                            <div class="item-footer">
-                                <span class="item-badge {{ $tarea->completada ? 'badge-success' : 'badge-warning' }}">
-                                    <i class="fas {{ $tarea->completada ? 'fa-check-circle' : 'fa-clock' }}"></i>
-                                    {{ $tarea->completada ? 'Completada' : 'Pendiente' }}
-                                </span>
+                <div class="task-list">
+                    @foreach($tareas->take(6) as $tarea)
+                        <div class="task-item {{ $tarea->completada ? 'done' : 'pending' }}">
+                            <div class="task-check">
+                                <i class="fas {{ $tarea->completada ? 'fa-check-circle' : 'fa-circle' }}"></i>
                             </div>
+                            <div class="task-content">
+                                <div class="task-name">{{ $tarea->nombre }}</div>
+                                @if($tarea->descripcion)
+                                    <div class="task-desc">{{ Str::limit($tarea->descripcion, 80) }}</div>
+                                @endif
+                                @if($tarea->completada && $tarea->completadaPor)
+                                    <div class="task-meta">
+                                        <i class="fas fa-user-check"></i>
+                                        {{ $tarea->completadaPor->nombre }} 
+                                        <span class="sep">•</span>
+                                        {{ $tarea->fecha_completada?->format('d M') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <span class="task-badge {{ $tarea->completada ? 'badge-ok' : 'badge-wait' }}">
+                                {{ $tarea->completada ? 'Hecho' : 'Pendiente' }}
+                            </span>
                         </div>
                     @endforeach
                 </div>
-                @if($tareas->count() > 5)
-                    <p class="text-center mt-4" style="color: var(--text-secondary); font-size: 0.875rem;">
-                        Mostrando 5 de {{ $tareas->count() }} tareas
-                    </p>
+                @if($tareas->count() > 6)
+                    <div class="section-footer">
+                        <span>{{ $tareas->count() - 6 }} tareas más</span>
+                    </div>
                 @endif
             @else
-                <div class="empty-state">
+                <div class="empty-mini">
                     <i class="fas fa-clipboard-list"></i>
-                    <h5>No hay tareas registradas</h5>
-                    <p>Comienza agregando tareas para organizar el proyecto</p>
+                    <span>Sin tareas registradas</span>
                 </div>
             @endif
         </div>
 
-        <!-- ========== AVANCES ========== -->
-        <div class="content-section">
-            <div class="section-header">
-                <h3 class="section-title">
-                    <i class="fas fa-chart-line"></i>
-                    Avances del Proyecto
-                </h3>
-                @if($esLider)
-                    <a href="{{ route('estudiante.avances.create-specific', $proyecto->id_proyecto) }}" class="btn btn-green">
-                        <i class="fas fa-plus"></i>
-                        Registrar Avance
+        {{-- ========== AVANCES ========== --}}
+        <div class="section-card">
+            <div class="section-head">
+                <h3><i class="fas fa-chart-line"></i> Avances del Proyecto</h3>
+                <div class="head-actions">
+                    @if($esLider)
+                        <a href="{{ route('estudiante.avances.create-specific', $proyecto->id_proyecto) }}" class="btn-sm btn-green">
+                            <i class="fas fa-plus"></i> Nuevo
+                        </a>
+                    @endif
+                    <a href="{{ route('estudiante.avances.index-specific', $proyecto->id_proyecto) }}" class="btn-sm btn-outline">
+                        <i class="fas fa-history"></i> Ver Timeline
                     </a>
-                @endif
+                </div>
             </div>
 
             @if($avances->isNotEmpty())
-                <div class="item-grid">
-                    @foreach($avances->take(3) as $avance)
-                        <div class="item-card">
-                            <div class="item-title">{{ $avance->titulo }}</div>
-                            @if($avance->descripcion)
-                                <div class="item-description">{{ Str::limit($avance->descripcion, 120) }}</div>
-                            @endif
-                            <div class="item-footer">
-                                <span style="color: var(--text-secondary); font-size: 0.8rem;">
-                                    <i class="fas fa-calendar"></i>
-                                    {{ $avance->created_at->format('d M Y') }}
+                <div class="avance-list">
+                    @foreach($avances->take(4) as $avance)
+                        @php
+                            $evaluaciones = $avance->evaluaciones;
+                            $tieneEvaluaciones = $evaluaciones->isNotEmpty();
+                        @endphp
+                        <div class="avance-item {{ $tieneEvaluaciones ? 'graded' : 'pending' }}">
+                            <div class="avance-header">
+                                <h4 class="avance-title">{{ $avance->titulo }}</h4>
+                                <span class="avance-status {{ $tieneEvaluaciones ? 'status-ok' : 'status-wait' }}">
+                                    <i class="fas {{ $tieneEvaluaciones ? 'fa-check' : 'fa-clock' }}"></i>
+                                    {{ $tieneEvaluaciones ? $evaluaciones->count() . ' evaluación(es)' : 'Sin calificar' }}
                                 </span>
-                                @if($avance->archivo_adjunto)
-                                    <a href="{{ asset('storage/' . $avance->archivo_adjunto) }}" target="_blank" 
-                                       style="color: var(--accent-purple); font-size: 0.85rem;">
-                                        <i class="fas fa-paperclip"></i> Ver archivo
-                                    </a>
-                                @endif
                             </div>
+                            
+                            @if($avance->descripcion)
+                                <p class="avance-desc">{{ Str::limit($avance->descripcion, 100) }}</p>
+                            @endif
+
+                            @if($tieneEvaluaciones)
+                                <div class="eval-list">
+                                    @foreach($evaluaciones as $evaluacion)
+                                        <div class="eval-box">
+                                            <div class="eval-score">
+                                                <span class="score-num">{{ $evaluacion->calificacion }}</span>
+                                                <span class="score-max">/100</span>
+                                            </div>
+                                            <div class="eval-info">
+                                                <div class="eval-jurado">
+                                                    <i class="fas fa-user-tie"></i>
+                                                    {{ $evaluacion->jurado->user->nombre ?? 'Jurado' }} {{ $evaluacion->jurado->user->app_paterno ?? '' }}
+                                                </div>
+                                                <div class="eval-date">
+                                                    <i class="fas fa-calendar"></i>
+                                                    {{ $evaluacion->fecha_evaluacion?->format('d M Y') }}
+                                                </div>
+                                                @if($evaluacion->comentarios)
+                                                    <div class="eval-comment">
+                                                        <i class="fas fa-comment"></i>
+                                                        "{{ Str::limit($evaluacion->comentarios, 80) }}"
+                                                    </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="avance-date">
+                                    <i class="fas fa-calendar"></i> {{ $avance->created_at->format('d M Y') }}
+                                </div>
+                            @endif
                         </div>
                     @endforeach
                 </div>
-                @if($avances->count() > 3)
-                    <div class="text-center mt-4">
-                        <a href="{{ route('estudiante.avances.index-specific', $proyecto->id_proyecto) }}" class="btn btn-outline">
-                            Ver todos los avances ({{ $avances->count() }})
+                @if($avances->count() > 4)
+                    <div class="section-footer">
+                        <a href="{{ route('estudiante.avances.index-specific', $proyecto->id_proyecto) }}">
+                            Ver todos los avances ({{ $avances->count() }}) →
                         </a>
                     </div>
                 @endif
             @else
-                <div class="empty-state">
+                <div class="empty-mini">
                     <i class="fas fa-chart-area"></i>
-                    <h5>No hay avances registrados</h5>
-                    <p>Registra avances para documentar el progreso del proyecto</p>
+                    <span>Sin avances registrados</span>
                 </div>
             @endif
         </div>
 
-        <!-- ========== EVALUACIONES ========== -->
+        {{-- ========== EVALUACIONES FINALES ========== --}}
         @if($evaluacionesFinales->isNotEmpty())
-            <div class="content-section">
-                <div class="section-header">
-                    <h3 class="section-title">
-                        <i class="fas fa-star"></i>
-                        Evaluaciones de Jurados
-                    </h3>
+            <div class="section-card">
+                <div class="section-head">
+                    <h3><i class="fas fa-star"></i> Evaluaciones de Jurados</h3>
                 </div>
-                <div class="evaluation-grid">
-                    @foreach($evaluacionesFinales as $evaluacion)
-                        @if($evaluacion->estado === 'Finalizada')
-                            <div class="evaluation-card">
-                                <div class="evaluation-grade">{{ $evaluacion->calificacion_final }}/100</div>
-                                <div class="evaluation-jurado">{{ $evaluacion->jurado->user->nombre }}</div>
-                                <div class="evaluation-role">Jurado Evaluador</div>
-                                @if($evaluacion->comentarios_finales)
-                                    <div class="evaluation-comments">"{{ Str::limit($evaluacion->comentarios_finales, 150) }}"</div>
+                <div class="eval-grid">
+                    @foreach($evaluacionesFinales as $eval)
+                        @if($eval->estado === 'Finalizada')
+                            <div class="eval-card">
+                                <div class="eval-grade">{{ $eval->calificacion_final }}<small>/100</small></div>
+                                <div class="eval-name">{{ $eval->jurado->user->nombre }}</div>
+                                @if($eval->comentarios_finales)
+                                    <div class="eval-feedback">"{{ Str::limit($eval->comentarios_finales, 100) }}"</div>
                                 @endif
                             </div>
                         @endif
                     @endforeach
                 </div>
                 @if($evaluacionesFinalizadas < $totalEvaluaciones)
-                    <p class="text-center mt-4" style="color: var(--text-secondary); font-size: 0.875rem;">
-                        {{ $evaluacionesFinalizadas }} de {{ $totalEvaluaciones }} evaluaciones completadas
-                    </p>
+                    <div class="section-footer">
+                        <span>{{ $evaluacionesFinalizadas }}/{{ $totalEvaluaciones }} evaluaciones completadas</span>
+                    </div>
                 @endif
             </div>
         @endif
+
     </div>
 </div>
+
+<style>
+/* ========== COMPACT MODERN DESIGN ========== */
+.proyecto-page {
+    background: linear-gradient(180deg, #fefefe, #faf8f5);
+    min-height: 100vh;
+    padding: 1.25rem 1rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.container-compact {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Back Link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: #6b7280;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+.back-link:hover { color: #6366f1; }
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.hero-badges {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.badge-event { background: rgba(99, 102, 241, 0.3); color: #a5b4fc; }
+.badge-leader { background: rgba(251, 191, 36, 0.3); color: #fcd34d; }
+
+.hero-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0 0 0.5rem 0;
+}
+
+.hero-desc {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+}
+
+.hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem;
+}
+.meta-link { color: #93c5fd; text-decoration: none; }
+.meta-link:hover { color: #60a5fa; }
+
+.btn-edit {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.btn-edit:hover { background: rgba(255,255,255,0.25); color: white; }
+
+/* Stats Row */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.stat-box {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    border: 1px solid #f3f4f6;
+}
+
+.stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+.stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+.stat-icon.green { background: #d1fae5; color: #059669; }
+.stat-icon.orange { background: #ffedd5; color: #ea580c; }
+
+.stat-info { display: flex; flex-direction: column; }
+.stat-num { font-size: 1.25rem; font-weight: 700; color: #111827; }
+.stat-label { font-size: 0.7rem; color: #6b7280; }
+
+.stat-bar {
+    height: 4px;
+    background: #f3f4f6;
+    border-radius: 2px;
+    margin-top: 0.5rem;
+    overflow: hidden;
+}
+.stat-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #8b5cf6, #6366f1);
+    border-radius: 2px;
+}
+
+/* Section Cards */
+.section-card {
+    background: white;
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #f3f4f6;
+}
+
+.section-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.section-head h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+}
+.section-head h3 i { color: #f59e0b; font-size: 0.85rem; }
+
+.head-actions { display: flex; gap: 0.5rem; }
+
+.btn-sm {
+    padding: 0.35rem 0.7rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.btn-purple { background: #7c3aed; color: white; }
+.btn-purple:hover { background: #6d28d9; color: white; }
+.btn-green { background: #059669; color: white; }
+.btn-green:hover { background: #047857; color: white; }
+.btn-outline { background: white; border: 1px solid #e5e7eb; color: #374151; }
+.btn-outline:hover { background: #f9fafb; color: #111827; }
+
+/* Task List */
+.task-list { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.task-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: #fafafa;
+    border-radius: 10px;
+    border-left: 3px solid #e5e7eb;
+}
+.task-item.done { border-left-color: #10b981; background: #f0fdf4; }
+.task-item.pending { border-left-color: #f59e0b; }
+
+.task-check { 
+    font-size: 1rem; 
+    margin-top: 0.1rem;
+}
+.task-item.done .task-check { color: #10b981; }
+.task-item.pending .task-check { color: #d1d5db; }
+
+.task-content { flex: 1; min-width: 0; }
+.task-name { font-weight: 600; font-size: 0.85rem; color: #111827; }
+.task-desc { font-size: 0.75rem; color: #6b7280; margin-top: 0.15rem; }
+.task-meta { 
+    font-size: 0.7rem; 
+    color: #9ca3af; 
+    margin-top: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.task-meta .sep { color: #d1d5db; }
+
+.task-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+}
+.badge-ok { background: #d1fae5; color: #065f46; }
+.badge-wait { background: #fef3c7; color: #92400e; }
+
+/* Avance List */
+.avance-list { display: flex; flex-direction: column; gap: 0.75rem; }
+
+.avance-item {
+    padding: 1rem;
+    background: #fafafa;
+    border-radius: 10px;
+    border-left: 3px solid #e5e7eb;
+}
+.avance-item.graded { border-left-color: #10b981; background: #f0fdf4; }
+.avance-item.pending { border-left-color: #6366f1; }
+
+.avance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.avance-title { font-size: 0.9rem; font-weight: 600; color: #111827; margin: 0; }
+
+.avance-status {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+.status-ok { background: #d1fae5; color: #065f46; }
+.status-wait { background: #e0e7ff; color: #3730a3; }
+
+.avance-desc { font-size: 0.8rem; color: #6b7280; margin-bottom: 0.75rem; }
+.avance-date { font-size: 0.75rem; color: #9ca3af; display: flex; align-items: center; gap: 0.3rem; }
+
+/* Eval List - Multiple evaluations */
+.eval-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Eval Box */
+.eval-box {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #d1fae5;
+}
+
+.eval-score {
+    display: flex;
+    align-items: baseline;
+    gap: 0.1rem;
+}
+.score-num { font-size: 1.5rem; font-weight: 800; color: #059669; }
+.score-max { font-size: 0.8rem; color: #6b7280; }
+
+.eval-info { flex: 1; font-size: 0.75rem; color: #6b7280; }
+.eval-jurado, .eval-date, .eval-comment { 
+    display: flex; 
+    align-items: center; 
+    gap: 0.3rem; 
+    margin-bottom: 0.25rem;
+}
+.eval-comment { font-style: italic; color: #4b5563; }
+
+/* Eval Grid */
+.eval-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+
+.eval-card {
+    background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+    border: 1px solid #d1fae5;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.eval-grade {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #059669;
+}
+.eval-grade small { font-size: 1rem; color: #6b7280; }
+
+.eval-name { font-size: 0.85rem; font-weight: 600; color: #111827; margin-top: 0.25rem; }
+.eval-feedback { font-size: 0.75rem; color: #6b7280; font-style: italic; margin-top: 0.5rem; }
+
+/* Empty & Footer */
+.empty-mini {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #9ca3af;
+}
+.empty-mini i { font-size: 1.5rem; margin-bottom: 0.5rem; display: block; opacity: 0.5; }
+.empty-mini span { font-size: 0.8rem; }
+
+.section-footer {
+    text-align: center;
+    padding-top: 0.75rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+.section-footer a { color: #6366f1; text-decoration: none; font-weight: 500; }
+.section-footer a:hover { color: #4f46e5; }
+
+/* Responsive */
+@media (max-width: 640px) {
+    .hero-title { font-size: 1.25rem; }
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .btn-edit { position: static; margin-top: 1rem; display: inline-flex; }
+}
+</style>
 
 @endsection

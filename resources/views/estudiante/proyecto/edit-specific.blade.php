@@ -52,12 +52,16 @@
                 <div class="mb-6">
                     <label for="nombre" class="block text-sm mb-2">
                         Nombre del Proyecto <span class="required-asterisk">*</span>
+                        <span class="character-count">
+                            <span id="nombre-count">{{ strlen(old('nombre', $proyecto->nombre)) }}</span>/100
+                        </span>
                     </label>
                     <input type="text" name="nombre" id="nombre"
                            value="{{ old('nombre', $proyecto->nombre) }}"
                            class="neuro-input w-full px-4 py-2 rounded-lg"
                            placeholder="Ej: Sistema de Gestión Escolar"
-                           required maxlength="200">
+                           required maxlength="100"
+                           oninput="updateCharCount('nombre', 100)">
                     @error('nombre')
                         <p class="error-message mt-1">{{ $message }}</p>
                     @enderror
@@ -67,10 +71,15 @@
                 <div class="mb-6">
                     <label for="descripcion_tecnica" class="block text-sm mb-2">
                         Descripción Técnica
+                        <span class="character-count">
+                            <span id="descripcion_tecnica-count">{{ strlen(old('descripcion_tecnica', $proyecto->descripcion_tecnica ?? '')) }}</span>/500
+                        </span>
                     </label>
                     <textarea name="descripcion_tecnica" id="descripcion_tecnica" rows="6"
                               class="neuro-textarea w-full px-4 py-2 rounded-lg"
-                              placeholder="Describe las características técnicas, stack tecnológico, arquitectura, funcionalidades principales...">{{ old('descripcion_tecnica', $proyecto->descripcion_tecnica) }}</textarea>
+                              placeholder="Describe las características técnicas, stack tecnológico, arquitectura, funcionalidades principales..."
+                              maxlength="500"
+                              oninput="updateCharCount('descripcion_tecnica', 500)">{{ old('descripcion_tecnica', $proyecto->descripcion_tecnica ?? '') }}</textarea>
                     @error('descripcion_tecnica')
                         <p class="error-message mt-1">{{ $message }}</p>
                     @enderror
@@ -127,5 +136,43 @@
         </div>
     </div>
 </div>
+
+<script>
+function updateCharCount(fieldId, maxLength) {
+    const field = document.getElementById(fieldId);
+    const countElement = document.getElementById(fieldId + '-count');
+    const currentLength = field.value.length;
+
+    countElement.textContent = currentLength;
+
+    if (currentLength > maxLength) {
+        countElement.style.color = '#ef4444';
+    } else if (currentLength > maxLength * 0.9) {
+        countElement.style.color = '#f59e0b';
+    } else {
+        countElement.style.color = '#6b7280';
+    }
+}
+
+// Initialize character counts on page load
+document.addEventListener('DOMContentLoaded', function() {
+    updateCharCount('nombre', 100);
+    updateCharCount('descripcion_tecnica', 500);
+});
+</script>
+
+<style>
+.character-count {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: normal;
+    margin-left: 0.5rem;
+}
+
+#nombre-count, #descripcion_tecnica-count {
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+</style>
 
 @endsection

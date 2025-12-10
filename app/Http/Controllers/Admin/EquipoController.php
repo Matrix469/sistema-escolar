@@ -76,10 +76,16 @@ class EquipoController extends Controller
      */
     public function show(Equipo $equipo)
     {
-        $equipo->load('miembros.user.estudiante.carrera', 'miembros.rol', 'inscripciones.evento');
+        $equipo->load('miembros.user.estudiante.carrera', 'miembros.rol', 'inscripciones.evento.jurados');
         $roles = CatRolEquipo::all();
 
-        return view('admin.equipos.show', compact('equipo', 'roles'));
+        // Obtener información del evento y sus jurados
+        $inscripcion = $equipo->inscripciones->first();
+        $evento = $inscripcion?->evento;
+        $juradosCount = $evento ? $evento->jurados->count() : 0;
+        $juradosSuficientes = $juradosCount >= 3 && $juradosCount <= 5;
+
+        return view('admin.equipos.show', compact('equipo', 'roles', 'evento', 'juradosCount', 'juradosSuficientes'));
     }
 
     /**
@@ -87,7 +93,10 @@ class EquipoController extends Controller
      */
     public function edit(Equipo $equipo)
     {
-        return view('admin.equipos.edit', compact('equipo'));
+        $equipo->load('inscripciones.evento');
+        $evento = $equipo->inscripciones->first()?->evento;
+        
+        return view('admin.equipos.edit', compact('equipo', 'evento'));
     }
 
     /**
@@ -165,12 +174,24 @@ class EquipoController extends Controller
 
     /**
      * Update member role (Admin can change any member's role)
+     * Bloquea la asignación del rol "Líder" manualmente
      */
     public function updateMemberRole(Request $request, MiembroEquipo $miembro)
     {
         $request->validate([
             'id_rol_equipo' => 'required|exists:cat_roles_equipo,id_rol_equipo',
         ]);
+
+        // Bloquear la asignación del rol "Líder" manualmente
+        $rolLider = CatRolEquipo::where('nombre', 'Líder')->first();
+        if ($rolLider && $request->id_rol_equipo == $rolLider->id_rol_equipo) {
+            return back()->with('error', 'No puedes asignar el rol de Líder manualmente. Usa el botón "Transferir Liderazgo".');
+        }
+
+        // Si es el líder, no se puede cambiar su rol
+        if ($miembro->es_lider) {
+            return back()->with('error', 'El rol del líder no se puede cambiar manualmente.');
+        }
 
         $miembro->update([
             'id_rol_equipo' => $request->id_rol_equipo,

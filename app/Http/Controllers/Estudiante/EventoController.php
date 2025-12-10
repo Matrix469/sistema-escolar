@@ -193,15 +193,63 @@ class EventoController extends Controller
     {
         $evento->load(['inscripciones.equipo', 'jurados.user', 'criteriosEvaluacion']);
 
-        // Verificar si el usuario ya tiene un equipo en este evento
         $user = Auth::user();
+        
+        // Verificar si el usuario ya tiene un equipo en este evento
         $yaTieneEquipo = MiembroEquipo::where('id_estudiante', $user->id_usuario)
             ->whereHas('inscripcion', function ($query) use ($evento) {
                 $query->where('id_evento', $evento->id_evento);
             })
             ->exists();
 
-        return view('estudiante.eventos.show', compact('evento', 'yaTieneEquipo'));
+        // ===== VALIDACIÓN DE CRUCE DE FECHAS =====
+        $hayConflictoFechas = false;
+        $eventoConflicto = null;
+        
+        // Solo verificar conflictos si NO está inscrito en este evento
+        if (!$yaTieneEquipo) {
+            // Obtener eventos donde el estudiante ya está inscrito (excluyendo el actual)
+            $eventosInscritos = Evento::whereHas('inscripciones.miembros', function ($q) use ($user) {
+                $q->where('id_estudiante', $user->id_usuario);
+            })
+            ->where('id_evento', '!=', $evento->id_evento)
+            ->whereIn('estado', ['Próximo', 'Activo', 'En Progreso', 'Cerrado']) // Solo eventos activos/pendientes
+            ->get();
+
+            foreach ($eventosInscritos as $eventoInscrito) {
+                if ($this->fechasSeSuperponen($evento, $eventoInscrito)) {
+                    $hayConflictoFechas = true;
+                    $eventoConflicto = $eventoInscrito;
+                    break;
+                }
+            }
+        }
+
+        // Verificar cuántos equipos faltan para llenar el evento
+        $equiposFaltantes = $evento->cupo_max_equipos - $evento->inscripciones->count();
+        $eventoLleno = $equiposFaltantes <= 0;
+
+        return view('estudiante.eventos.show', compact(
+            'evento', 
+            'yaTieneEquipo', 
+            'hayConflictoFechas', 
+            'eventoConflicto',
+            'equiposFaltantes',
+            'eventoLleno'
+        ));
+    }
+
+    /**
+     * Verificar si las fechas de dos eventos se superponen
+     */
+    private function fechasSeSuperponen(Evento $eventoA, Evento $eventoB): bool
+    {
+        // Evento A: fecha_inicio_A, fecha_fin_A
+        // Evento B: fecha_inicio_B, fecha_fin_B
+        // Hay superposición si: inicio_A <= fin_B AND fin_A >= inicio_B
+        
+        return $eventoA->fecha_inicio <= $eventoB->fecha_fin 
+            && $eventoA->fecha_fin >= $eventoB->fecha_inicio;
     }
 
     /**
@@ -233,3 +281,4 @@ class EventoController extends Controller
         return view('estudiante.eventos.posiciones', compact('evento', 'inscripciones', 'miInscripcion'));
     }
 }
+

@@ -28,8 +28,8 @@
     <svg style="position: absolute; width: 0; height: 0;">
         <defs>
             <linearGradient id="gradientOrange" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stop-color="#e89a3c"/>
-                <stop offset="100%" stop-color="#f5a847"/>
+                <stop offset="0%" stop-color="#ef4444"/>
+                <stop offset="100%" stop-color="#f87171"/>
             </linearGradient>
             <linearGradient id="gradientGreen" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stop-color="#10b981"/>
@@ -418,9 +418,9 @@
                     @if($data['total'] > 0)
                         <div class="progress-chart-card" data-percentage="{{ $data['percentage'] }}" data-color="{{ $data['color'] }}">
                             <div class="circular-progress">
-                                <svg viewBox="0 0 100 100">
-                                    <circle class="bg" cx="50" cy="50" r="40"/>
-                                    <circle class="progress {{ $data['color'] }}" cx="50" cy="50" r="40"/>
+                                <svg viewBox="0 0 100 100" width="120" height="120">
+                                    <circle class="bg" cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="6"/>
+                                    <circle class="progress {{ $data['color'] }}" cx="50" cy="50" r="40" fill="none" stroke-width="6"/>
                                 </svg>
                                 <div class="percentage">
                                     <span>{{ $data['percentage'] }}%</span>
@@ -467,7 +467,16 @@
                     </div>
                 </div>
                 <div class="progress-circle-container">
-                    <div class="progress-ring"></div>
+                    <svg class="progress-ring" viewBox="0 0 100 100" width="120" height="120">
+                        <defs>
+                            <linearGradient id="progressGradientMain" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#10b981"/>
+                                <stop offset="100%" stop-color="#14b8a6"/>
+                            </linearGradient>
+                        </defs>
+                        <circle class="progress-ring-bg" cx="50" cy="50" r="40" fill="none" stroke="#e5e7eb" stroke-width="6"/>
+                        <circle class="progress-ring-fill" cx="50" cy="50" r="40" fill="none" stroke="url(#progressGradientMain)" stroke-width="6"/>
+                    </svg>
                     <div class="progress-text">
                         <span>Avance</span>
                         <strong>0%</strong>

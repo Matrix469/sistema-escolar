@@ -1,38 +1,54 @@
 @extends('layouts.app')
 
+@section('title', 'Editar Equipo')
+
 @section('content')
 
-<div class="editar-equipo-page py-12">
-    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-        <a href="{{ route('admin.equipos.show', $equipo) }}" class="back-link">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-            </svg>
-            Volver al equipo
-        </a>
+<div class="edit-equipo-modern">
+    <div class="container-edit">
+        
+        {{-- Back Link --}}
+        @if($evento)
+            <a href="{{ route('admin.eventos.show', $evento) }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Volver al Evento
+            </a>
+        @else
+            <a href="{{ route('admin.equipos.show', $equipo) }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Volver al Equipo
+            </a>
+        @endif
 
-        <!-- Hero Section -->
-        <div class="hero-section">
-            <h1 class="hero-title">Editar Equipo</h1>
-            <p class="hero-subtitle">{{ $equipo->nombre }}</p>
+        {{-- Header --}}
+        <div class="page-header">
+            <div class="header-icon">
+                <i class="fas fa-edit"></i>
+            </div>
+            <div class="header-text">
+                <h1>Editar Equipo</h1>
+                <p>{{ $equipo->nombre }}</p>
+            </div>
         </div>
         
-        <div class="main-card">
+        {{-- Main Form Card --}}
+        <div class="form-card">
             @if (session('error'))
-                <div class="alert-error" role="alert">
-                    <p class="font-bold">Error</p>
-                    <p>{{ session('error') }}</p>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>{{ session('error') }}</span>
                 </div>
             @endif
 
             @if ($errors->any())
-                <div class="alert-error" role="alert">
-                    <p class="font-bold">¡Ups! Hubo algunos problemas.</p>
-                    <ul class="mt-2">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="alert alert-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <strong>¡Ups! Hubo algunos problemas:</strong>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             @endif
 
@@ -40,73 +56,77 @@
                 @csrf
                 @method('PUT')
 
-                <!-- Nombre del Equipo -->
-                <div class="input-group-equipo">
-                    <label for="nombre" class="form-label">Nombre del Equipo</label>
+                {{-- Nombre del Equipo --}}
+                <div class="form-group">
+                    <label for="nombre" class="form-label">
+                        <i class="fas fa-users"></i> Nombre del Equipo
+                    </label>
                     <input type="text" 
                            name="nombre" 
                            id="nombre" 
-                           class="neuro-input" 
+                           class="form-input" 
                            value="{{ old('nombre', $equipo->nombre) }}" 
                            maxlength="85"
-                           required 
-                           autofocus>
-                    <small class="input-help-equipo">Máximo 85 caracteres</small>
-                    <p class="help-text">Este es el nombre con el que el equipo será identificado.</p>
+                           placeholder="Nombre del equipo"
+                           required>
+                    <span class="input-hint">Máximo 85 caracteres</span>
                 </div>
 
-                <div class="mt-6">
-                    <label for="ruta_imagen" class="form-label">Imagen del Equipo (Opcional)</label>
+                {{-- Imagen del Equipo --}}
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-image"></i> Imagen del Equipo (Opcional)
+                    </label>
                     
-                    {{-- Área de drag and drop --}}
+                    {{-- Imagen actual --}}
+                    @if($equipo->ruta_imagen)
+                        <div class="current-image">
+                            <img src="{{ asset('storage/' . $equipo->ruta_imagen) }}" alt="{{ $equipo->nombre }}">
+                            <span class="image-label">Imagen actual</span>
+                        </div>
+                    @endif
+                    
+                    {{-- Área de subida --}}
                     <div class="file-upload-area" id="fileUploadArea">
-                        <div class="file-upload-content">
-                            <svg class="file-upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                            <p class="file-upload-text">
-                                <strong>Arrastra un archivo aquí o haz clic para seleccionar</strong>
-                            </p>
-                            <p class="file-upload-hint">
-                                JPG, PNG, GIF - Máximo 2MB
-                            </p>
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p><strong>Arrastra una imagen aquí</strong></p>
+                            <p class="upload-hint">o haz clic para seleccionar</p>
+                            <span class="upload-formats">JPG, PNG, GIF - Máximo 2MB</span>
                         </div>
                         <input type="file" 
                                name="ruta_imagen" 
                                id="ruta_imagen" 
                                accept="image/jpeg,image/png,image/jpg,image/gif"
-                               class="neuro-file"
                                onchange="handleFileSelect(this)">
                     </div>
                     
-                    {{-- Preview del archivo seleccionado --}}
+                    {{-- Preview del archivo --}}
                     <div id="filePreview" class="file-preview">
-                        <div class="file-preview-icon">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                            </svg>
+                        <div class="preview-info">
+                            <i class="fas fa-image"></i>
+                            <span id="fileName"></span>
+                            <span id="fileSize" class="file-size"></span>
                         </div>
-                        <div class="file-preview-info">
-                            <div class="file-preview-name" id="fileName"></div>
-                            <div class="file-preview-size" id="fileSize"></div>
-                        </div>
-                        <button type="button" class="file-preview-remove" onclick="removeFile()">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
+                        <button type="button" class="remove-file" onclick="removeFile()">
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
-                    
-                    <p class="help-text">Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB.</p>
                 </div>
 
-                <!-- Botones de Acción -->
-                <div class="action-buttons">
-                    <a href="{{ route('admin.equipos.show', $equipo) }}" class="btn-cancel">
-                        Cancelar
-                    </a>
-                    <button type="submit" class="btn-submit">
-                        Actualizar Equipo
+                {{-- Botones de Acción --}}
+                <div class="form-actions">
+                    @if($evento)
+                        <a href="{{ route('admin.eventos.show', $evento) }}" class="btn btn-cancel">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    @else
+                        <a href="{{ route('admin.equipos.show', $equipo) }}" class="btn btn-cancel">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    @endif
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fas fa-save"></i> Guardar Cambios
                     </button>
                 </div>
             </form>
@@ -115,290 +135,394 @@
 </div>
 
 <style>
-    /* Estilos para validación */
-    .input-group-equipo {
-        position: relative;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    .input-help-equipo {
-        display: block;
-        margin-top: 5px;
-        font-size: 0.75rem;
-        color: rgba(107, 114, 128, 0.8);
-        margin-left: 5px;
-        font-family: 'Poppins', sans-serif;
-    }
+.edit-equipo-modern {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 2rem 1rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
 
-    .validation-message-equipo {
-        display: none;
-        align-items: center;
-        gap: 8px;
-        margin-top: 8px;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 0.8rem;
-        font-family: 'Poppins', sans-serif;
-    }
+.container-edit {
+    max-width: 700px;
+    margin: 0 auto;
+}
 
-    /* Animación de entrada */
-    .validation-message-equipo.show {
-        display: flex !important;
-        animation: slideInEquipo 0.3s ease-out;
-    }
+/* Back Link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #475569;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+.back-link:hover {
+    color: #1e40af;
+    background: #eff6ff;
+    transform: translateX(-3px);
+}
 
-    /* Animación de salida */
-    .validation-message-equipo.hide {
-        animation: slideOutEquipo 0.3s ease-out forwards;
-    }
+/* Header */
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, #1e3a5f, #1e40af);
+    border-radius: 16px;
+    color: white;
+}
 
-    @keyframes slideInEquipo {
-        from {
-            opacity: 0;
-            transform: translateY(-8px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+.header-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
 
-    @keyframes slideOutEquipo {
-        from {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateY(-8px);
-        }
-    }
+.header-text h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+}
+.header-text p {
+    margin: 0.35rem 0 0;
+    opacity: 0.85;
+    font-size: 0.95rem;
+}
 
-    /* Error es ROJO */
-    .validation-message-equipo.error {
-        background: rgba(239, 68, 68, 0.2);
-        border-left: 4px solid #ef4444;
-        color: #fc7373ff;
-    }
+/* Form Card */
+.form-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
 
-    .validation-message-equipo.error i {
-        color: #ef4444;
-        font-size: 0.9rem;
-    }
+/* Alerts */
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+.alert-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+.alert-error i {
+    color: #dc2626;
+    margin-top: 0.15rem;
+}
+.alert ul {
+    margin: 0.5rem 0 0 1.25rem;
+    padding: 0;
+}
 
-    .validation-message-equipo.success {
-        background: rgba(40, 167, 69, 0.2);
-        border-left: 4px solid #28a745;
-        color: #53a953ff;
-    }
+/* Form Groups */
+.form-group {
+    margin-bottom: 1.75rem;
+}
 
-    .validation-message-equipo.success i {
-        color: #28a745;
-        font-size: 0.9rem;
-    }
+.form-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 0.75rem;
+}
+.form-label i {
+    color: #3b82f6;
+}
 
-    /* Borde de error es ROJO */
-    .neuro-input.error {
-        border-color: #ef4444 !important;
-        background: rgba(239, 68, 68, 0.1) !important;
-        animation: shakeEquipo 0.5s ease-in-out;
-    }
+.form-input {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    color: #111827;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    transition: all 0.2s;
+}
+.form-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+.form-input::placeholder {
+    color: #94a3b8;
+}
 
-    .neuro-input.success {
-        border-color: #28a745 !important;
-        background: rgba(40, 167, 69, 0.1) !important;
-    }
+.input-hint {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: #64748b;
+}
 
-    @keyframes shakeEquipo {
-        0%, 100% { transform: translateX(0); }
-        10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-        20%, 40%, 60%, 80% { transform: translateX(3px); }
+/* Current Image */
+.current-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f1f5f9;
+    border-radius: 12px;
+}
+.current-image img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.image-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* File Upload */
+.file-upload-area {
+    position: relative;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #fafbfc;
+}
+.file-upload-area:hover {
+    border-color: #3b82f6;
+    background: #eff6ff;
+}
+.file-upload-area.dragover {
+    border-color: #3b82f6;
+    background: #dbeafe;
+}
+
+.upload-content i {
+    font-size: 2.5rem;
+    color: #94a3b8;
+    margin-bottom: 0.75rem;
+}
+.upload-content p {
+    margin: 0;
+    color: #334155;
+}
+.upload-hint {
+    color: #64748b !important;
+    font-size: 0.875rem !important;
+}
+.upload-formats {
+    display: block;
+    margin-top: 0.75rem;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    background: #e2e8f0;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.file-upload-area input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* File Preview */
+.file-preview {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+.file-preview.show {
+    display: flex;
+}
+
+.preview-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: #166534;
+}
+.preview-info i {
+    font-size: 1.25rem;
+}
+.file-size {
+    font-size: 0.8rem;
+    color: #22c55e;
+}
+
+.remove-file {
+    background: #fef2f2;
+    border: none;
+    color: #dc2626;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+.remove-file:hover {
+    background: #fee2e2;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+}
+.btn-cancel:hover {
+    background: #e2e8f0;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    color: white;
+}
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .page-header {
+        flex-direction: column;
+        text-align: center;
     }
+    .form-actions {
+        flex-direction: column;
+    }
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
 </style>
 
-<!-- FontAwesome para iconos -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <script>
-    // ============================================
-    // FUNCIONES DE VALIDACIÓN EN TIEMPO REAL
-    // ============================================
-    
-    function showValidationMessageEquipo(input, message, isError = true) {
-        let messageDiv = input.parentElement.querySelector('.validation-message-equipo');
-        
-        if (!messageDiv) {
-            messageDiv = document.createElement('div');
-            messageDiv.className = 'validation-message-equipo';
-            input.parentElement.appendChild(messageDiv);
-        }
-        
-        // Remover clases anteriores
-        messageDiv.classList.remove('error', 'success', 'show', 'hide');
-        
-        // Agregar nuevas clases
-        messageDiv.className = `validation-message-equipo ${isError ? 'error' : 'success'} show`;
-        messageDiv.innerHTML = `
-            <i class="fas fa-${isError ? 'exclamation-circle' : 'check-circle'}"></i>
-            <span>${message}</span>
-        `;
-        
-        input.classList.remove('error', 'success');
-        input.classList.add(isError ? 'error' : 'success');
-        
-        // Limpiar timeout anterior
-        clearTimeout(input.validationTimeout);
-        
-        input.validationTimeout = setTimeout(() => {
-            if (messageDiv) {
-                messageDiv.classList.remove('show');
-                messageDiv.classList.add('hide');
-                
-                setTimeout(() => {
-                    messageDiv.style.display = 'none';
-                    messageDiv.classList.remove('hide');
-                }, 300);
-            }
-            input.classList.remove('error', 'success');
-        }, 1800);
-    }
+const fileUploadArea = document.getElementById('fileUploadArea');
+const fileInput = document.getElementById('ruta_imagen');
+const filePreview = document.getElementById('filePreview');
+const fileName = document.getElementById('fileName');
+const fileSize = document.getElementById('fileSize');
 
-    function hideValidationMessageEquipo(input) {
-        const messageDiv = input.parentElement.querySelector('.validation-message-equipo');
-        if (messageDiv) {
-            messageDiv.classList.remove('show');
-            messageDiv.classList.add('hide');
-            
-            setTimeout(() => {
-                messageDiv.style.display = 'none';
-                messageDiv.classList.remove('hide');
-            }, 300);
-        }
-        input.classList.remove('error', 'success');
-        clearTimeout(input.validationTimeout);
-        clearTimeout(input.successDebounce);
-    }
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    fileUploadArea.addEventListener(eventName, preventDefaults, false);
+});
 
-    // ============================================
-    // CONFIGURACIÓN AL CARGAR EL DOM
-    // ============================================
-    
-    document.addEventListener('DOMContentLoaded', function() {
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+['dragenter', 'dragover'].forEach(eventName => {
+    fileUploadArea.addEventListener(eventName, () => fileUploadArea.classList.add('dragover'), false);
+});
+
+['dragleave', 'drop'].forEach(eventName => {
+    fileUploadArea.addEventListener(eventName, () => fileUploadArea.classList.remove('dragover'), false);
+});
+
+fileUploadArea.addEventListener('drop', function(e) {
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+        fileInput.files = files;
+        handleFileSelect(fileInput);
+    }
+}, false);
+
+function handleFileSelect(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const size = (file.size / 1024 / 1024).toFixed(2);
         
-        // ============================================
-        // VALIDACIÓN: NOMBRE DEL EQUIPO
-        // ============================================
-        const nombreEquipo = document.getElementById('nombre');
-        if (nombreEquipo) {
-            nombreEquipo.addEventListener('input', function() {
-                const value = this.value;
-                
-                clearTimeout(this.successDebounce);
-                
-                if (value.length > 85) {
-                    this.value = value.substring(0, 85);
-                    showValidationMessageEquipo(this, 'Máximo 85 caracteres permitidos', true);
-                } else if (value) {
-                    hideValidationMessageEquipo(this);
-                    
-                    // Mensaje de éxito con debounce (500ms después de dejar de teclear)
-                    this.successDebounce = setTimeout(() => {
-                        const remaining = 85 - value.length;
-                        showValidationMessageEquipo(this, `${remaining} caracteres restantes`, false);
-                    }, 500);
-                } else {
-                    hideValidationMessageEquipo(this);
-                }
-            });
-
-            nombreEquipo.addEventListener('blur', function() {
-                clearTimeout(this.successDebounce);
-                if (this.value) {
-                    const remaining = 85 - this.value.length;
-                    showValidationMessageEquipo(this, `${remaining} caracteres restantes`, false);
-                }
-            });
+        if (parseFloat(size) > 2) {
+            alert('El archivo excede el tamaño máximo de 2MB');
+            removeFile();
+            return;
         }
-    });
-
-    // ============================================
-    // FUNCIONES PARA MANEJO DE ARCHIVOS
-    // ============================================
-    
-    const fileUploadArea = document.getElementById('fileUploadArea');
-    const fileInput = document.getElementById('ruta_imagen');
-    const filePreview = document.getElementById('filePreview');
-    const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        fileUploadArea.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
-    });
-    
-    function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-    
-    ['dragenter', 'dragover'].forEach(eventName => {
-        fileUploadArea.addEventListener(eventName, highlight, false);
-    });
-    
-    ['dragleave', 'drop'].forEach(eventName => {
-        fileUploadArea.addEventListener(eventName, unhighlight, false);
-    });
-    
-    function highlight() {
-        fileUploadArea.classList.add('dragover');
-    }
-    
-    function unhighlight() {
-        fileUploadArea.classList.remove('dragover');
-    }
-    
-    fileUploadArea.addEventListener('drop', handleDrop, false);
-    
-    function handleDrop(e) {
-        const dt = e.dataTransfer;
-        const files = dt.files;
         
-        if (files.length > 0) {
-            fileInput.files = files;
-            handleFileSelect(fileInput);
+        const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
+        if (!validTypes.includes(file.type)) {
+            alert('Solo se permiten archivos JPG, PNG o GIF');
+            removeFile();
+            return;
         }
+        
+        fileName.textContent = file.name;
+        fileSize.textContent = `(${size} MB)`;
+        filePreview.classList.add('show');
+        fileUploadArea.style.display = 'none';
     }
-    
-    function handleFileSelect(input) {
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-            const size = (file.size / 1024 / 1024).toFixed(2);
-            
-            // Validar tamaño máximo (2MB)
-            if (parseFloat(size) > 2) {
-                alert('El archivo excede el tamaño máximo permitido de 2MB');
-                removeFile();
-                return;
-            }
-            
-            // Validar tipo de archivo
-            const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif'];
-            if (!validTypes.includes(file.type)) {
-                alert('Solo se permiten archivos JPG, PNG o GIF');
-                removeFile();
-                return;
-            }
-            
-            fileName.textContent = file.name;
-            fileSize.textContent = `${size} MB`;
-            filePreview.classList.add('show');
-            fileUploadArea.style.display = 'none';
-        }
-    }
-    
-    function removeFile() {
-        fileInput.value = '';
-        filePreview.classList.remove('show');
-        fileUploadArea.style.display = 'block';
-    }
+}
+
+function removeFile() {
+    fileInput.value = '';
+    filePreview.classList.remove('show');
+    fileUploadArea.style.display = 'block';
+}
 </script>
+
 @endsection

@@ -1,4 +1,4 @@
-@extends('layouts.prueba')
+@extends('layouts.app')
 
 @section('title', 'Proyecto del Evento')
 
@@ -134,7 +134,7 @@
                         </div>
                         
                         <div class="mt-4">
-                            <a href="{{ route('estudiante.proyecto.show') }}" class="action-button">
+                            <a href="{{ route('estudiante.proyecto.show-specific', $proyecto->id_proyecto) }}" class="action-button">
                                 Ver Nuestro Proyecto
                             </a>
                         </div>

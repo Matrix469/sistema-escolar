@@ -60,6 +60,14 @@
                             </svg>
                             Editar Equipo
                         </a>
+                        @if($inscripcion->miembros->count() > 1)
+                            <button type="button" onclick="openTransferModal()" class="hero-btn hero-btn-transfer">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                </svg>
+                                Transferir Liderazgo
+                            </button>
+                        @endif
                     @else
                         <form action="{{ route('estudiante.miembros.leave') }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres abandonar este equipo?');">
                             @csrf
@@ -185,19 +193,25 @@
                                             <form action="{{ route('estudiante.miembros.updateRole', $miembro) }}" method="POST" style="display: flex; align-items: center; gap: 0.5rem;">
                                                 @csrf
                                                 @method('PATCH')
-                                                <select name="id_rol_equipo">
+                                                <select name="id_rol_equipo" class="role-select-modern">
                                                     @foreach($roles as $rol)
-                                                        <option value="{{ $rol->id_rol_equipo }}" @if($rol->id_rol_equipo == $miembro->id_rol_equipo) selected @endif>
-                                                            {{ $rol->nombre }}
-                                                        </option>
+                                                        @if($rol->nombre !== 'Líder')
+                                                            <option value="{{ $rol->id_rol_equipo }}" @if($rol->id_rol_equipo == $miembro->id_rol_equipo) selected @endif>
+                                                                {{ $rol->nombre }}
+                                                            </option>
+                                                        @endif
                                                     @endforeach
                                                 </select>
-                                                <button type="submit" class="btn-sm btn-primary">Actualizar</button>
+                                                <button type="submit" class="btn-update-role" title="Actualizar rol">
+                                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                                    </svg>
+                                                </button>
                                             </form>
                                             <form action="{{ route('estudiante.miembros.destroy', $miembro) }}" method="POST" onsubmit="return confirm('¿Eliminar a este miembro del equipo?');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn-sm btn-danger">
+                                                <button type="submit" class="btn-remove-member" title="Eliminar miembro">
                                                     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                                     </svg>
@@ -376,5 +390,85 @@
     </div>
 </div>
 
+{{-- Modal de Transferencia de Liderazgo --}}
+@if($esLider && $inscripcion->miembros->count() > 1)
+<div id="transferModal" class="transfer-modal hidden">
+    <div class="transfer-modal-overlay" onclick="closeTransferModal()"></div>
+    <div class="transfer-modal-content">
+        <div class="transfer-modal-header">
+            <h3>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="24" height="24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                </svg>
+                Transferir Liderazgo
+            </h3>
+            <button type="button" onclick="closeTransferModal()" class="modal-close-btn">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div class="transfer-modal-body">
+            <p class="transfer-warning">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                </svg>
+                <span>Una vez que transfieras el liderazgo, perderás los permisos de líder y pasarás a ser un miembro regular del equipo.</span>
+            </p>
+            <h4>Selecciona al nuevo líder:</h4>
+            <div class="transfer-members-list">
+                @foreach($inscripcion->miembros as $miembro)
+                    @if(!$miembro->es_lider)
+                        <form action="{{ route('estudiante.miembros.transfer-leadership', $miembro) }}" method="POST" class="transfer-member-form">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="nuevo_lider_id" value="{{ $miembro->id_miembro }}">
+                            <div class="transfer-member-item">
+                                <div class="transfer-member-info">
+                                    <div class="transfer-avatar">
+                                        {{ strtoupper(substr($miembro->user->nombre ?? 'U', 0, 1)) }}{{ strtoupper(substr($miembro->user->app_paterno ?? '', 0, 1)) }}
+                                    </div>
+                                    <div class="transfer-details">
+                                        <span class="transfer-name">{{ $miembro->user->nombre_completo }}</span>
+                                        <span class="transfer-role">{{ $miembro->rol->nombre ?? 'Sin rol' }}</span>
+                                    </div>
+                                </div>
+                                <button type="submit" class="transfer-select-btn" onclick="return confirm('¿Estás seguro de transferir el liderazgo a {{ $miembro->user->nombre }}?')">
+                                    Hacer Líder
+                                </button>
+                            </div>
+                        </form>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+        <div class="transfer-modal-footer">
+            <button type="button" onclick="closeTransferModal()" class="btn-cancel-transfer">
+                Cancelar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+function openTransferModal() {
+    document.getElementById('transferModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeTransferModal() {
+    document.getElementById('transferModal').classList.add('hidden');
+    document.body.style.overflow = '';
+}
+
+// Cerrar con Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeTransferModal();
+    }
+});
+</script>
+@endif
 
 @endsection

@@ -195,9 +195,12 @@ class AvanceController extends Controller
         }
 
         $request->validate([
-            'titulo' => 'required|string|max:200',
-            'descripcion' => 'required|string',
+            'titulo' => 'required|string|min:20|max:200',
+            'descripcion' => 'required|string|min:100',
             'archivo_adjunto' => 'nullable|mimes:pdf,doc,docx,xls,xlsx,ppt,pptx,jpg,jpeg,png,gif|max:10240',
+        ], [
+            'titulo.min' => 'El título debe tener al menos 20 caracteres.',
+            'descripcion.min' => 'La descripción debe tener al menos 100 caracteres.',
         ]);
 
         $rutaArchivo = null;
@@ -210,7 +213,7 @@ class AvanceController extends Controller
             'id_proyecto' => $proyecto->id_proyecto,
             'titulo' => $request->titulo,
             'descripcion' => $request->descripcion,
-            'archivo_adjunto' => $rutaArchivo,
+            'archivo_evidencia' => $rutaArchivo,
             'id_usuario_registro' => Auth::id(),
         ]);
 

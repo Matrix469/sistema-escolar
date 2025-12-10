@@ -62,10 +62,14 @@
             'resources/css/estudiante/equipos/create-sin-evento.css',
             'resources/css/estudiante/equipo/show.css',
             'resources/css/estudiante/equipo/index.css',
+            'resources/css/estudiante/proyecto-evento/show.css',
+            'resources/css/estudiante/proyecto/show-especific.css',
             'resources/css/estudiante/constancias/index.css',
             'resources/css/estudiante/avance/index-specific.css',
             'resources/css/estudiante/avance/create-specific.css',
             'resources/css/estudiante/actividades/index.css',
+            'resources/css/admin/equipos/show.css',
+            'resources/css/estudiante/eventos/show.css',
             'resources/js/app.js'])
 
         <!-- Alpine.js -->

@@ -87,8 +87,17 @@
                         <div class="inscrito-badge">
                             Inscrito
                         </div>
-                        <a href="{{ route('estudiante.eventos.show', $evento) }}">
-                            <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                        <a href="{{ route('estudiante.eventos.show', $evento) }}" class="evento-image-container block">
+                            @if($evento->ruta_imagen)
+                                <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                            @else
+                                <div class="evento-placeholder">
+                                    <div class="evento-placeholder-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <span class="evento-placeholder-text">Evento</span>
+                                </div>
+                            @endif
                         </a>
                         <div class="p-6">
                             <div class="flex items-center justify-between">
@@ -122,8 +131,17 @@
                         <div class="inscrito-badge">
                             Inscrito
                         </div>
-                        <a href="{{ route('estudiante.eventos.show', $evento) }}">
-                            <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                        <a href="{{ route('estudiante.eventos.show', $evento) }}" class="evento-image-container block">
+                            @if($evento->ruta_imagen)
+                                <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                            @else
+                                <div class="evento-placeholder">
+                                    <div class="evento-placeholder-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <span class="evento-placeholder-text">Evento</span>
+                                </div>
+                            @endif
                         </a>
                         <div class="p-6">
                             <div class="flex items-center justify-between">
@@ -159,8 +177,17 @@
                 @foreach ($eventosActivos as $evento)
                     @if($evento)
                     <div class="evento-card">
-                        <a href="{{ route('estudiante.eventos.show', $evento) }}">
-                            <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                        <a href="{{ route('estudiante.eventos.show', $evento) }}" class="evento-image-container block">
+                            @if($evento->ruta_imagen)
+                                <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                            @else
+                                <div class="evento-placeholder">
+                                    <div class="evento-placeholder-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <span class="evento-placeholder-text">Evento</span>
+                                </div>
+                            @endif
                         </a>
                         <div class="p-6">
                             <h4>{{ $evento->nombre }}</h4>
@@ -207,12 +234,28 @@
                 @foreach ($eventosProximos as $evento)
                     @if($evento)
                     <div class="evento-card">
-                        <a href="{{ route('estudiante.eventos.show', $evento) }}">
-                            <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                        <a href="{{ route('estudiante.eventos.show', $evento) }}" class="evento-image-container block">
+                            @if($evento->ruta_imagen)
+                                <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento">
+                            @else
+                                <div class="evento-placeholder">
+                                    <div class="evento-placeholder-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <span class="evento-placeholder-text">Próximamente</span>
+                                </div>
+                            @endif
+                            <div class="event-counter">
+                                <i class="fas fa-clock"></i> Próximo
+                            </div>
                         </a>
                         <div class="p-6">
-                            <h4>{{ $evento->nombre }}</h4>
+                            <div class="flex items-center justify-between">
+                                <h4>{{ $evento->nombre }}</h4>
+                                <span class="status-badge status-proximo">{{ $evento->estado }}</span>
+                            </div>
                             <p class="mt-1">
+                                <i class="fas fa-calendar-alt" style="color: #3b82f6; margin-right: 0.25rem;"></i>
                                 Inicia: {{ $evento->fecha_inicio->format('d M, Y') }}
                             </p>
                             
@@ -260,8 +303,17 @@
                             Inscrito
                         </div>
                         @endif
-                        <a href="{{ route('estudiante.eventos.show', $evento) }}">
-                            <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento" style="filter: grayscale(20%);">
+                        <a href="{{ route('estudiante.eventos.show', $evento) }}" class="evento-image-container block">
+                            @if($evento->ruta_imagen)
+                                <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento" style="filter: grayscale(20%);">
+                            @else
+                                <div class="evento-placeholder" style="filter: grayscale(20%);">
+                                    <div class="evento-placeholder-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                                    </div>
+                                    <span class="evento-placeholder-text">Cerrado</span>
+                                </div>
+                            @endif
                         </a>
                         <div class="p-6">
                             <div class="flex items-center justify-between">
@@ -297,8 +349,17 @@
                             Participé
                         </div>
                         @endif
-                        <a href="{{ route('estudiante.eventos.show', $evento) }}">
-                            <img class="h-48 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento" style="filter: grayscale(40%);">
+                        <a href="{{ route('estudiante.eventos.show', $evento) }}" class="evento-image-container block">
+                            @if($evento->ruta_imagen)
+                                <img src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento" style="filter: grayscale(40%);">
+                            @else
+                                <div class="evento-placeholder" style="filter: grayscale(40%);">
+                                    <div class="evento-placeholder-icon">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <span class="evento-placeholder-text">Finalizado</span>
+                                </div>
+                            @endif
                         </a>
                         <div class="p-6">
                             <div class="flex items-center justify-between">

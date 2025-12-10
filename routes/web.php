@@ -63,6 +63,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::patch('eventos/{evento}/desactivar', [EventoController::class, 'desactivar'])->name('eventos.desactivar');
    
     Route::patch('eventos/{evento}/cerrar', [EventoController::class, 'cerrar'])->name('eventos.cerrar');
+    Route::patch('eventos/{evento}/cerrar-forzado', [EventoController::class, 'cerrarForzado'])->name('eventos.cerrar-forzado');
     Route::patch('eventos/{evento}/finalizar', [EventoController::class, 'finalizar'])->name('eventos.finalizar');
     Route::patch('eventos/{evento}/reactivar', [EventoController::class, 'reactivar'])->name('eventos.reactivar');
 
@@ -103,6 +104,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Gestión de miembros por admin
     Route::delete('miembros/{miembro}', [AdminMiembroController::class, 'destroy'])->name('miembros.destroy');
     Route::patch('miembros/{miembro}/role', [AdminEquipoController::class, 'updateMemberRole'])->name('miembros.update-role');
+    Route::patch('miembros/{miembro}/toggle-leader', [AdminMiembroController::class, 'toggleLeader'])->name('miembros.toggle-leader');
 
     // Gestión de tokens de jurado
     Route::resource('jurado-tokens', App\Http\Controllers\Admin\JuradoTokenController::class)->names([
@@ -154,7 +156,12 @@ Route::middleware(['auth', 'role:estudiante'])->prefix('estudiante')->name('estu
     Route::get('/stats', [StatsController::class, 'dashboard'])->name('stats.dashboard');
     Route::get('eventos', [EstudianteEventoController::class, 'index'])->name('eventos.index');
     Route::get('eventos/{evento}', [EstudianteEventoController::class, 'show'])->name('eventos.show');
+
     Route::get('eventos/{evento}/posiciones', [EstudianteEventoController::class, 'posiciones'])->name('eventos.posiciones');
+
+    // Rutas para Constancias
+    Route::get('constancias', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'index'])->name('constancias.index');
+    Route::get('constancias/{evento}/pdf', [App\Http\Controllers\Estudiante\ConstanciaController::class, 'generarPdf'])->name('constancias.pdf');
 
     // Rutas para Equipos
     Route::get('mi-equipo', MiEquipoController::class)->name('equipo.index');
@@ -174,6 +181,7 @@ Route::middleware(['auth', 'role:estudiante'])->prefix('estudiante')->name('estu
     Route::patch('miembros/{miembro}/update-role', [MiembroController::class, 'updateRole'])->name('miembros.updateRole');
     Route::delete('miembros/{miembro}', [MiembroController::class, 'destroy'])->name('miembros.destroy');
     Route::post('miembros/leave', [MiembroController::class, 'leave'])->name('miembros.leave');
+    Route::patch('miembros/{miembro}/transfer-leadership', [MiembroController::class, 'transferLeadership'])->name('miembros.transfer-leadership');
     
     // Rutas para Solicitudes de Unión
     Route::post('equipos/{equipo}/solicitar', [SolicitudController::class, 'store'])->name('solicitudes.store');

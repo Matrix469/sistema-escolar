@@ -487,20 +487,20 @@
 
 .progress-circle {
     position: relative;
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
 }
 
 .progress-circle-bg {
     fill: none;
-    stroke: #f3f4f6;
-    stroke-width: 8;
+    stroke: #e5e7eb;
+    stroke-width: 6;
 }
 
 .progress-circle-fill {
     fill: none;
     stroke: url(#progressGradient);
-    stroke-width: 8;
+    stroke-width: 6;
     stroke-linecap: round;
     stroke-dasharray: 251.2;
     stroke-dashoffset: 251.2;
@@ -1337,4 +1337,148 @@
 .card-action-btn-team:hover {
     background: linear-gradient(135deg, #10b981, #059669);
     box-shadow: 4px 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* GRÁFICAS CIRCULARES DE PROGRESO */
+.progress-charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.progress-chart-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.08), -3px -3px 10px rgba(255, 255, 255, 0.8);
+    transition: transform 0.2s ease;
+}
+
+.progress-chart-card:hover {
+    transform: translateY(-2px);
+}
+
+.circular-progress {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1rem;
+}
+
+.circular-progress .percentage {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.circular-progress .percentage span {
+    display: block;
+}
+
+.progress-chart-card h5 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 0.5rem 0;
+}
+
+.progress-value {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Círculos de SVG */
+.progress-chart-card .bg {
+    stroke: #e5e7eb;
+    stroke-width: 6;
+    fill: none;
+}
+
+.progress-chart-card .progress {
+    stroke-width: 6;
+    fill: none;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 251.2;
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.progress-chart-card .progress.orange {
+    stroke: url(#gradientOrange);
+}
+
+.progress-chart-card .progress.green {
+    stroke: url(#gradientGreen);
+}
+
+.progress-chart-card .progress.purple {
+    stroke: url(#gradientPurple);
+}
+
+.progress-chart-card .progress.blue {
+    stroke: url(#gradientBlue);
+}
+
+/* Círculo de progreso principal */
+.progress-circle-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 2rem auto;
+}
+
+.progress-ring {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.progress-ring-bg {
+    stroke-width: 6;
+    fill: none;
+    transform: rotate(-90deg);
+    transform-origin: center;
+}
+
+.progress-ring-fill {
+    stroke-width: 6;
+    fill: none;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: center;
+    stroke-dasharray: 251.2;
+    stroke-dashoffset: 251.2;
+    transition: stroke-dashoffset 1s ease-in-out;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.progress-text span {
+    display: block;
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.progress-text strong {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #10b981;
 }
