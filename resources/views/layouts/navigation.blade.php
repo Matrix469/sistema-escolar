@@ -52,13 +52,13 @@
                         ACTIVIDADES
                     @elseif(request()->routeIs('estudiante.avances.*'))
                         AVANCES
-                    @elseif(request()->routeIs('estudiante.proyecto-evento.*')||request()->routeIs('jurado.proyectos.*'))
+                    @elseif(request()->routeIs('estudiante.proyecto-evento.*')||request()->routeIs('jurado.proyectos.*')||(request()->routeIs('estudiante.proyectos.*')))
                         PROYECTOS
                     @elseif(request()->routeIs('estudiante.proyecto.avances.*'))
                         AVANCES DE PROYECTO
                     @elseif(request()->routeIs('estudiante.recursos.*'))
                         RECURSOS
-                    @elseif(request()->routeIs('estudiante.tarea.*'))
+                    @elseif(request()->routeIs('estudiante.tareas.*'))
                         TAREAS
                     @else
                         @yield('page-title', 'INICIO')
