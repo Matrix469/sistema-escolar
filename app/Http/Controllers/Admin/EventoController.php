@@ -104,7 +104,7 @@ class EventoController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.eventos.index')->with('success', 'Evento creado exitosamente con ' . count($request->criterios) . ' criterios de evaluación.');
+            return redirect()->route('admin.eventos.show', $evento)->with('success', 'Evento creado exitosamente con ' . count($request->criterios) . ' criterios de evaluación.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withInput()->withErrors(['error' => 'Error al crear el evento: ' . $e->getMessage()]);

@@ -15,7 +15,59 @@
                 Detalle del Evento
             </h2>
         </div>
-        
+
+        {{-- Mensajes Flash con Auto-dismiss --}}
+        @if (session('success'))
+            <div class="flash-alert success-alert mb-6" role="alert" id="successAlert">
+                <p>
+                    <i class="fas fa-check-circle"></i>
+                    {{ session('success') }}
+                </p>
+                <button type="button" class="close-alert" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="flash-alert error-alert mb-6" role="alert" id="errorAlert">
+                <p>
+                    <i class="fas fa-exclamation-circle"></i>
+                    {{ session('error') }}
+                </p>
+                <button type="button" class="close-alert" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        @endif
+
+        @if (session('info'))
+            <div class="flash-alert info-alert mb-6" role="alert" id="infoAlert">
+                <p>
+                    <i class="fas fa-info-circle"></i>
+                    {{ session('info') }}
+                </p>
+                <button type="button" class="close-alert" onclick="this.parentElement.remove()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        @endif
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const alerts = document.querySelectorAll('.flash-alert');
+                alerts.forEach(function(alert) {
+                    // Auto-dismiss después de 5 segundos
+                    setTimeout(function() {
+                        alert.classList.add('fade-out');
+                        setTimeout(function() {
+                            alert.remove();
+                        }, 500);
+                    }, 5000);
+                });
+            });
+        </script>
+
         <div class="neuro-card-main">
             @if ($evento->ruta_imagen)
                 <img class="h-64 w-full object-cover" src="{{ asset('storage/' . $evento->ruta_imagen) }}" alt="Imagen del evento: {{ $evento->nombre }}">
@@ -25,9 +77,6 @@
                 <div class="flex justify-between items-start">
                     <div>
                         <h1 class="font-bold text-3xl">{{ $evento->nombre }}</h1>
-                        <p class="text-sm mt-1">
-                            Del {{ $evento->fecha_inicio->format('d/m/Y') }} al {{ $evento->fecha_fin->format('d/m/Y') }}
-                        </p>
                     </div>
                     <div class="flex items-center gap-3">
                         @if($evento->estado == 'Finalizado' && $evento->inscripciones()->whereNotNull('puesto_ganador')->exists())
@@ -40,14 +89,45 @@
                             @if ($evento->estado == 'Activo') status-activo
                             @elseif ($evento->estado == 'En Progreso') status-en-progreso
                             @elseif ($evento->estado == 'Próximo') status-proximo
+                            @elseif ($evento->estado == 'Cerrado') status-cerrado
                             @else status-finalizado @endif" >
                             {{ $evento->estado }}
                         </span>
                     </div>
                 </div>
 
+                {{-- Fechas Destacadas --}}
+                <div class="dates-showcase">
+                    <div class="date-card start">
+                        <div class="date-info">
+                            <span class="date-label">FECHA DE INICIO</span>
+                            <span class="date-main">{{ $evento->fecha_inicio->format('d') }}</span>
+                            <span class="date-secondary">{{ $evento->fecha_inicio->translatedFormat('F Y') }}</span>
+                            <span class="date-full">{{ $evento->fecha_inicio->translatedFormat('l, j \d\e F') }}</span>
+                        </div>
+                    </div>
+                    <div class="date-connector">
+                        <div class="connector-line"></div>
+                        <span class="connector-days">
+                            {{ $evento->fecha_inicio->diffInDays($evento->fecha_fin) }} días
+                        </span>
+                        <div class="connector-line"></div>
+                    </div>
+                    <div class="date-card end">
+                        <div class="date-info">
+                            <span class="date-label">FECHA DE CIERRE</span>
+                            <span class="date-main">{{ $evento->fecha_fin->format('d') }}</span>
+                            <span class="date-secondary">{{ $evento->fecha_fin->translatedFormat('F Y') }}</span>
+                            <span class="date-full">{{ $evento->fecha_fin->translatedFormat('l, j \d\e F') }}</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="section-divider">
-                    <h3 class="text-lg font-medium">Descripción del Evento</h3>
+                    <h3 class="text-lg font-medium">
+                        <i class="fas fa-info-circle" style="color: #e89a3c; margin-right: 0.5rem;"></i>
+                        Descripción del Evento
+                    </h3>
                     <p class="mt-2">
                         {{ $evento->descripcion ?: 'No hay descripción disponible.' }}
                     </p>

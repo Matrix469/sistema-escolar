@@ -172,7 +172,7 @@ class EquipoController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Ocurrió un error al crear el equipo: ' . $e->getMessage())->withInput();
         }
-        return redirect()->route('estudiante.dashboard')->with('success', '¡Equipo creado e inscrito exitosamente!');
+        return redirect()->route('estudiante.eventos.show', $evento)->with('success', '¡Equipo creado e inscrito exitosamente!');
     }
 
     public function edit()
